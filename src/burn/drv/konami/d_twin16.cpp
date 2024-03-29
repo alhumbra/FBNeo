@@ -1872,6 +1872,44 @@ struct BurnDriver BurnDrvGradius2 = {
 	320, 224, 4, 3
 };
 
+//Gradius II - GOFER no Yabou (Japan xh Ver. 2008.08.08)
+static struct BurnRomInfo gradius2xhRomDesc[] = {
+	{ "785_xh05.6n",	0x10000, 0xa0979359, 1 | BRF_PRG | BRF_ESS }, //  0 68K #0 Code
+	{ "785_xh04.4n",	0x10000, 0x791b4cf9, 1 | BRF_PRG | BRF_ESS }, //  1
+	{ "785_xh09.6r",	0x10000, 0x567bce05, 1 | BRF_PRG | BRF_ESS }, //  2
+	{ "785_xh08.4r",	0x10000, 0x942f18aa, 1 | BRF_PRG | BRF_ESS }, //  3
+
+	{ "785_p07.10n",	0x10000, 0x686d549d, 2 | BRF_PRG | BRF_ESS }, //  4 68K #1 Code
+	{ "785_p06.8n",		0x10000, 0x70c94bee, 2 | BRF_PRG | BRF_ESS }, //  5
+	{ "785_p13.10s",	0x10000, 0x478fdb0a, 2 | BRF_PRG | BRF_ESS }, //  6
+	{ "785_p12.8s",		0x10000, 0x38ea402a, 2 | BRF_PRG | BRF_ESS }, //  7
+
+	{ "785_g03.10a",	0x08000, 0x67a3b50d, 3 | BRF_PRG | BRF_ESS }, //  8 Z80 Code
+
+	{ "785_g14.d8",		0x04000, 0x9dcdad9d, 4 | BRF_GRA },           //  9 Characters
+
+	{ "785f17.p16",		0x80000, 0x4e7a7b82, 5 | BRF_GRA },           // 10 Sprites / Bg Tiles
+	{ "785f18.p18",		0x80000, 0x3f604e9a, 5 | BRF_GRA },           // 11
+	{ "785f15.p13",		0x80000, 0x5bd239ac, 5 | BRF_GRA },           // 12
+	{ "785f16.p15",		0x80000, 0x95c6b8a3, 5 | BRF_GRA },           // 13
+
+	{ "785_f01.5a",		0x20000, 0xa0d8d69e, 7 | BRF_SND },           // 14 K007232 Samples
+
+	{ "785_f02.7c",		0x20000, 0xc39f5ca4, 8 | BRF_SND },           // 15 UPD7759 Samples
+};
+
+STD_ROM_PICK(gradius2xh)
+STD_ROM_FN(gradius2xh)
+
+struct BurnDriver BurnDrvGradius2xh = {
+	"gradius2xh", "vulcan", NULL, NULL, "1988",
+	"Gradius II - GOFER no Yabou (Japan xh Ver. 2008.08.08)\0", NULL, "Konami", "GX785",
+	L"Gradius II - GOFER \u306E\u91CE\u671B (Japan xh Ver. 2008.08.08)\0", NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_HACK | BDF_HISCORE_SUPPORTED, 2, HARDWARE_PREFIX_KONAMI, GBF_HORSHOOT, 0,
+	NULL, gradius2xhRomInfo, gradius2RomName, NULL, NULL, NULL, NULL, DrvInputInfo, Gradius2DIPInfo,
+	vulcanInit, DrvExit, DrvFrame, DrvDraw, DrvScan, &DrvRecalc, 0x400,
+	320, 224, 4, 3
+};
 
 // Gradius II - GOFER no Yabou (Japan Old Ver.)
 
