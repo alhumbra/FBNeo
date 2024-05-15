@@ -382,34 +382,34 @@ static struct BurnInputInfo neopaddleInputList[] = {
 STDINPUTINFO(neopaddle)
 
 static struct BurnInputInfo neotrackballInputList[] = {
-	{"P1 Coin",		BIT_DIGITAL,	NeoButton2 + 0,	"p1 coin"},			//  0
-	{"P1 Start",	BIT_DIGITAL,	NeoButton1 + 0,	"p1 start"},		//	1
+	{"P1 Coin",		BIT_DIGITAL,	NeoButton2 + 0,	"p1 coin"		},	//  0
+	{"P1 Start",	BIT_DIGITAL,	NeoButton1 + 0,	"p1 start"		},	//	1
 
-   A("P1 X Axis",	BIT_ANALOG_REL,	NeoAxis + 0,	"mouse x-axis"),	//	2
-   A("P1 Y Axis",	BIT_ANALOG_REL,	NeoAxis + 1,	"mouse y-axis"),	//	3
+   A("P1 X Axis",	BIT_ANALOG_REL,	NeoAxis + 0,	"mouse x-axis"	),	//	2
+   A("P1 Y Axis",	BIT_ANALOG_REL,	NeoAxis + 1,	"mouse y-axis"	),	//	3
 
 	{"P1 Button A",	BIT_DIGITAL,	NeoJoy2 + 4,	"mouse button 1"},	//	4
 	{"P1 Button B",	BIT_DIGITAL,	NeoJoy2 + 5,	"mouse button 2"},	//	5
-	{"P1 Button C",	BIT_DIGITAL,	NeoJoy1 + 6,	"p1 fire 3"},		//	6
-	{"P1 Button D",	BIT_DIGITAL,	NeoJoy1 + 7,	"p1 fire 4"},		//	7
+	{"P1 Button C",	BIT_DIGITAL,	NeoJoy1 + 6,	"p1 fire 3"		},	//	6
+	{"P1 Button D",	BIT_DIGITAL,	NeoJoy1 + 7,	"p1 fire 4"		},	//	7
 
-	{"P2 Coin",		BIT_DIGITAL,	NeoButton2 + 1,	"p2 coin"},			//	6
-	{"P2 Start",	BIT_DIGITAL,	NeoButton1 + 2,	"p2 start"},		//	7
+	{"P2 Coin",		BIT_DIGITAL,	NeoButton2 + 1,	"p2 coin"		},	//	8
+	{"P2 Start",	BIT_DIGITAL,	NeoButton1 + 2,	"p2 start"		},	//	9
 
-	{"P2 Button A",	BIT_DIGITAL,	NeoJoy2 + 6,	"p2 fire 1"},		//  8
-	{"P2 Button B",	BIT_DIGITAL,	NeoJoy2 + 7,	"p2 fire 2"},		//  9
+	{"P2 Button A",	BIT_DIGITAL,	NeoJoy2 + 6,	"p2 fire 1"		},	//  A
+	{"P2 Button B",	BIT_DIGITAL,	NeoJoy2 + 7,	"p2 fire 2"		},	//  B
 
-	{"Reset",		BIT_DIGITAL,	&NeoReset,		"reset"},			//  A
-	{"Test",		BIT_DIGITAL,	NeoDiag + 0,	"diag"},			//  B
-	{"Service",		BIT_DIGITAL,	NeoButton2 + 2,	"service"},			//  C
-	{"Dip 1",		BIT_DIPSWITCH,	NeoInput + 4,	"dip"},				//  D
-	{"Dip 2",		BIT_DIPSWITCH,	NeoInput + 5,	"dip"},				//  E
+	{"Reset",		BIT_DIGITAL,	&NeoReset,		"reset"			},	//  C
+	{"Test",		BIT_DIGITAL,	NeoDiag + 0,	"diag"			},	//  D
+	{"Service",		BIT_DIGITAL,	NeoButton2 + 2,	"service"		},	//  E
+	{"Dip 1",		BIT_DIPSWITCH,	NeoInput + 4,	"dip"			},	//  F
+	{"Dip 2",		BIT_DIPSWITCH,	NeoInput + 5,	"dip"			},	// 10
 
-	{"System",		BIT_DIPSWITCH,	&NeoSystem,		"dip"},				//  F
-	{"Slots",		BIT_DIPSWITCH,	&nNeoNumSlots,	"dip"},				// 10
+	{"System",		BIT_DIPSWITCH,	&NeoSystem,		"dip"			},	// 11
+	{"Slots",		BIT_DIPSWITCH,	&nNeoNumSlots,	"dip"			},	// 12
 
-	{"Debug Dip 1",	BIT_DIPSWITCH,	NeoDebugDip + 0,"dip"},				// 11
-	{"Debug Dip 2",	BIT_DIPSWITCH,	NeoDebugDip + 1,"dip"},				// 12
+	{"Debug Dip 1",	BIT_DIPSWITCH,	NeoDebugDip + 0,"dip"			},	// 13
+	{"Debug Dip 2",	BIT_DIPSWITCH,	NeoDebugDip + 1,"dip"			},	// 14
 };
 
 STDINPUTINFO(neotrackball)
@@ -1362,7 +1362,7 @@ static struct BurnDIPInfo lastbladDIPList[] = {
 	// Fake DIPs
 	{0x06, 0xFF, 0xFF, 0x00, NULL                           },  // Off
 
-	{0,    0xFE, 0,    2,    "Mini Game (Must reload & AES)"},
+	{0,    0xFE, 0,    2,    "Mini Game"                    },
 	{0x06, 0x01, 0x01, 0x00, "Off"                          },
 	{0x06, 0x01, 0x01, 0x01, "On"                           },
 };
@@ -1754,7 +1754,7 @@ static struct BurnRomInfo neocdzRomDesc[] = {
 STD_ROM_PICK(neocdz)
 STD_ROM_FN(neocdz)
 
-struct BurnDriver BurnDrvneocdz = {
+struct BurnDriver BurnDrvNeocdz = {
 	"neocdz", NULL, "neogeo", NULL, "1996",
 	"Neo Geo CDZ system\0", "System - media selected seperately", "SNK", "Neo Geo CDZ",
 	NULL, NULL, NULL, NULL,
@@ -2169,10 +2169,10 @@ static void DoPerm(INT32 g) // 0 - cthd2003, 1 - svcboot
 			b = tbl[idx[g][(i >> (5 ^ g)) & 0x0f]];
 			k = BITSWAP08(j, 7, 6, 5, 4, b[3], b[2], b[1], b[0]);
 
-			memcpy (dst + (j << 7), NeoSpriteROM[nNeoActiveSlot] + (i << 11) + (k << 7), 0x80);
+			memcpy(dst + (j << 7), NeoSpriteROM[nNeoActiveSlot] + (i << 11) + (k << 7), 0x80);
 		}
 
-		memcpy (NeoSpriteROM[nNeoActiveSlot] + (i << 11), dst, 0x800);
+		memcpy(NeoSpriteROM[nNeoActiveSlot] + (i << 11), dst, 0x800);
 	}
 }
 
@@ -3556,7 +3556,7 @@ static struct BurnRomInfo bb2020RomDesc[] = {
 STDROMPICKEXT(bb2020, bb2020, neogeo)
 STD_ROM_FN(bb2020)
 
-struct BurnDriver BurnDrvbb2020 = {
+struct BurnDriver BurnDrvBb2020 = {
 	"2020bb", NULL, "neogeo", NULL, "1991",
 	"2020 Super Baseball (set 1)\0", NULL, "SNK / Pallas", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -3590,7 +3590,7 @@ static struct BurnRomInfo bba2020RomDesc[] = {
 STDROMPICKEXT(bba2020, bba2020, neogeo)
 STD_ROM_FN(bba2020)
 
-struct BurnDriver BurnDrvbba2020 = {
+struct BurnDriver BurnDrvBba2020 = {
 	"2020bba", "2020bb", "neogeo", NULL, "1991",
 	"2020 Super Baseball (set 2)\0", NULL, "SNK / Pallas", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -3623,7 +3623,7 @@ static struct BurnRomInfo bbh2020RomDesc[] = {
 STDROMPICKEXT(bbh2020, bbh2020, neogeo)
 STD_ROM_FN(bbh2020)
 
-struct BurnDriver BurnDrvbbh2020 = {
+struct BurnDriver BurnDrvBbh2020 = {
 	"2020bbh", "2020bb", "neogeo", NULL, "1991",
 	"2020 Super Baseball (set 3)\0", NULL, "SNK / Pallas", "Neo Geo AES",
 	NULL, NULL, NULL, NULL,
@@ -4261,7 +4261,7 @@ static struct BurnRomInfo tophuntrRomDesc[] = {
 STDROMPICKEXT(tophuntr, tophuntr, neogeo)
 STD_ROM_FN(tophuntr)
 
-struct BurnDriver BurnDrvtophntr = {
+struct BurnDriver BurnDrvTophntr = {
 	"tophuntr", NULL, "neogeo", NULL, "1994",
 	"Top Hunter - Roddy & Cathy (NGM-046)\0", NULL, "SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -4301,7 +4301,7 @@ static struct BurnRomInfo tophuntrhRomDesc[] = {
 STDROMPICKEXT(tophuntrh, tophuntrh, neogeo)
 STD_ROM_FN(tophuntrh)
 
-struct BurnDriver BurnDrvtophntrh = {
+struct BurnDriver BurnDrvTophntrh = {
 	"tophuntrh", "tophuntr", "neogeo", NULL, "1994",
 	"Top Hunter - Roddy & Cathy (NGH-046)\0", NULL, "SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -4947,7 +4947,7 @@ static INT32 samsho2kInit()
  	return NeoInit();
 }
 
-struct BurnDriver BurnDrvsamsho2k = {
+struct BurnDriver BurnDrvSamsho2k = {
 	"samsho2k", "samsho2", "neogeo", NULL, "1994",
 	"Saulabi Spirits / Jin Saulabi Tu Hon (Korean release of Samurai Shodown II, set 1)\0", NULL, "SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -4987,7 +4987,7 @@ static struct BurnRomInfo samsho2kaRomDesc[] = {
 STDROMPICKEXT(samsho2ka, samsho2ka, neogeo)
 STD_ROM_FN(samsho2ka)
 
-struct BurnDriver BurnDrvsamsho2ka = {
+struct BurnDriver BurnDrvSamsho2ka = {
 	"samsho2ka", "samsho2", "neogeo", NULL, "1994",
 	"Saulabi Spirits / Jin Saulabi Tu Hon (Korean release of Samurai Shodown II, set 2)\0", NULL, "SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -5302,7 +5302,7 @@ static struct BurnRomInfo fswordsRomDesc[] = {
 STDROMPICKEXT(fswords, fswords, neogeo)
 STD_ROM_FN(fswords)
 
-struct BurnDriver BurnDrvfswords = {
+struct BurnDriver BurnDrvFswords = {
 	"fswords", "samsho3", "neogeo", NULL, "1995",
 	"Fighters Swords (Korean release of Samurai Shodown III)\0", NULL, "SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -5341,7 +5341,7 @@ static struct BurnRomInfo rbff1RomDesc[] = {
 STDROMPICKEXT(rbff1, rbff1, neogeo)
 STD_ROM_FN(rbff1)
 
-struct BurnDriver BurnDrvrbff1 = {
+struct BurnDriver BurnDrvRbff1 = {
 	"rbff1", NULL, "neogeo", NULL, "1995",
 	"Real Bout Fatal Fury / Real Bout Garou Densetsu (NGM-095 ~ NGH-095)\0", NULL, "SNK", "Neo Geo MVS",
 	L"Real Bout Fatal Fury\0Real Bout \u9913\u72FC\u4F1D\u8AAC (NGM-095 ~ NGH-095)\0", NULL, NULL, NULL,
@@ -5398,7 +5398,7 @@ static INT32 rbff1aInit()
  	return NeoInit();
 }
 
-struct BurnDriver BurnDrvrbff1a = {
+struct BurnDriver BurnDrvRbff1a = {
 	"rbff1a", "rbff1", "neogeo", NULL, "1995",
 	"Real Bout Fatal Fury / Real Bout Garou Densetsu (bug fix revision)\0", NULL, "SNK", "Neo Geo MVS",
 	L"Real Bout Fatal Fury\0Real Bout \u9913\u72FC\u4F1D\u8AAC (bug fix revision)\0", NULL, NULL, NULL,
@@ -5437,7 +5437,7 @@ static struct BurnRomInfo rbff1kRomDesc[] = {
 STDROMPICKEXT(rbff1k, rbff1k, neogeo)
 STD_ROM_FN(rbff1k)
 
-struct BurnDriver BurnDrvrbff1k = {
+struct BurnDriver BurnDrvRbff1k = {
 	"rbff1k", "rbff1", "neogeo", NULL, "1995",
 	"Real Bout Fatal Fury / Real Bout Garou Densetsu (Korean release)\0", NULL, "SNK", "Neo Geo MVS",
 	L"Real Bout Fatal Fury\0Real Bout \u9913\u72FC\u4F1D\u8AAC (Korean release)\0", NULL, NULL, NULL,
@@ -5480,7 +5480,7 @@ static struct BurnRomInfo rbff1kaRomDesc[] = {
 STDROMPICKEXT(rbff1ka, rbff1ka, neogeo)
 STD_ROM_FN(rbff1ka)
 
-struct BurnDriver BurnDrvrbff1ka = {
+struct BurnDriver BurnDrvRbff1ka = {
 	"rbff1ka", "rbff1", "neogeo", NULL, "1995",
 	"Real Bout Fatal Fury / Real Bout Garou Densetsu (Korean release, bug fix revision)\0", NULL, "SNK", "Neo Geo MVS",
 	L"Real Bout Fatal Fury\0Real Bout \u9913\u72FC\u4F1D\u8AAC (Korean release, bug fix revision)\0", NULL, NULL, NULL,
@@ -5823,7 +5823,7 @@ static struct BurnRomInfo rbffspecRomDesc[] = {
 STDROMPICKEXT(rbffspec, rbffspec, neogeo)
 STD_ROM_FN(rbffspec)
 
-struct BurnDriver BurnDrvrbffspec = {
+struct BurnDriver BurnDrvRbffspec = {
 	"rbffspec", NULL, "neogeo", NULL, "1996",
 	"Real Bout Fatal Fury Special / Real Bout Garou Densetsu Special\0", NULL, "SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -5863,7 +5863,7 @@ static struct BurnRomInfo rbffspeckRomDesc[] = {
 STDROMPICKEXT(rbffspeck, rbffspeck, neogeo)
 STD_ROM_FN(rbffspeck)
 
-struct BurnDriver BurnDrvrbffspeck = {
+struct BurnDriver BurnDrvRbffspeck = {
 	"rbffspeck", "rbffspec", "neogeo", NULL, "1996",
 	"Real Bout Fatal Fury Special / Real Bout Garou Densetsu Special (Korean release)\0", NULL, "SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -6067,10 +6067,10 @@ static void kogCallback()
 		static const INT32 sec[] = { 0x3, 0x8, 0x7, 0xc, 0x1, 0xa, 0x6, 0xd };
 
 		for (i = 0; i < 0x100000 / 0x020000; i++)
-			memcpy (dst + i * 0x020000, Neo68KROMActive + sec[i] * 0x020000, 0x020000);
+			memcpy(dst + i * 0x020000, Neo68KROMActive + sec[i] * 0x020000, 0x020000);
 
-		memcpy (dst + 0x090000, Neo68KROMActive + 0x040000, 0x004000);
-		memcpy (Neo68KROMActive, dst, 0x100000);
+		memcpy(dst + 0x090000, Neo68KROMActive + 0x040000, 0x004000);
+		memcpy(Neo68KROMActive, dst, 0x100000);
 		BurnFree (dst);
 	}
 
@@ -6084,10 +6084,10 @@ static void kogCallback()
 		}
 	}
 
-	memcpy (Neo68KROMActive + 0x0007a6, Neo68KROMActive + 0x0907a6, 0x000006);
-	memcpy (Neo68KROMActive + 0x0007c6, Neo68KROMActive + 0x0907c6, 0x000006);
-	memcpy (Neo68KROMActive + 0x0007e6, Neo68KROMActive + 0x0907e6, 0x000006);
-	memmove (Neo68KROMActive + 0x100000, Neo68KROMActive + 0x200000, 0x400000);
+	memcpy(Neo68KROMActive + 0x0007a6, Neo68KROMActive + 0x0907a6, 0x000006);
+	memcpy(Neo68KROMActive + 0x0007c6, Neo68KROMActive + 0x0907c6, 0x000006);
+	memcpy(Neo68KROMActive + 0x0007e6, Neo68KROMActive + 0x0907e6, 0x000006);
+	memmove(Neo68KROMActive + 0x100000, Neo68KROMActive + 0x200000, 0x400000);
 
 	*((UINT16 *)(Neo68KROMActive + 0x924ac)) = BURN_ENDIAN_SWAP_INT16(0x0009);
 	*((UINT16 *)(Neo68KROMActive + 0x9251c)) = BURN_ENDIAN_SWAP_INT16(0x0009);
@@ -6230,35 +6230,61 @@ STD_ROM_FN(lastblad)
 
 static void LastbladPatchCallback()
 {
-	UINT32 patch_fix[] = {
-		// Mini Game Revealed
-		0x064cb6, 0x3c, 0x064cb7, 0x30, 0x064cb8, 0x1a, 0x064cde, 0xb9, 0x064cdf, 0x4e, 0x064ce0, 0x07, 0x064ce1, 0x00, 0x064ce2, 0xe4,
-		0x064ce3, 0xff, 0x065160, 0xb9, 0x065161, 0x4e, 0x065162, 0x07, 0x065163, 0x00, 0x065164, 0xc2, 0x065165, 0xff, 0x07ffc2, 0x0a,
-		0x07ffc3, 0x2c, 0x07ffc4, 0x86, 0x07ffc5, 0x0c, 0x07ffc6, 0x22, 0x07ffc7, 0x00, 0x07ffc8, 0x14, 0x07ffc9, 0x9a, 0x07ffca, 0x00,
-		0x07ffcb, 0x67, 0x07ffcc, 0x08, 0x07ffcd, 0x00, 0x07ffce, 0x1a, 0x07ffcf, 0x30, 0x07ffd0, 0x00, 0x07ffd1, 0x60, 0x07ffd2, 0x0c,
-		0x07ffd3, 0x00, 0x07ffd4, 0x3c, 0x07ffd5, 0x30, 0x07ffd6, 0x1b, 0x07ffd7, 0x15, 0x07ffd8, 0xfc, 0x07ffd9, 0xd5, 0x07ffda, 0x00,
-		0x07ffdb, 0x00, 0x07ffdc, 0x02, 0x07ffdd, 0x00, 0x07ffde, 0x40, 0x07ffdf, 0x02, 0x07ffe0, 0xff, 0x07ffe1, 0x00, 0x07ffe2, 0x75,
-		0x07ffe3, 0x4e, 0x07ffe4, 0x00, 0x07ffe5, 0x70, 0x07ffe6, 0x0a, 0x07ffe7, 0x2c, 0x07ffe8, 0x86, 0x07ffe9, 0x0c, 0x07ffea, 0x22,
-		0x07ffeb, 0x00, 0x07ffec, 0x14, 0x07ffed, 0x9a, 0x07ffee, 0x00, 0x07ffef, 0x67, 0x07fff0, 0x08, 0x07fff1, 0x00, 0x07fff2, 0x12,
-		0x07fff3, 0x30, 0x07fff4, 0x00, 0x07fff5, 0x60, 0x07fff6, 0x06, 0x07fff7, 0x00, 0x07fff8, 0x3c, 0x07fff9, 0x30, 0x07fffa, 0x1b,
-		0x07fffb, 0x15, 0x07fffc, 0x48, 0x07fffd, 0xe0, 0x07fffe, 0x75, 0x07ffff, 0x4e,
+	UINT32 patch_fix[3][76] = {
+		{
+			0x064cb6, 0x064cb8, 0x064cde, 0x064cdf, 0x064ce0, 0x064ce1, 0x064ce2, 0x064ce3, 0x065160, 0x065161, 0x065162, 0x065163, 0x065164, 0x065165, 0x07ffc2, 0x07ffc3,
+			0x07ffc4, 0x07ffc5, 0x07ffc6, 0x07ffc7, 0x07ffc8, 0x07ffc9, 0x07ffca, 0x07ffcb, 0x07ffcc, 0x07ffcd, 0x07ffce, 0x07ffcf, 0x07ffd0, 0x07ffd1, 0x07ffd2, 0x07ffd3,
+			0x07ffd4, 0x07ffd5, 0x07ffd6, 0x07ffd7, 0x07ffd8, 0x07ffd9, 0x07ffda, 0x07ffdb, 0x07ffdc, 0x07ffdd, 0x07ffde, 0x07ffdf, 0x07ffe0, 0x07ffe1, 0x07ffe2, 0x07ffe3,
+			0x07ffe4, 0x07ffe5, 0x07ffe6, 0x07ffe7, 0x07ffe8, 0x07ffe9, 0x07ffea, 0x07ffeb, 0x07ffec, 0x07ffed, 0x07ffee, 0x07ffef, 0x07fff0, 0x07fff1, 0x07fff2, 0x07fff3,
+			0x07fff4, 0x07fff5, 0x07fff6, 0x07fff7, 0x07fff8, 0x07fff9, 0x07fffa, 0x07fffb, 0x07fffc, 0x07fffd, 0x07fffe, 0x07ffff
+		},	// Address
+		{
+			0x2c, 0xf0, 0x00, 0x70, 0x12, 0x30, 0x48, 0xe0, 0x1a, 0x30, 0x40, 0x02, 0xff, 0x00, 0x00, 0x20,
+			0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x00, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20,
+			0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x20, 0x00, 0x20,
+			0x8e, 0x55, 0x8f, 0x55, 0x90, 0x55, 0x91, 0x55, 0x92, 0x55, 0x93, 0x55, 0x94, 0x55, 0x95, 0x55,
+			0x96, 0x55, 0x22, 0x2a, 0x97, 0x55, 0x22, 0x2a, 0x98, 0x55, 0x99, 0x55
+		},	// Original
+		{
+			0x3c, 0x1a, 0xb9, 0x4e, 0x07, 0x00, 0xe4, 0xff, 0xb9, 0x4e, 0x07, 0x00, 0xc2, 0xff, 0x0a, 0x2c,
+			0x86, 0x0c, 0x22, 0x00, 0x14, 0x9a, 0x00, 0x67, 0x08, 0x00, 0x1a, 0x30, 0x00, 0x60, 0x0c, 0x00,
+			0x3c, 0x30, 0x1b, 0x15, 0xfc, 0xd5, 0x00, 0x00, 0x02, 0x00, 0x40, 0x02, 0xff, 0x00, 0x75, 0x4e,
+			0x00, 0x70, 0x0a, 0x2c, 0x86, 0x0c, 0x22, 0x00, 0x14, 0x9a, 0x00, 0x67, 0x08, 0x00, 0x12, 0x30,
+			0x00, 0x60, 0x06, 0x00, 0x3c, 0x30, 0x1b, 0x15, 0x48, 0xe0, 0x75, 0x4e
+		},	// Mini Game
 	};
 
-	for (INT32 i = 0; i < (sizeof(patch_fix) / sizeof(UINT32)) >> 1; i++) {
-		Neo68KROMActive[patch_fix[(i << 1) + 0]] = (UINT8)patch_fix[(i << 1) + 1];
+	INT32 nIndex = 1;	// Original
+
+	// to AES
+	if (VerSwitcher & 0x01) {
+		nIndex = 2;		// Mini Game
+
+		UINT8 nRegion = NeoSystem & 0x3f;
+
+		// AES Japan (0x0f) / AES Asia (0x10)
+		if ((0x0f != nRegion) && (0x10 != nRegion)) {
+			NeoSystem &= ~nRegion;
+//			NeoSystem |= 0x0f;	// AES Japan
+			NeoSystem |= 0x10;	// AES Asia
+		}
+	}
+
+	for (INT32 i = 0; i < 76; i++) {
+		Neo68KROMActive[patch_fix[0][i]] = (UINT8)patch_fix[nIndex][i];
 	}
 }
 
 static INT32 LastbladInit()
 {
-	if (VerSwitcher & 0x01) {
-		NeoCallbackActive->pInitialise = LastbladPatchCallback; // Mini Game Revealed (AES Mode)
+	if (!bDoIpsPatch) {
+		NeoCallbackActive->pResetCallback = LastbladPatchCallback; // Mini Game Revealed (AES Mode)
 	}
 
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvlastblad = {
+struct BurnDriver BurnDrvLastblad = {
 	"lastblad", NULL, "neogeo", NULL, "1997",
 	"The Last Blade / Bakumatsu Roman - Gekka no Kenshi (NGM-2340)\0", NULL, "SNK", "Neo Geo MVS",
 	L"The Last Blade\0\u5E55\u672B\u6D6A\u6F2B \u6708\u83EF\u306E\u5263\u58EB (NGM-2340)\0", NULL, NULL, NULL,
@@ -6296,7 +6322,7 @@ static struct BurnRomInfo lastbladhRomDesc[] = {
 STDROMPICKEXT(lastbladh, lastbladh, neogeo)
 STD_ROM_FN(lastbladh)
 
-struct BurnDriver BurnDrvlastbladh = {
+struct BurnDriver BurnDrvLastbladh = {
 	"lastbladh", "lastblad", "neogeo", NULL, "1997",
 	"The Last Blade / Bakumatsu Roman - Gekka no Kenshi (NGH-2340)\0", NULL, "SNK", "Neo Geo AES",
 	L"The Last Blade\0\u5E55\u672B\u6D6A\u6F2B \u6708\u83EF\u306E\u5263\u58EB (NGH-2340)\0", NULL, NULL, NULL,
@@ -6334,7 +6360,7 @@ static struct BurnRomInfo lastsoldRomDesc[] = {
 STDROMPICKEXT(lastsold, lastsold, neogeo)
 STD_ROM_FN(lastsold)
 
-struct BurnDriver BurnDrvlastsold = {
+struct BurnDriver BurnDrvLastsold = {
 	"lastsold", "lastblad", "neogeo", NULL, "1997",
 	"The Last Soldier (Korean release of The Last Blade)\0", NULL, "SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -6403,7 +6429,7 @@ static struct BurnRomInfo rbff2RomDesc[] = {
 STDROMPICKEXT(rbff2, rbff2, neogeo)
 STD_ROM_FN(rbff2)
 
-struct BurnDriver BurnDrvrbff2 = {
+struct BurnDriver BurnDrvRbff2 = {
 	"rbff2", NULL, "neogeo", NULL, "1998",
 	"Real Bout Fatal Fury 2 - The Newcomers / Real Bout Garou Densetsu 2 - The Newcomers (NGM-2400)\0", NULL, "SNK", "Neo Geo MVS",
 	L"Real Bout Fatal Fury 2 - The Newcomers\0Real Bout \u9913\u72FC\u4F1D\u8AAC\uFF12 (NGM-2400)\0", NULL, NULL, NULL,
@@ -6441,7 +6467,7 @@ static struct BurnRomInfo rbff2hRomDesc[] = {
 STDROMPICKEXT(rbff2h, rbff2h, neogeo)
 STD_ROM_FN(rbff2h)
 
-struct BurnDriver BurnDrvrbff2h = {
+struct BurnDriver BurnDrvRbff2h = {
 	"rbff2h", "rbff2", "neogeo", NULL, "1998",
 	"Real Bout Fatal Fury 2 - The Newcomers / Real Bout Garou Densetsu 2 - The Newcomers (NGH-2400)\0", NULL, "SNK", "Neo Geo MVS",
 	L"Real Bout Fatal Fury 2 - The Newcomers\0Real Bout \u9913\u72FC\u4F1D\u8AAC\uFF12 (NGH-2400)\0", NULL, NULL, NULL,
@@ -6479,7 +6505,7 @@ static struct BurnRomInfo rbff2kRomDesc[] = {
 STDROMPICKEXT(rbff2k, rbff2k, neogeo)
 STD_ROM_FN(rbff2k)
 
-struct BurnDriver BurnDrvrbff2k = {
+struct BurnDriver BurnDrvRbff2k = {
 	"rbff2k", "rbff2", "neogeo", NULL, "1998",
 	"Real Bout Fatal Fury 2 - The Newcomers (Korean release)\0", NULL, "SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -6911,7 +6937,7 @@ static struct BurnRomInfo lastbld2RomDesc[] = {
 STDROMPICKEXT(lastbld2, lastbld2, neogeo)
 STD_ROM_FN(lastbld2)
 
-struct BurnDriver BurnDrvlastbld2 = {
+struct BurnDriver BurnDrvLastbld2 = {
 	"lastbld2", NULL, "neogeo", NULL, "1998",
 	"The Last Blade 2 / Bakumatsu Roman - Dai Ni Maku Gekka no Kenshi (NGM-2430 ~ NGH-2430)\0", NULL, "SNK", "Neo Geo MVS",
 	L"The Last Blade 2\0\u5E55\u672B\u6D6A\u6F2B\u7B2C\u4E8C\u5E55 - \u6708\u83EF\u306E\u5263\u58EB - \u6708\u306B\u54B2\u304F\u83EF\u3001\u6563\u308A\u3086\u304F\u82B1 (NGM-2430 ~ NGH-2430)\0", NULL, NULL, NULL,
@@ -7205,7 +7231,7 @@ static INT32 kof99Init()
 	return NeoSMAInit(kof99SMADecrypt, kof99WriteWordBankswitch, 0x2FFFF8, 0x2FFFFA);
 }
 
-struct BurnDriver BurnDrvkof99 = {
+struct BurnDriver BurnDrvKof99 = {
 	"kof99", NULL, "neogeo", NULL, "1999",
 	"The King of Fighters '99 - Millennium Battle (NGM-2510)\0", NULL, "SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -7246,7 +7272,7 @@ static struct BurnRomInfo kof99hRomDesc[] = {
 STDROMPICKEXT(kof99h, kof99h, neogeo)
 STD_ROM_FN(kof99h)
 
-struct BurnDriver BurnDrvkof99h = {
+struct BurnDriver BurnDrvKof99h = {
 	"kof99h", "kof99", "neogeo", NULL, "1999",
 	"The King of Fighters '99 - Millennium Battle (NGH-2510)\0", NULL, "SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -7290,7 +7316,7 @@ static struct BurnRomInfo kof99eRomDesc[] = {
 STDROMPICKEXT(kof99e, kof99e, neogeo)
 STD_ROM_FN(kof99e)
 
-struct BurnDriver BurnDrvkof99e = {
+struct BurnDriver BurnDrvKof99e = {
 	"kof99e", "kof99", "neogeo", NULL, "1999",
 	"The King of Fighters '99 - Millennium Battle (earlier)\0", NULL, "SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -7331,7 +7357,7 @@ static struct BurnRomInfo kof99kRomDesc[] = {
 STDROMPICKEXT(kof99k, kof99k, neogeo)
 STD_ROM_FN(kof99k)
 
-struct BurnDriver BurnDrvkof99k = {
+struct BurnDriver BurnDrvKof99k = {
 	"kof99k", "kof99", "neogeo", NULL, "1999",
 	"The King of Fighters '99 - Millennium Battle (Korean release)\0", NULL, "SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -7377,7 +7403,7 @@ INT32 kof99kaInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvkof99ka = {
+struct BurnDriver BurnDrvKof99ka = {
 	"kof99ka", "kof99", "neogeo", NULL, "1999",
 	"The King of Fighters '99 - Millennium Battle (Korean release, non-encrypted program)\0", NULL, "SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -7420,7 +7446,7 @@ static struct BurnRomInfo kof99pRomDesc[] = {
 STDROMPICKEXT(kof99p, kof99p, neogeo)
 STD_ROM_FN(kof99p)
 
-struct BurnDriver BurnDrvkof99p = {
+struct BurnDriver BurnDrvKof99p = {
 	"kof99p", "kof99", "neogeo", NULL, "1999",
 	"The King of Fighters '99 - Millennium Battle (prototype)\0", NULL, "SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -7632,7 +7658,7 @@ static INT32 garouhInit()
 	return NeoSMAInit(garouhSMADecrypt, garouhWriteWordBankswitch, 0x2FFFCC, 0x2FFFF0);
 }
 
-struct BurnDriver BurnDrvgarouh = {
+struct BurnDriver BurnDrvGarouh = {
 	"garouh", "garou", "neogeo", NULL, "1999",
 	"Garou - Mark of the Wolves (NGM-2530 ~ NGH-2530)\0", NULL, "SNK", "Neo Geo MVS",
 	L"Garou\0\u9913\u72FC - mark of the wolves (NGM-2530 ~ NGH-2530)\0", NULL, NULL, NULL,
@@ -7676,7 +7702,7 @@ static struct BurnRomInfo garouhaRomDesc[] = {
 STDROMPICKEXT(garouha, garouha, neogeo)
 STD_ROM_FN(garouha)
 
-struct BurnDriver BurnDrvgarouha = {
+struct BurnDriver BurnDrvGarouha = {
 	"garouha", "garou", "neogeo", NULL, "1999",
 	"Garou - Mark of the Wolves (NGH-2530)\0", NULL, "SNK", "Neo Geo MVS",
 	L"Garou\0\u9913\u72FC - mark of the wolves (NGH-2530)\0", NULL, NULL, NULL,
@@ -7771,7 +7797,7 @@ static INT32 garoublInit()
  	return NeoInit();
 }
 
-struct BurnDriver BurnDrvgaroubl = {
+struct BurnDriver BurnDrvGaroubl = {
 	"garoubl", "garou", "neogeo", NULL, "1999",
 	"Garou - Mark of the Wolves (bootleg)\0", NULL, "bootleg", "Neo Geo MVS",
 	L"Garou\0\u9913\u72FC - mark of the wolves (bootleg)\0", NULL, NULL, NULL,
@@ -7878,7 +7904,7 @@ static INT32 mslug3Init()
 	return NeoSMAInit(mslug3SMADecrypt, mslug3WriteWordBankswitch, 0, 0);
 }
 
-struct BurnDriver BurnDrvmslug3 = {
+struct BurnDriver BurnDrvMslug3 = {
 	"mslug3", NULL, "neogeo", NULL, "2000",
 	"Metal Slug 3 (NGM-2560)\0", NULL, "SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -7981,7 +8007,7 @@ static INT32 mslug3aInit()
 	return NeoSMAInit(mslug3aSMADecrypt, mslug3aWriteWordBankswitch, 0, 0);
 }
 
-struct BurnDriver BurnDrvmslug3a = {
+struct BurnDriver BurnDrvMslug3a = {
 	"mslug3a", "mslug3", "neogeo", NULL, "2000",
 	"Metal Slug 3 (NGM-2560, earlier)\0", NULL, "SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -8026,7 +8052,7 @@ static INT32 mslug3hInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvmslug3h = {
+struct BurnDriver BurnDrvMslug3h = {
 	"mslug3h", "mslug3", "neogeo", NULL, "2000",
 	"Metal Slug 3 (NGH-2560)\0", NULL, "SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -8080,13 +8106,13 @@ static INT32 mslug3b6Init()
  	return NeoInit();
 }
 
-struct BurnDriver BurnDrvmslug3b6 = {
+struct BurnDriver BurnDrvMslug3b6 = {
 	"mslug3b6", "mslug3", "neogeo", NULL, "2000",
 	"Metal Slug 6 (bootleg of Metal Slug 3)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_BOOTLEG, 2, HARDWARE_PREFIX_CARTRIDGE | HARDWARE_SNK_NEOGEO | HARDWARE_SNK_CMC42, GBF_RUNGUN, FBF_MSLUG,
 	NULL, mslug3b6RomInfo, mslug3b6RomName, NULL, NULL, NULL, NULL, neogeoInputInfo, neogeoDIPInfo,
-	mslug3b6Init, NeoSMAExit, NeoFrame, NeoRender, NeoScan, &NeoRecalcPalette,
+	mslug3b6Init, NeoExit, NeoFrame, NeoRender, NeoScan, &NeoRecalcPalette,
 	0x1000, 304, 224, 4, 3
 };
 
@@ -8179,7 +8205,7 @@ static INT32 kof2000Init()
 	return NeoSMAInit(kof2000SMADecrypt, kof2000WriteWordBankswitch, 0x2FFFD8, 0x2FFFDA);
 }
 
-struct BurnDriver BurnDrvkof2000 = {
+struct BurnDriver BurnDrvKof2000 = {
 	"kof2000", NULL, "neogeo", NULL, "2000",
 	"The King of Fighters 2000 (NGM-2570 ~ NGH-2570)\0", NULL, "SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -8225,7 +8251,7 @@ static INT32 kof2000nInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvkof2000n = {
+struct BurnDriver BurnDrvKof2000n = {
 	"kof2000n", "kof2000", "neogeo", NULL, "2000",
 	"The King of Fighters 2000 (not encrypted)\0", NULL, "SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -8382,7 +8408,7 @@ static INT32 kof2001Init()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvkof2001 = {
+struct BurnDriver BurnDrvKof2001 = {
 	"kof2001", NULL, "neogeo", NULL, "2001",
 	"The King of Fighters 2001 (NGM-262?)\0", NULL, "Eolith / SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -8422,7 +8448,7 @@ static struct BurnRomInfo kof2001hRomDesc[] = {
 STDROMPICKEXT(kof2001h, kof2001h, neogeo)
 STD_ROM_FN(kof2001h)
 
-struct BurnDriver BurnDrvkof2001h = {
+struct BurnDriver BurnDrvKof2001h = {
 	"kof2001h", "kof2001", "neogeo", NULL, "2001",
 	"The King of Fighters 2001 (NGH-2621)\0", NULL, "Eolith / SNK", "Neo Geo AES",
 	NULL, NULL, NULL, NULL,
@@ -8580,7 +8606,7 @@ static INT32 cthd2003Init()
  	return NeoInit();
 }
 
-struct BurnDriver BurnDrvcthd2003 = {
+struct BurnDriver BurnDrvCthd2003 = {
 	"cthd2003", "kof2001", "neogeo", NULL, "2003",
 	"Crouching Tiger Hidden Dragon 2003 (hack of The King of Fighters 2001)\0", NULL, "bootleg (Phenixsoft)", "Neo Geo MVS",
 	L"\u81e5\u864e\u85cf\u9f8d 2003 (The King of Fighters 2001 bootleg, set 1)", NULL, NULL, NULL,
@@ -8631,7 +8657,7 @@ static void ct2k3spCallback()
 			dst[i] = NeoTextROM[nNeoActiveSlot][j];
 		}
 
-		memcpy (NeoTextROM[nNeoActiveSlot], dst, 0x040000 );
+		memcpy(NeoTextROM[nNeoActiveSlot], dst, 0x040000 );
 
 		BurnFree (dst);
 	}
@@ -8659,7 +8685,7 @@ static INT32 ct2k3spInit()
  	return NeoInit();
 }
 
-struct BurnDriver BurnDrvct2k3sp = {
+struct BurnDriver BurnDrvCt2k3sp = {
 	"ct2k3sp", "kof2001", "neogeo", NULL, "2003",
 	"Crouching Tiger Hidden Dragon 2003 Super Plus (hack of The King of Fighters 2001)\0", NULL, "bootleg (Phenixsoft)", "Neo Geo MVS",
 	L"\u81e5\u864e\u85cf\u9f8d 2003 \u98a8\u96f2 Super Plus (The King of Fighters 2001 bootleg)\0", NULL, NULL, NULL,
@@ -8705,7 +8731,7 @@ static INT32 ct2k3saInit()
  	return NeoInit();
 }
 
-struct BurnDriver BurnDrvct2k3sa = {
+struct BurnDriver BurnDrvCt2k3sa = {
 	"ct2k3sa", "kof2001", "neogeo", NULL, "2003",
 	"Crouching Tiger Hidden Dragon 2003 Super Plus (hack of The King of Fighters 2001, alternate)\0", NULL, "bootleg (Phenixsoft)", "Neo Geo MVS",
 	L"\u81e5\u864e\u85cf\u9f8d 2003 Super Plus alternate (The King of Fighters 2001 bootleg)\0", NULL, NULL, NULL,
@@ -8763,7 +8789,7 @@ static INT32 kof2002Init()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvkof2002 = {
+struct BurnDriver BurnDrvKof2002 = {
 	"kof2002", NULL, "neogeo", NULL, "2002",
 	"The King of Fighters 2002 (NGM-2650 ~ NGH-2650)\0", NULL, "Eolith / Playmore", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -8818,13 +8844,13 @@ void kof2002b_gfx_decrypt(UINT8 *src, INT32 nLen)
 
 	for (i = 0; i < nLen; i+= 0x10000)
 	{
-		memcpy (dst, src + i, 0x10000);
+		memcpy(dst, src + i, 0x10000);
 
 		for (j = 0; j < 0x10000 / 0x80; j++)
 		{
 			m = tbl[(j >> 3) & 7];
 			k = BITSWAP16(j, 15, 14, 13, 12, 11, 10, 9, m[5], m[4], m[3], 5, 4, 3, m[2], m[1], m[0]);
-			memcpy (src + i + k * 0x80, dst + j * 0x80, 0x80);
+			memcpy(src + i + k * 0x80, dst + j * 0x80, 0x80);
 		}
 	}
 }
@@ -8853,7 +8879,7 @@ static INT32 kof2002bInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvkof2002b = {
+struct BurnDriver BurnDrvKof2002b = {
 	"kof2002b", "kof2002", "neogeo", NULL, "2002",
 	"The King of Fighters 2002 (bootleg)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -8890,7 +8916,7 @@ static struct BurnRomInfo kf2k2plsRomDesc[] = {
 STDROMPICKEXT(kf2k2pls, kf2k2pls, neogeo)
 STD_ROM_FN(kf2k2pls)
 
-struct BurnDriver BurnDrvkf2k2pls = {
+struct BurnDriver BurnDrvKf2k2pls = {
 	"kf2k2pls", "kof2002", "neogeo", NULL, "2002",
 	"The King of Fighters 2002 Plus (bootleg set 1)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -8927,7 +8953,7 @@ static struct BurnRomInfo kf2k2plaRomDesc[] = {
 STDROMPICKEXT(kf2k2pla, kf2k2pla, neogeo)
 STD_ROM_FN(kf2k2pla)
 
-struct BurnDriver BurnDrvkf2k2pla = {
+struct BurnDriver BurnDrvKf2k2pla = {
 	"kf2k2pla", "kof2002", "neogeo", NULL, "2002",
 	"The King of Fighters 2002 Plus (bootleg set 2)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -8994,7 +9020,7 @@ static INT32 kf2k2mpInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvkf2k2mp = {
+struct BurnDriver BurnDrvKf2k2mp = {
 	"kf2k2mp", "kof2002", "neogeo", NULL, "2002",
 	"The King of Fighters 2002 Magic Plus (bootleg)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -9033,9 +9059,9 @@ STD_ROM_FN(kf2k2mp2)
 
 static void kf2k2mp2Callback()
 {
-	memcpy (Neo68KROMActive + 0x000000, Neo68KROMActive + 0x1c0000, 0x040000);
-	memcpy (Neo68KROMActive + 0x0c0000, Neo68KROMActive + 0x100000, 0x040000);
-	memmove (Neo68KROMActive + 0x100000, Neo68KROMActive + 0x200000, 0x400000);
+	memcpy(Neo68KROMActive + 0x000000, Neo68KROMActive + 0x1c0000, 0x040000);
+	memcpy(Neo68KROMActive + 0x0c0000, Neo68KROMActive + 0x100000, 0x040000);
+	memmove(Neo68KROMActive + 0x100000, Neo68KROMActive + 0x200000, 0x400000);
 
 	lans2004_sx_decode();
 }
@@ -9058,7 +9084,7 @@ static INT32 kof2km2Init()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvkf2k2mp2 = {
+struct BurnDriver BurnDrvKf2k2mp2 = {
 	"kf2k2mp2", "kof2002", "neogeo", NULL, "2002",
 	"The King of Fighters 2002 Magic Plus II (bootleg)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -9158,11 +9184,11 @@ static void kof10thCallback()
 				k = BITSWAP24(j,23,22,21,20,19,18,17,16,15,14,13,12,11,2,9,8,7,1,5,4,3,10,6,0);
 				dst[k] = Neo68KROMActive[i + j];
 			}
-			memcpy (Neo68KROMActive + i, dst, 0x100000);
+			memcpy(Neo68KROMActive + i, dst, 0x100000);
 		}
 
-		memmove (Neo68KROMActive + 0x100000, Neo68KROMActive, 0x700000);
-		memcpy (Neo68KROMActive, dst, 0x100000);
+		memmove(Neo68KROMActive + 0x100000, Neo68KROMActive, 0x700000);
+		memcpy(Neo68KROMActive, dst, 0x100000);
 		BurnFree (dst);
 	}
 
@@ -9246,7 +9272,7 @@ static INT32 kof10thInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvkof10th = {
+struct BurnDriver BurnDrvKof10th = {
 	"kof10th", "kof2002", "neogeo", NULL, "2002",
 	"The King of Fighters 10th Anniversary (bootleg of The King of Fighters 2002)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -9301,15 +9327,15 @@ static void kf10thepCallback()
 		UINT32 sec[8] = { 0x3, 0x8, 0x7, 0xC, 0x1, 0xA, 0x6, 0xD };
 
 		for (i = 0; i < 8; i++)
-			memcpy (dst + i * 0x20000, Neo68KROMActive + sec[i] * 0x20000, 0x20000);
+			memcpy(dst + i * 0x20000, Neo68KROMActive + sec[i] * 0x20000, 0x20000);
 
-		memcpy (dst + 0x0002e0, Neo68KROMActive + 0x0402e0, 0x06a);
-		memcpy (dst + 0x0f92bc, Neo68KROMActive + 0x0492bc, 0xb9e);
-		memcpy (Neo68KROMActive, dst, 0x100000);
+		memcpy(dst + 0x0002e0, Neo68KROMActive + 0x0402e0, 0x06a);
+		memcpy(dst + 0x0f92bc, Neo68KROMActive + 0x0492bc, 0xb9e);
+		memcpy(Neo68KROMActive, dst, 0x100000);
 		BurnFree (dst);
 	}
 
-	memmove (Neo68KROMActive + 0x100000, Neo68KROMActive + 0x200000, 0x600000);
+	memmove(Neo68KROMActive + 0x100000, Neo68KROMActive + 0x200000, 0x600000);
 
 	for (i = 0xf92bc; i < 0xf9e58; i += 2)
 	{
@@ -9331,7 +9357,7 @@ static INT32 kf10thepInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvkf10thep = {
+struct BurnDriver BurnDrvKf10thep = {
 	"kf10thep", "kof2002", "neogeo", NULL, "2005",
 	"The King of Fighters 10th Anniversary Extra Plus (bootleg of The King of Fighters 2002)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -9388,7 +9414,7 @@ static void kf2k5uniCallback()
 			k = BITSWAP08(j, 7, 3, 4, 5, 6, 1, 2, 0);
 			dst[j] = Neo68KROMActive[i + k];
 		}
-		memcpy (Neo68KROMActive + i, dst, 0x80);
+		memcpy(Neo68KROMActive + i, dst, 0x80);
 	}
 
 	memcpy(Neo68KROMActive, Neo68KROMActive + 0x600000, 0x100000);
@@ -9407,7 +9433,7 @@ static INT32 kf2k5uniInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvkf2k5uni = {
+struct BurnDriver BurnDrvKf2k5uni = {
 	"kf2k5uni", "kof2002", "neogeo", NULL, "2004",
 	"The King of Fighters 10th Anniversary 2005 Unique (bootleg of The King of Fighters 2002)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -9451,12 +9477,12 @@ static void kof2k4seCallback()
 
 	if (dst)
 	{
-		memcpy (dst,                        Neo68KROMActive + 0x000000, 0x100000);
-		memcpy (Neo68KROMActive + 0x000000, Neo68KROMActive + 0x400000, 0x100000);
-		memcpy (Neo68KROMActive + 0x400000, dst,                        0x100000);
-		memcpy (dst,                        Neo68KROMActive + 0x100000, 0x100000);
-		memcpy (Neo68KROMActive + 0x100000, Neo68KROMActive + 0x300000, 0x100000);
-		memcpy (Neo68KROMActive + 0x300000, dst,                        0x100000);
+		memcpy(dst,                        Neo68KROMActive + 0x000000, 0x100000);
+		memcpy(Neo68KROMActive + 0x000000, Neo68KROMActive + 0x400000, 0x100000);
+		memcpy(Neo68KROMActive + 0x400000, dst,                        0x100000);
+		memcpy(dst,                        Neo68KROMActive + 0x100000, 0x100000);
+		memcpy(Neo68KROMActive + 0x100000, Neo68KROMActive + 0x300000, 0x100000);
+		memcpy(Neo68KROMActive + 0x300000, dst,                        0x100000);
 
 		BurnFree (dst);
 	}
@@ -9469,7 +9495,7 @@ static INT32 kof2k4seInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvkof2k4se = {
+struct BurnDriver BurnDrvKof2k4se = {
 	"kof2k4se", "kof2002", "neogeo", NULL, "2004",
 	"The King of Fighters Special Edition 2004 (bootleg of The King of Fighters 2002)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -9511,6 +9537,9 @@ STD_ROM_FN(mslug5)
 
 static void mslug5Callback()
 {
+	// The maximum value of the valid data range of prg after decryption is 0x700000.
+	// When decrypting, 0x700000~0x800000 is the temporary data exchange area.
+
 	INT32 i, j, k;
 	for (i = 0; i < 0x100000; i++)
 		Neo68KROMActive[i] ^= Neo68KROMActive[0x0fffe0 + (i & 0x1f)];
@@ -9526,12 +9555,12 @@ static void mslug5Callback()
 		BURN_UNALIGNED_WRITE16(Neo68KROMActive + i + 1, rom16);
 	}
 
-	memcpy (Neo68KROMActive + 0x700000, Neo68KROMActive, 0x100000);
+	memcpy(Neo68KROMActive + 0x700000, Neo68KROMActive, 0x100000);
 
 	for (i = 0; i < 0x100000 / 0x010000; i++)
 	{
 		j = BITSWAP08(i, 7, 6, 5, 4, 1, 0, 3, 2) * 0x010000;
-		memcpy (Neo68KROMActive + i * 0x010000, Neo68KROMActive + 0x700000 + j, 0x010000);
+		memcpy(Neo68KROMActive + i * 0x010000, Neo68KROMActive + 0x700000 + j, 0x010000);
 	}
 
 	for (i = 0x100000; i < 0x700000; i += 0x100000)
@@ -9539,10 +9568,16 @@ static void mslug5Callback()
 		for (j = 0; j < 0x100000; j+=0x100)
 		{
 			k = ((j & 0xf00) ^ 0x700) + (BITSWAP08((j >> 12), 5, 4, 7, 6, 1, 0, 3, 2 ) << 12);
-			memcpy (Neo68KROMActive + 0x700000 + j, Neo68KROMActive + i + k, 0x100);
+			memcpy(Neo68KROMActive + 0x700000 + j, Neo68KROMActive + i + k, 0x100);
 		}
 
-		memcpy (Neo68KROMActive + i, Neo68KROMActive + 0x700000, 0x100000);
+		memcpy(Neo68KROMActive + i, Neo68KROMActive + 0x700000, 0x100000);
+	}
+
+	// If prg is greater than 0x800000, the data after 0x800000 must be immediately after 0x700000.
+	if (nAllCodeSize > 0x800000) {
+		memmove(Neo68KROMActive + 0x700000, Neo68KROMActive + 0x800000, nAllCodeSize - 0x800000);
+		memset(Neo68KROMActive + nAllCodeSize - 0x100000, 0, 0x100000);
 	}
 }
 
@@ -9564,7 +9599,7 @@ static INT32 mslug5Init()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvmslug5 = {
+struct BurnDriver BurnDrvMslug5 = {
 	"mslug5", NULL, "neogeo", NULL, "2003",
 	"Metal Slug 5 (NGM-2680)\0", NULL, "SNK Playmore", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -9607,7 +9642,7 @@ static struct BurnRomInfo mslug5hRomDesc[] = {
 STDROMPICKEXT(mslug5h, mslug5h, neogeo)
 STD_ROM_FN(mslug5h)
 
-struct BurnDriver BurnDrvmslug5h = {
+struct BurnDriver BurnDrvMslug5h = {
 	"mslug5h", "mslug5", "neogeo", NULL, "2003",
 	"Metal Slug 5 (NGH-2680)\0", NULL, "SNK Playmore", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -9637,7 +9672,7 @@ static struct BurnRomInfo ms5pcbRomDesc[] = {
 STDROMPICKEXT(ms5pcb, ms5pcb, ms5pcbBIOS)
 STD_ROM_FN(ms5pcb)
 
-struct BurnDriver BurnDrvms5pcb = {
+struct BurnDriver BurnDrvMs5pcb = {
 	"ms5pcb", NULL, NULL, NULL, "2003",
 	"Metal Slug 5 (JAMMA PCB)\0", NULL, "SNK Playmore", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -9714,7 +9749,7 @@ static INT32 ms5plusInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvms5plus = {
+struct BurnDriver BurnDrvMs5plus = {
 	"ms5plus", "mslug5", "neogeo", NULL, "2003",
 	"Metal Slug 5 Plus (bootleg)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -9758,12 +9793,12 @@ static void svcCallback()
 		BURN_UNALIGNED_WRITE16(Neo68KROMActive + i + 1, rom16);
 	}
 
-	memcpy (Neo68KROMActive + 0x700000, Neo68KROMActive, 0x100000);
+	memcpy(Neo68KROMActive + 0x700000, Neo68KROMActive, 0x100000);
 
 	for (i = 0; i < 0x0100000 / 0x10000; i++)
 	{
 		j = BITSWAP08(i, 7, 6, 5, 4, 2, 3, 0, 1);
-		memcpy (Neo68KROMActive + i * 0x010000, Neo68KROMActive + 0x700000 + j * 0x010000, 0x010000);
+		memcpy(Neo68KROMActive + i * 0x010000, Neo68KROMActive + 0x700000 + j * 0x010000, 0x010000);
 	}
 
 	for (i = 0x100000; i < 0x700000; i += 0x100000)
@@ -9773,10 +9808,10 @@ static void svcCallback()
 			k  = BITSWAP08(j >> 12, 4, 5, 6, 7, 1, 0, 3, 2 ) << 12;
 			k |= (j & 0x00f00) ^ 0x00a00;
 
-			memcpy (Neo68KROMActive + 0x700000 + j, Neo68KROMActive + i + k, 0x100);
+			memcpy(Neo68KROMActive + 0x700000 + j, Neo68KROMActive + i + k, 0x100);
 		}
 
-		memcpy (Neo68KROMActive + i, Neo68KROMActive + 0x700000, 0x100000);
+		memcpy(Neo68KROMActive + i, Neo68KROMActive + 0x700000, 0x100000);
 	}
 }
 
@@ -9798,7 +9833,7 @@ static INT32 svcpcbInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvsvcpcb = {
+struct BurnDriver BurnDrvSvcpcb = {
 	"svcpcb", NULL, NULL, NULL, "2003",
 	"SNK vs. Capcom - SVC Chaos (JAMMA PCB, set 1)\0", NULL, "Playmore / Capcom", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -9829,7 +9864,7 @@ static struct BurnRomInfo svcpcbaRomDesc[] = {
 STDROMPICKEXT(svcpcba, svcpcba, svcpcbBIOS)
 STD_ROM_FN(svcpcba)
 
-struct BurnDriver BurnDrvsvcpcba = {
+struct BurnDriver BurnDrvSvcpcba = {
 	"svcpcba", "svcpcb", NULL, NULL, "2003",
 	"SNK vs. Capcom - SVC Chaos (JAMMA PCB, set 2)\0", NULL, "Playmore / Capcom", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -9869,7 +9904,7 @@ static struct BurnRomInfo svcRomDesc[] = {
 STDROMPICKEXT(svc, svc, neogeo)
 STD_ROM_FN(svc)
 
-struct BurnDriver BurnDrvsvc = {
+struct BurnDriver BurnDrvSvc = {
 	"svc", NULL, "neogeo", NULL, "2003",
 	"SNK vs. Capcom - SVC Chaos (NGM-2690 ~ NGH-2690)\0", NULL, "Playmore / Capcom", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -9932,7 +9967,7 @@ static void svcbootCallback()
 	INT32 i, j, k;
 	for (i = 0x100000; i < 0x800000; i+=0x100000)
 	{
-		memcpy (Neo68KROMActive, Neo68KROMActive + i, 0x100000);
+		memcpy(Neo68KROMActive, Neo68KROMActive + i, 0x100000);
 
 		for (j = 0; j < 0x100000; j++)
 		{
@@ -9941,7 +9976,7 @@ static void svcbootCallback()
 		}
 	}
 
-	memcpy (Neo68KROMActive, Neo68KROMActive + 0x700000, 0x100000);
+	memcpy(Neo68KROMActive, Neo68KROMActive + 0x700000, 0x100000);
 
 	svcboot_sx_decode();
 	svcboot_decode();
@@ -9963,7 +9998,7 @@ static INT32 svcbootInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvsvcboot = {
+struct BurnDriver BurnDrvSvcboot = {
 	"svcboot", "svc", "neogeo", NULL, "2003",
 	"SNK vs. Capcom - SVC Chaos (bootleg)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -10020,11 +10055,11 @@ static void svcplusCallback()
 				dst[j] = Neo68KROMActive[i + k];
 			}
 
-			memcpy (Neo68KROMActive + i, dst, 0x100000);
+			memcpy(Neo68KROMActive + i, dst, 0x100000);
 		}
 
-		memmove (Neo68KROMActive + 0x100000, Neo68KROMActive, 0x500000);
-		memcpy (Neo68KROMActive, dst, 0x100000);
+		memmove(Neo68KROMActive + 0x100000, Neo68KROMActive, 0x500000);
+		memcpy(Neo68KROMActive, dst, 0x100000);
 
 		BurnFree (dst);
 	}
@@ -10050,7 +10085,7 @@ static INT32 svcplusInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvsvcplus = {
+struct BurnDriver BurnDrvSvcplus = {
 	"svcplus", "svc", "neogeo", NULL, "2003",
 	"SNK vs. Capcom - SVC Chaos Plus (bootleg set 1)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -10094,9 +10129,9 @@ static void svcplusaCallback()
 	UINT8 *dst = (UINT8*)BurnMalloc(0x100000);
 	if (dst)
 	{
-		memcpy (dst, Neo68KROMActive + 0x500000, 0x100000);
-		memmove (Neo68KROMActive + 0x100000, Neo68KROMActive, 0x500000);
-		memcpy (Neo68KROMActive, dst, 0x100000);
+		memcpy(dst, Neo68KROMActive + 0x500000, 0x100000);
+		memmove(Neo68KROMActive + 0x100000, Neo68KROMActive, 0x500000);
+		memcpy(Neo68KROMActive, dst, 0x100000);
 		BurnFree (dst);
 		dst = NULL;
 	}
@@ -10122,7 +10157,7 @@ static INT32 svcplusaInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvsvcplusa = {
+struct BurnDriver BurnDrvSvcplusa = {
 	"svcplusa", "svc", "neogeo", NULL, "2003",
 	"SNK vs. Capcom - SVC Chaos Plus (bootleg set 2)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -10172,7 +10207,7 @@ static void svcsplusCallback()
 	INT32 i, j, k;
 	for (i = 0x100000; i < 0x800000; i+=0x10000)
 	{
-		memcpy (Neo68KROMActive, Neo68KROMActive + i, 0x10000);
+		memcpy(Neo68KROMActive, Neo68KROMActive + i, 0x10000);
 
 		for (j = 0; j < 0x10000; j++)
 		{
@@ -10181,7 +10216,7 @@ static void svcsplusCallback()
 		}
 	}
 
-	memcpy (Neo68KROMActive, Neo68KROMActive + 0x600000, 0x100000);
+	memcpy(Neo68KROMActive, Neo68KROMActive + 0x600000, 0x100000);
 
 	*((UINT16*)(Neo68KROMActive + 0x9e90)) = BURN_ENDIAN_SWAP_INT16(0x000f); // Enable S. Plus
 	*((UINT16*)(Neo68KROMActive + 0x9e92)) = BURN_ENDIAN_SWAP_INT16(0xc9c0);
@@ -10208,7 +10243,7 @@ static INT32 svcsplusInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvsvcsplus = {
+struct BurnDriver BurnDrvSvcsplus = {
 	"svcsplus", "svc", "neogeo", NULL, "2003",
 	"SNK vs. Capcom - SVC Chaos Super Plus (bootleg)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -10272,7 +10307,7 @@ static INT32 samsho5Init()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvsamsho5 = {
+struct BurnDriver BurnDrvSamsho5 = {
 	"samsho5", NULL, "neogeo", NULL, "2003",
 	"Samurai Shodown V / Samurai Spirits Zero (NGM-2700, set 1)\0", NULL, "Yuki Enterprise / SNK Playmore", "Neo Geo MVS",
 	L"Samurai Shodown V\0\u30B5\u30E0\u30E9\u30A4\u30B9\u30D4\u30EA\u30C3\u30C4\u96F6 (NGM-2700, set 1)\0", NULL, NULL, NULL,
@@ -10316,7 +10351,7 @@ static struct BurnRomInfo samsho5aRomDesc[] = {
 STDROMPICKEXT(samsho5a, samsho5a, neogeo)
 STD_ROM_FN(samsho5a)
 
-struct BurnDriver BurnDrvsamsho5a = {
+struct BurnDriver BurnDrvSamsho5a = {
 	"samsho5a", "samsho5", "neogeo", NULL, "2003",
 	"Samurai Shodown V / Samurai Spirits Zero (NGM-2700, set 2)\0", NULL, "Yuki Enterprise / SNK Playmore", "Neo Geo MVS",
 	L"Samurai Shodown V\0\u30B5\u30E0\u30E9\u30A4\u30B9\u30D4\u30EA\u30C3\u30C4\u96F6 (NGM-2700, set 2)\0", NULL, NULL, NULL,
@@ -10356,7 +10391,7 @@ static struct BurnRomInfo samsho5hRomDesc[] = {
 STDROMPICKEXT(samsho5h, samsho5h, neogeo)
 STD_ROM_FN(samsho5h)
 
-struct BurnDriver BurnDrvsamsho5h = {
+struct BurnDriver BurnDrvSamsho5h = {
 	"samsho5h", "samsho5", "neogeo", NULL, "2003",
 	"Samurai Shodown V / Samurai Spirits Zero (NGH-2700)\0", NULL, "Yuki Enterprise / SNK Playmore", "Neo Geo MVS",
 	L"Samurai Shodown V\0\u30B5\u30E0\u30E9\u30A4\u30B9\u30D4\u30EA\u30C3\u30C4\u96F6 (NGH-2700)\0", NULL, NULL, NULL,
@@ -10430,11 +10465,11 @@ static void samsho5bCallback()
 				dst[j] = Neo68KROMActive[i + k];
 			}
 
-			memcpy (Neo68KROMActive + i, dst, 0x100000);
+			memcpy(Neo68KROMActive + i, dst, 0x100000);
 		}
 
-		memmove (Neo68KROMActive + 0x100000, Neo68KROMActive, 0x700000);
-		memcpy (Neo68KROMActive, dst, 0x100000);
+		memmove(Neo68KROMActive + 0x100000, Neo68KROMActive, 0x700000);
+		memcpy(Neo68KROMActive, dst, 0x100000);
 
 		BurnFree (dst);
 	}
@@ -10459,7 +10494,7 @@ static INT32 samsho5bInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvsamsho5b = {
+struct BurnDriver BurnDrvSamsho5b = {
 	"samsho5b", "samsho5", "neogeo", NULL, "2003",
 	"Samurai Shodown V / Samurai Spirits Zero (bootleg)\0", NULL, "bootleg", "Neo Geo MVS",
 	L"Samurai Shodown V\0\u30B5\u30E0\u30E9\u30A4\u30B9\u30D4\u30EA\u30C3\u30C4\u96F6 (bootleg)\0", NULL, NULL, NULL,
@@ -10528,7 +10563,7 @@ void kf2k3pcb_bios_decode()
 		if (BURN_ENDIAN_SWAP_INT16(dst[i]) & 0x0020) dst[i] ^= BURN_ENDIAN_SWAP_INT16(0x0008);
 	}
 
-	memcpy (src, dst, 0x80000);
+	memcpy(src, dst, 0x80000);
 
 	BurnFree (dst);
 }
@@ -10548,14 +10583,14 @@ static void kf2k3pcbCallback()
 		BURN_UNALIGNED_WRITE16(Neo68KROMActive + i + 1, rom16);
 	}
 
-	memcpy (Neo68KROMActive + 0x700000, Neo68KROMActive, 0x100000);
+	memcpy(Neo68KROMActive + 0x700000, Neo68KROMActive, 0x100000);
 
 	for (i = 0; i < 0x0100000 / 0x10000; i++) {
 		j = BITSWAP08(i, 7, 6, 5, 4, 1, 0, 3, 2);
-		memcpy (Neo68KROMActive + i * 0x010000, Neo68KROMActive + 0x700000 + j * 0x010000, 0x010000);
+		memcpy(Neo68KROMActive + i * 0x010000, Neo68KROMActive + 0x700000 + j * 0x010000, 0x010000);
 	}
 
-	memmove (Neo68KROMActive + 0x200000, Neo68KROMActive + 0x100000, 0x600000);
+	memmove(Neo68KROMActive + 0x200000, Neo68KROMActive + 0x100000, 0x600000);
 
 	for (i = 0x200000; i < 0x900000; i += 0x100000)
 	{
@@ -10564,10 +10599,10 @@ static void kf2k3pcbCallback()
 			k  = (j & 0xf00) ^ 0x00300;
 			k |= BITSWAP08(j >> 12, 4, 5, 6, 7, 1, 0, 3, 2 ) << 12;
 
-			memcpy (Neo68KROMActive + 0x100000 + j, Neo68KROMActive + i + k, 0x100);
+			memcpy(Neo68KROMActive + 0x100000 + j, Neo68KROMActive + i + k, 0x100);
 		}
 
-		memcpy (Neo68KROMActive + i, Neo68KROMActive + 0x100000, 0x100000);
+		memcpy(Neo68KROMActive + i, Neo68KROMActive + 0x100000, 0x100000);
 	}
 }
 
@@ -10596,7 +10631,7 @@ static INT32 kf2k3pcbInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvkf2k3pcb = {
+struct BurnDriver BurnDrvKf2k3pcb = {
 	"kf2k3pcb", NULL, NULL, NULL, "2003",
 	"The King of Fighters 2003 (Japan, JAMMA PCB)\0", NULL, "SNK Playmore", "dedicated Neo Geo PCB",
 	NULL, NULL, NULL, NULL,
@@ -10655,14 +10690,14 @@ static void kof2003Callback()
 		BURN_UNALIGNED_WRITE16(Neo68KROMActive + i + 1, rom16);
 	}
 
-	memcpy (Neo68KROMActive + 0x700000, Neo68KROMActive, 0x100000);
+	memcpy(Neo68KROMActive + 0x700000, Neo68KROMActive, 0x100000);
 
 	for (i = 0; i < 0x0100000 / 0x10000; i++) {
 		j = BITSWAP08(i, 7, 6, 5, 4, 0, 1, 2, 3);
-		memcpy (Neo68KROMActive + i * 0x010000, Neo68KROMActive + 0x700000 + j * 0x010000, 0x010000);
+		memcpy(Neo68KROMActive + i * 0x010000, Neo68KROMActive + 0x700000 + j * 0x010000, 0x010000);
 	}
 
-	memmove (Neo68KROMActive + 0x200000, Neo68KROMActive + 0x100000, 0x600000);
+	memmove(Neo68KROMActive + 0x200000, Neo68KROMActive + 0x100000, 0x600000);
 
 	for (i = 0x200000; i < 0x900000; i += 0x100000)
 	{
@@ -10671,10 +10706,10 @@ static void kof2003Callback()
 			k  = (j & 0xf00) ^ 0x00800;
 			k |= BITSWAP08(j >> 12, 4, 5, 6, 7, 1, 0, 3, 2 ) << 12;
 
-			memcpy (Neo68KROMActive + 0x100000 + j, Neo68KROMActive + i + k, 0x100);
+			memcpy(Neo68KROMActive + 0x100000 + j, Neo68KROMActive + i + k, 0x100);
 		}
 
-		memcpy (Neo68KROMActive + i, Neo68KROMActive + 0x100000, 0x100000);
+		memcpy(Neo68KROMActive + i, Neo68KROMActive + 0x100000, 0x100000);
 	}
 }
 
@@ -10696,7 +10731,7 @@ static INT32 kof2003Init()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvkof2003 = {
+struct BurnDriver BurnDrvKof2003 = {
 	"kof2003", NULL, "neogeo", NULL, "2003",
 	"The King of Fighters 2003 (NGM-2710, Export)\0", NULL, "SNK Playmore", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -10756,14 +10791,14 @@ static void kof2003hCallback()
 		BURN_UNALIGNED_WRITE16(Neo68KROMActive + i + 1, rom16);
 	}
 
-	memcpy (Neo68KROMActive + 0x700000, Neo68KROMActive, 0x100000);
+	memcpy(Neo68KROMActive + 0x700000, Neo68KROMActive, 0x100000);
 
 	for (i = 0; i < 0x0100000 / 0x10000; i++) {
 		j = BITSWAP08(i, 7, 6, 5, 4, 1, 0, 3, 2);
-		memcpy (Neo68KROMActive + i * 0x010000, Neo68KROMActive + 0x700000 + j * 0x010000, 0x010000);
+		memcpy(Neo68KROMActive + i * 0x010000, Neo68KROMActive + 0x700000 + j * 0x010000, 0x010000);
 	}
 
-	memmove (Neo68KROMActive + 0x200000, Neo68KROMActive + 0x100000, 0x600000);
+	memmove(Neo68KROMActive + 0x200000, Neo68KROMActive + 0x100000, 0x600000);
 
 	for (i = 0x200000; i < 0x900000; i += 0x100000)
 	{
@@ -10772,10 +10807,10 @@ static void kof2003hCallback()
 			k  = (j & 0xf00) ^ 0x00400;
 			k |= BITSWAP08(j >> 12, 6, 7, 4, 5, 0, 1, 2, 3) << 12;
 
-			memcpy (Neo68KROMActive + 0x100000 + j, Neo68KROMActive + i + k, 0x100);
+			memcpy(Neo68KROMActive + 0x100000 + j, Neo68KROMActive + i + k, 0x100);
 		}
 
-		memcpy (Neo68KROMActive + i, Neo68KROMActive + 0x100000, 0x100000);
+		memcpy(Neo68KROMActive + i, Neo68KROMActive + 0x100000, 0x100000);
 	}
 }
 
@@ -10797,7 +10832,7 @@ static INT32 kof2003hInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvkof2003h = {
+struct BurnDriver BurnDrvKof2003h = {
 	"kof2003h", "kof2003", "neogeo", NULL, "2003",
 	"The King of Fighters 2003 (NGH-2710)\0", NULL, "SNK Playmore", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -10846,8 +10881,8 @@ UINT16 __fastcall kf2k3blReadWordProtection(UINT32)
 
 static void kf2k3blCallback()
 {
-	memmove (Neo68KROMActive + 0x100000, Neo68KROMActive, 0x700000);
-	memcpy (Neo68KROMActive, Neo68KROMActive + 0x700000, 0x100000);
+	memmove(Neo68KROMActive + 0x100000, Neo68KROMActive, 0x700000);
+	memcpy(Neo68KROMActive, Neo68KROMActive + 0x700000, 0x100000);
 
 	lans2004_sx_decode();
 }
@@ -10880,7 +10915,7 @@ static INT32 kf2k3blInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvkf2k3bl = {
+struct BurnDriver BurnDrvKf2k3bl = {
 	"kf2k3bl", "kof2003", "neogeo", NULL, "2003",
 	"The King of Fighters 2003 (bootleg set 1)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -10989,7 +11024,7 @@ static INT32 kf2k3blaInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvkf2k3bla = {
+struct BurnDriver BurnDrvKf2k3bla = {
 	"kf2k3bla", "kof2003", "neogeo", NULL, "2003",
 	"The King of Fighters 2003 (bootleg set 2)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -11027,7 +11062,7 @@ static struct BurnRomInfo kf2k3plRomDesc[] = {
 STDROMPICKEXT(kf2k3pl, kf2k3pl, neogeo)
 STD_ROM_FN(kf2k3pl)
 
-struct BurnDriver BurnDrvkf2k3pl = {
+struct BurnDriver BurnDrvKf2k3pl = {
 	"kf2k3pl", "kof2003", "neogeo", NULL, "2003",
 	"The King of Fighters 2004 Plus / Hero (bootleg of The King of Fighters 2003)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -11066,8 +11101,8 @@ STD_ROM_FN(kf2k3upl)
 static void kf2k3uplCallback()
 {
 	INT32 i, j;
-	memmove (Neo68KROMActive + 0x100000, Neo68KROMActive, 0x600000);
-	memcpy (Neo68KROMActive, Neo68KROMActive + 0x700000, 0x100000);
+	memmove(Neo68KROMActive + 0x100000, Neo68KROMActive, 0x600000);
+	memcpy(Neo68KROMActive, Neo68KROMActive + 0x700000, 0x100000);
 
 	for(i = 0; i < 0x2000; i++) {
 		j = (i & 0x1f00) | BITSWAP08(i & 0xff, 7, 1, 5, 4, 3, 2, 6, 0) ;
@@ -11097,7 +11132,7 @@ static INT32 kof2k3uplInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvkf2k3upl = {
+struct BurnDriver BurnDrvKf2k3upl = {
 	"kf2k3upl", "kof2003", "neogeo", NULL, "2003",
 	"The King of Fighters 2004 Ultra Plus (bootleg of The King of Fighters 2003)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -11164,7 +11199,7 @@ static INT32 samsh5spInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvsamsh5sp = {
+struct BurnDriver BurnDrvSamsh5sp = {
 	"samsh5sp", NULL, "neogeo", NULL, "2004",
 	"Samurai Shodown V Special / Samurai Spirits Zero Special (NGM-2720)\0", NULL, "Yuki Enterprise / SNK Playmore", "Neo Geo MVS",
 	L"Samurai Shodown V Special\0\u30B5\u30E0\u30E9\u30A4\u30B9\u30D4\u30EA\u30C3\u30C4\u96F6 Special  (NGM-2720)\0", NULL, NULL, NULL,
@@ -11216,7 +11251,7 @@ static struct BurnRomInfo samsh5sphRomDesc[] = {
 STDROMPICKEXT(samsh5sph, samsh5sph, neogeo)
 STD_ROM_FN(samsh5sph)
 
-struct BurnDriver BurnDrvsamsh5sph = {
+struct BurnDriver BurnDrvSamsh5sph = {
 	"samsh5sph", "samsh5sp", "neogeo", NULL, "2004",
 	"Samurai Shodown V Special / Samurai Spirits Zero Special (NGH-2720, 2nd release, less censored)\0", NULL, "Yuki Enterprise / SNK Playmore", "Neo Geo MVS",
 	L"Samurai Shodown V Special\0\u30B5\u30E0\u30E9\u30A4\u30B9\u30D4\u30EA\u30C3\u30C4\u96F6 Special (NGH-2720) (2nd release, less censored)\0", NULL, NULL, NULL,
@@ -11257,7 +11292,7 @@ static struct BurnRomInfo samsh5sphoRomDesc[] = {
 STDROMPICKEXT(samsh5spho, samsh5spho, neogeo)
 STD_ROM_FN(samsh5spho)
 
-struct BurnDriver BurnDrvsamsh5spho = {
+struct BurnDriver BurnDrvSamsh5spho = {
 	"samsh5spho", "samsh5sp", "neogeo", NULL, "2004",
 	"Samurai Shodown V Special / Samurai Spirits Zero Special (NGH-2720, 1st release, censored)\0", NULL, "Yuki Enterprise / SNK Playmore", "Neo Geo MVS",
 	L"Samurai Shodown V Special\0\u30B5\u30E0\u30E9\u30A4\u30B9\u30D4\u30EA\u30C3\u30C4\u96F6 Special (NGH-2720) (1st release, censored)\0", NULL, NULL, NULL,
@@ -11293,7 +11328,7 @@ static struct BurnRomInfo maglordRomDesc[] = {
 STDROMPICKEXT(maglord, maglord, neogeo)
 STD_ROM_FN(maglord)
 
-struct BurnDriver BurnDrvmaglord = {
+struct BurnDriver BurnDrvMaglord = {
 	"maglord", NULL, "neogeo", NULL, "1990",
 	"Magician Lord (NGM-005)\0", NULL, "Alpha Denshi Co.", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -11329,7 +11364,7 @@ static struct BurnRomInfo maglordhRomDesc[] = {
 STDROMPICKEXT(maglordh, maglordh, neogeo)
 STD_ROM_FN(maglordh)
 
-struct BurnDriver BurnDrvmaglordh = {
+struct BurnDriver BurnDrvMaglordh = {
 	"maglordh", "maglord", "neogeo", NULL, "1990",
 	"Magician Lord (NGH-005)\0", NULL, "Alpha Denshi Co.", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -11366,7 +11401,7 @@ static struct BurnRomInfo ncombatRomDesc[] = {
 STDROMPICKEXT(ncombat, ncombat, neogeo)
 STD_ROM_FN(ncombat)
 
-struct BurnDriver BurnDrvncombat = {
+struct BurnDriver BurnDrvNcombat = {
 	"ncombat", NULL, "neogeo", NULL, "1990",
 	"Ninja Combat (NGM-009)\0", NULL, "Alpha Denshi Co.", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -11403,7 +11438,7 @@ static struct BurnRomInfo ncombathRomDesc[] = {
 STDROMPICKEXT(ncombath, ncombath, neogeo)
 STD_ROM_FN(ncombath)
 
-struct BurnDriver BurnDrvncombath = {
+struct BurnDriver BurnDrvNcombath = {
 	"ncombath", "ncombat", "neogeo", NULL, "1990",
 	"Ninja Combat (NGH-009)\0", NULL, "Alpha Denshi Co.", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -11436,7 +11471,7 @@ static struct BurnRomInfo bjourneyRomDesc[] = {
 STDROMPICKEXT(bjourney, bjourney, neogeo)
 STD_ROM_FN(bjourney)
 
-struct BurnDriver BurnDrvbjourney = {
+struct BurnDriver BurnDrvBjourney = {
 	"bjourney", NULL, "neogeo", NULL, "1990",
 	"Blue's Journey / Raguy (ALM-001 ~ ALH-001)\0", NULL, "Alpha Denshi Co.", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -11469,7 +11504,7 @@ static struct BurnRomInfo bjourneyhRomDesc[] = {
 STDROMPICKEXT(bjourneyh, bjourneyh, neogeo)
 STD_ROM_FN(bjourneyh)
 
-struct BurnDriver BurnDrvbjourneyh = {
+struct BurnDriver BurnDrvBjourneyh = {
 	"bjourneyh", "bjourney", "neogeo", NULL, "1990",
 	"Blue's Journey / Raguy (ALH-001)\0", NULL, "Alpha Denshi Co.", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -11501,7 +11536,7 @@ static struct BurnRomInfo crswordRomDesc[] = {
 STDROMPICKEXT(crsword, crsword, neogeo)
 STD_ROM_FN(crsword)
 
-struct BurnDriver BurnDrvcrsword = {
+struct BurnDriver BurnDrvCrsword = {
 	"crsword", NULL, "neogeo", NULL, "1991",
 	"Crossed Swords (ALM-002 ~ ALH-002)\0", NULL, "Alpha Denshi Co.", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -11537,7 +11572,7 @@ static struct BurnRomInfo trallyRomDesc[] = {
 STDROMPICKEXT(trally, trally, neogeo)
 STD_ROM_FN(trally)
 
-struct BurnDriver BurnDrvtrally = {
+struct BurnDriver BurnDrvTrally = {
 	"trally", NULL, "neogeo", NULL, "1991",
 	"Thrash Rally (ALM-003 ~ ALH-003)\0", NULL, "Alpha Denshi Co.", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -11569,7 +11604,7 @@ static struct BurnRomInfo ncommandRomDesc[] = {
 STDROMPICKEXT(ncommand, ncommand, neogeo)
 STD_ROM_FN(ncommand)
 
-struct BurnDriver BurnDrvncommand = {
+struct BurnDriver BurnDrvNcommand = {
 	"ncommand", NULL, "neogeo", NULL, "1992",
 	"Ninja Commando\0", NULL, "Alpha Denshi Co.", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -11606,7 +11641,7 @@ static struct BurnRomInfo wh1RomDesc[] = {
 STDROMPICKEXT(wh1, wh1, neogeo)
 STD_ROM_FN(wh1)
 
-struct BurnDriver BurnDrvwh1 = {
+struct BurnDriver BurnDrvWh1 = {
 	"wh1", NULL, "neogeo", NULL, "1992",
 	"World Heroes (ALM-005)\0", NULL, "Alpha Denshi Co.", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -11644,7 +11679,7 @@ static struct BurnRomInfo wh1hRomDesc[] = {
 STDROMPICKEXT(wh1h, wh1h, neogeo)
 STD_ROM_FN(wh1h)
 
-struct BurnDriver BurnDrvwh1h = {
+struct BurnDriver BurnDrvWh1h = {
 	"wh1h", "wh1", "neogeo", NULL, "1992",
 	"World Heroes (ALH-005)\0", NULL, "Alpha Denshi Co.", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -11678,7 +11713,7 @@ static struct BurnRomInfo wh1haRomDesc[] = {
 STDROMPICKEXT(wh1ha, wh1ha, neogeo)
 STD_ROM_FN(wh1ha)
 
-struct BurnDriver BurnDrvwh1ha = {
+struct BurnDriver BurnDrvWh1ha = {
 	"wh1ha", "wh1", "neogeo", NULL, "1992",
 	"World Heroes (set 3)\0", NULL, "Alpha Denshi Co.", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -11713,7 +11748,7 @@ static struct BurnRomInfo wh2RomDesc[] = {
 STDROMPICKEXT(wh2, wh2, neogeo)
 STD_ROM_FN(wh2)
 
-struct BurnDriver BurnDrvwh2 = {
+struct BurnDriver BurnDrvWh2 = {
 	"wh2", NULL, "neogeo", NULL, "1993",
 	"World Heroes 2 (ALM-006 ~ ALH-006)\0", NULL, "ADK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -11748,7 +11783,7 @@ static struct BurnRomInfo wh2hRomDesc[] = {
 STDROMPICKEXT(wh2h, wh2h, neogeo)
 STD_ROM_FN(wh2h)
 
-struct BurnDriver BurnDrvwh2h = {
+struct BurnDriver BurnDrvWh2h = {
 	"wh2h", "wh2", "neogeo", NULL, "1993",
 	"World Heroes 2 (ALH-006)\0", NULL, "ADK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -11789,7 +11824,7 @@ static struct BurnRomInfo wh2jRomDesc[] = {
 STDROMPICKEXT(wh2j, wh2j, neogeo)
 STD_ROM_FN(wh2j)
 
-struct BurnDriver BurnDrvwh2j = {
+struct BurnDriver BurnDrvWh2j = {
 	"wh2j", NULL, "neogeo", NULL, "1994",
 	"World Heroes 2 Jet (ADM-007 ~ ADH-007)\0", NULL, "ADK / SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -11826,7 +11861,7 @@ static struct BurnRomInfo aodkRomDesc[] = {
 STDROMPICKEXT(aodk, aodk, neogeo)
 STD_ROM_FN(aodk)
 
-struct BurnDriver BurnDrvaodk = {
+struct BurnDriver BurnDrvAodk = {
 	"aodk", NULL, "neogeo", NULL, "1994",
 	"Aggressors of Dark Kombat / Tsuukai GANGAN Koushinkyoku (ADM-008 ~ ADH-008)\0", NULL, "ADK / SNK", "Neo Geo MVS",
 	L"Aggressors of Dark Kombat\0\u75DB\u5FEB\uFF27\uFF41\uFF4E\uFF47\uFF41\uFF4E\u884C\u9032\u66F2 (ADM-008 ~ ADH-008)\0", NULL, NULL, NULL,
@@ -11866,7 +11901,7 @@ static struct BurnRomInfo whpRomDesc[] = {
 STDROMPICKEXT(whp, whp, neogeo)
 STD_ROM_FN(whp)
 
-struct BurnDriver BurnDrvwhp = {
+struct BurnDriver BurnDrvWhp = {
 	"whp", NULL, "neogeo", NULL, "1995",
 	"World Heroes Perfect\0", NULL, "ADK / SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -11895,7 +11930,7 @@ static struct BurnRomInfo moshougiRomDesc[] = {
 STDROMPICKEXT(moshougi, moshougi, neogeo)
 STD_ROM_FN(moshougi)
 
-struct BurnDriver BurnDrvmoshougi = {
+struct BurnDriver BurnDrvMoshougi = {
 	"moshougi", NULL, "neogeo", NULL, "1995",
 	"Shougi no Tatsujin - Master of Shougi\0", NULL, "ADK / SNK", "Neo Geo MVS",
 	L"\u5C06\u68CB\u306E\u9054\u4EBA\0Master of Shougi\0", NULL, NULL, NULL,
@@ -11928,7 +11963,7 @@ static struct BurnRomInfo overtopRomDesc[] = {
 STDROMPICKEXT(overtop, overtop, neogeo)
 STD_ROM_FN(overtop)
 
-struct BurnDriver BurnDrvovertop = {
+struct BurnDriver BurnDrvOvertop = {
 	"overtop", NULL, "neogeo", NULL, "1996",
 	"Over Top\0", NULL, "ADK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -11968,7 +12003,7 @@ static struct BurnRomInfo ninjamasRomDesc[] = {
 STDROMPICKEXT(ninjamas, ninjamas, neogeo)
 STD_ROM_FN(ninjamas)
 
-struct BurnDriver BurnDrvninjamas = {
+struct BurnDriver BurnDrvNinjamas = {
 	"ninjamas", NULL, "neogeo", NULL, "1996",
 	"Ninja Master's - Haoh-ninpo-cho\0", NULL, "ADK / SNK", "Neo Geo MVS",
 	L"Ninja master's \u8987\u738B\u5FCD\u6CD5\u5E16\0Ninja Master's - Haoh-ninpo-cho\0", NULL, NULL, NULL,
@@ -12000,7 +12035,7 @@ static struct BurnRomInfo twinspriRomDesc[] = {
 STDROMPICKEXT(twinspri, twinspri, neogeo)
 STD_ROM_FN(twinspri)
 
-struct BurnDriver BurnDrvtwinspri = {
+struct BurnDriver BurnDrvTwinspri = {
 	"twinspri", NULL, "neogeo", NULL, "1996",
 	"Twinkle Star Sprites\0", NULL, "ADK / SNK", "Neo Geo MVS",
 	L"TwinkleStar Sprites\0\u30C6\u30A3\u30F3\u30AF\u30EB\u30B9\u30BF\u30FC\u30B9\u30D7\u30E9\u30A4\u30C4\0", NULL, NULL, NULL,
@@ -12029,7 +12064,7 @@ static struct BurnRomInfo zintrckbRomDesc[] = {
 STDROMPICKEXT(zintrckb, zintrckb, neogeo)
 STD_ROM_FN(zintrckb)
 
-struct BurnDriver BurnDrvzintrckb = {
+struct BurnDriver BurnDrvZintrckb = {
 	"zintrckb", NULL, "neogeo", NULL, "1996",
 	"Zintrick / Oshidashi Zentrix (bootleg of CD version)\0", NULL, "bootleg", "Neo Geo MVS",
 	L"Zintrick\0\u62BC\u3057\u51FA\u3057\u30B8\u30F3\u30C8\u30EA\u30C3\u30AF (hack / bootleg)\0", NULL, NULL, NULL,
@@ -12060,7 +12095,7 @@ static struct BurnRomInfo viewpoinRomDesc[] = {
 STDROMPICKEXT(viewpoin, viewpoin, neogeo)
 STD_ROM_FN(viewpoin)
 
-struct BurnDriver BurnDrvviewpoin = {
+struct BurnDriver BurnDrvViewpoin = {
 	"viewpoin", NULL, "neogeo", NULL, "1992",
 	"Viewpoint\0", NULL, "Sammy / Aicom", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -12144,7 +12179,7 @@ static struct BurnRomInfo janshinRomDesc[] = {
 STDROMPICKEXT(janshin, janshin, neogeo)
 STD_ROM_FN(janshin)
 
-struct BurnDriver BurnDrvjanshin = {
+struct BurnDriver BurnDrvJanshin = {
 	"janshin", NULL, "neogeo", NULL, "1994",
 	"Janshin Densetsu - Quest of Jongmaster\0", NULL, "Aicom", "Neo Geo MVS",
 	L"\u96C0\u795E\u4F1D\u8AAC - quest of jongmaster\0Jyanshin Densetsu\0", NULL, NULL, NULL,
@@ -12181,7 +12216,7 @@ static struct BurnRomInfo pulstarRomDesc[] = {
 STDROMPICKEXT(pulstar, pulstar, neogeo)
 STD_ROM_FN(pulstar)
 
-struct BurnDriver BurnDrvpulstar = {
+struct BurnDriver BurnDrvPulstar = {
 	"pulstar", NULL, "neogeo", NULL, "1995",
 	"Pulstar\0", NULL, "Aicom", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -12218,7 +12253,7 @@ static struct BurnRomInfo blazstarRomDesc[] = {
 STDROMPICKEXT(blazstar, blazstar, neogeo)
 STD_ROM_FN(blazstar)
 
-struct BurnDriver BurnDrvblazstar = {
+struct BurnDriver BurnDrvBlazstar = {
 	"blazstar", NULL, "neogeo", NULL, "1998",
 	"Blazing Star\0", NULL, "Yumekobo", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -12260,7 +12295,7 @@ INT32 preisle2Init()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvpreisle2 = {
+struct BurnDriver BurnDrvPreisle2 = {
 	"preisle2", NULL, "neogeo", NULL, "1999",
 	"Prehistoric Isle 2\0", NULL, "Yumekobo / Saurus", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -12296,7 +12331,7 @@ static struct BurnRomInfo spinmastRomDesc[] = {
 STDROMPICKEXT(spinmast, spinmast, neogeo)
 STD_ROM_FN(spinmast)
 
-struct BurnDriver BurnDrvspinmast = {
+struct BurnDriver BurnDrvSpinmast = {
 	"spinmast", NULL, "neogeo", NULL, "1993",
 	"Spin Master / Miracle Adventure\0", NULL, "Data East Corporation", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -12333,7 +12368,7 @@ static struct BurnRomInfo wjammersRomDesc[] = {
 STDROMPICKEXT(wjammers, wjammers, neogeo)
 STD_ROM_FN(wjammers)
 
-struct BurnDriver BurnDrvwjammers = {
+struct BurnDriver BurnDrvWjammers = {
 	"wjammers", NULL, "neogeo", NULL, "1994",
 	"Windjammers / Flying Power Disc\0", NULL, "Data East Corporation", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -12366,7 +12401,7 @@ static struct BurnRomInfo karnovrRomDesc[] = {
 STDROMPICKEXT(karnovr, karnovr, neogeo)
 STD_ROM_FN(karnovr)
 
-struct BurnDriver BurnDrvkarnovr = {
+struct BurnDriver BurnDrvKarnovr = {
 	"karnovr", NULL, "neogeo", NULL, "1994",
 	"Karnov's Revenge / Fighter's History Dynamite\0", NULL, "Data East Corporation", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -12401,7 +12436,7 @@ static struct BurnRomInfo strhoopRomDesc[] = {
 STDROMPICKEXT(strhoop, strhoop, neogeo)
 STD_ROM_FN(strhoop)
 
-struct BurnDriver BurnDrvstrhoop = {
+struct BurnDriver BurnDrvStrhoop = {
 	"strhoop", NULL, "neogeo", NULL, "1994",
 	"Street Hoop / Street Slam / Dunk Dream (DEM-004 ~ DEH-004)\0", NULL, "Data East Corporation", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -12429,7 +12464,7 @@ static struct BurnRomInfo ghostlopRomDesc[] = {
 STDROMPICKEXT(ghostlop, ghostlop, neogeo)
 STD_ROM_FN(ghostlop)
 
-struct BurnDriver BurnDrvghostlop = {
+struct BurnDriver BurnDrvGhostlop = {
 	"ghostlop", NULL, "neogeo", NULL, "1996",
 	"Ghostlop (prototype)\0", NULL, "Data East Corporation", "Neo Geo MVS",
 	L"Ghostlop \u30B4\u30FC\u30B9\u30C8\u30ED\u30C3\u30D7 (prototype)\0", NULL, NULL, NULL,
@@ -12458,7 +12493,7 @@ static struct BurnRomInfo magdrop2RomDesc[] = {
 STDROMPICKEXT(magdrop2, magdrop2, neogeo)
 STD_ROM_FN(magdrop2)
 
-struct BurnDriver BurnDrvmagdrop2 = {
+struct BurnDriver BurnDrvMagdrop2 = {
 	"magdrop2", NULL, "neogeo", NULL, "1996",
 	"Magical Drop II\0", NULL, "Data East Corporation", "Neo Geo MVS",
 	L"Magical Drop II\0\u30DE\u30B8\u30AB\u30EB\u30C9\u30ED\u30C3\u30D7\uFF12\0", NULL, NULL, NULL,
@@ -12490,7 +12525,7 @@ static struct BurnRomInfo magdrop3RomDesc[] = {
 STDROMPICKEXT(magdrop3, magdrop3, neogeo)
 STD_ROM_FN(magdrop3)
 
-struct BurnDriver BurnDrvmagdrop3 = {
+struct BurnDriver BurnDrvMagdrop3 = {
 	"magdrop3", NULL, "neogeo", NULL, "1997",
 	"Magical Drop III\0", NULL, "Data East Corporation", "Neo Geo MVS",
 	L"Magical Drop III\0\u30DE\u30B8\u30AB\u30EB\u30C9\u30ED\u30C3\u30D7III\0", NULL, NULL, NULL,
@@ -12526,7 +12561,7 @@ INT32 nitdInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvnitd = {
+struct BurnDriver BurnDrvNitd = {
 	"nitd", NULL, "neogeo", NULL, "2000",
 	"Nightmare in the Dark\0", NULL, "Eleven / Gavaking", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -12558,7 +12593,7 @@ static struct BurnRomInfo nitdblRomDesc[] = {
 STDROMPICKEXT(nitdbl, nitdbl, neogeo)
 STD_ROM_FN(nitdbl)
 
-struct BurnDriver BurnDrvnitdbl = {
+struct BurnDriver BurnDrvNitdbl = {
 	"nitdbl", "nitd", "neogeo", NULL, "2001",
 	"Nightmare in the Dark (bootleg)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -12589,7 +12624,7 @@ static struct BurnRomInfo gururinRomDesc[] = {
 STDROMPICKEXT(gururin, gururin, neogeo)
 STD_ROM_FN(gururin)
 
-struct BurnDriver BurnDrvgururin = {
+struct BurnDriver BurnDrvGururin = {
 	"gururin", NULL, "neogeo", NULL, "1994",
 	"Gururin\0", NULL, "Face", "Neo Geo MVS",
 	L"\u3050\u308B\u308A\u3093\0Gururin\0", NULL, NULL, NULL,
@@ -12621,7 +12656,7 @@ static struct BurnRomInfo miexchngRomDesc[] = {
 STDROMPICKEXT(miexchng, miexchng, neogeo)
 STD_ROM_FN(miexchng)
 
-struct BurnDriver BurnDrvmiexchng = {
+struct BurnDriver BurnDrvMiexchng = {
 	"miexchng", NULL, "neogeo", NULL, "1997",
 	"Money Puzzle Exchanger / Money Idol Exchanger\0", NULL, "Face", "Neo Geo MVS",
 	L"Money Puzzle Exchanger\0\u30DE\u30CD\u30FC\u30A2\u30A4\u30C9\u30EB\u30A8\u30AF\u30B9\u30C1\u30A7\u30F3\u30B8\u30E3\u30FC\0", NULL, NULL, NULL,
@@ -12652,7 +12687,7 @@ static struct BurnRomInfo panicbomRomDesc[] = {
 STDROMPICKEXT(panicbom, panicbom, neogeo)
 STD_ROM_FN(panicbom)
 
-struct BurnDriver BurnDrvpanicbom = {
+struct BurnDriver BurnDrvPanicbom = {
 	"panicbom", NULL, "neogeo", NULL, "1994",
 	"Panic Bomber\0", NULL, "Eighting / Hudson", "Neo Geo MVS",
 	L"Panic Bomber\0\u3071\u306B\u3063\u304F\u30DC\u30F3\u30D0\u30FC \u30DC\u30F3\u30D0\u30FC\u30DE\u30F3\0", NULL, NULL, NULL,
@@ -12687,7 +12722,7 @@ static struct BurnRomInfo kabukiklRomDesc[] = {
 STDROMPICKEXT(kabukikl, kabukikl, neogeo)
 STD_ROM_FN(kabukikl)
 
-struct BurnDriver BurnDrvkabukikl = {
+struct BurnDriver BurnDrvKabukikl = {
 	"kabukikl", NULL, "neogeo", NULL, "1995",
 	"Far East of Eden - Kabuki Klash / Tengai Makyou - Shin Den\0", NULL, "Hudson", "Neo Geo MVS",
 	L"Kabuki Klash - far east of eden\0\u5929\u5916\u9B54\u5883 - \u771F\u4F1D\0", NULL, NULL, NULL,
@@ -12720,7 +12755,7 @@ static struct BurnRomInfo neobombeRomDesc[] = {
 STDROMPICKEXT(neobombe, neobombe, neogeo)
 STD_ROM_FN(neobombe)
 
-struct BurnDriver BurnDrvneobombe = {
+struct BurnDriver BurnDrvNeobombe = {
 	"neobombe", NULL, "neogeo", NULL, "1997",
 	"Neo Bomberman\0", NULL, "Hudson", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -12753,7 +12788,7 @@ static struct BurnRomInfo minasanRomDesc[] = {
 STDROMPICKEXT(minasan, minasan, neogeo)
 STD_ROM_FN(minasan)
 
-struct BurnDriver BurnDrvminasan = {
+struct BurnDriver BurnDrvMinasan = {
 	"minasan", NULL, "neogeo", NULL, "1990",
 	"Minasan no Okagesamadesu! Dai Sugoroku Taikai (MOM-001 ~ MOH-001)\0", NULL, "Monolith Corp.", "Neo Geo MVS",
 	L"\u307F\u306A\u3055\u3093\u306E\u304A\u304B\u3052\u3055\u307E\u3067\u3059\uFF01\0Minnasanno Okagesamadesu (MOM-001 ~ MOH-001)\0", NULL, NULL, NULL,
@@ -12786,7 +12821,7 @@ static struct BurnRomInfo bakatonoRomDesc[] = {
 STDROMPICKEXT(bakatono, bakatono, neogeo)
 STD_ROM_FN(bakatono)
 
-struct BurnDriver BurnDrvbakatono = {
+struct BurnDriver BurnDrvBakatono = {
 	"bakatono", NULL, "neogeo", NULL, "1991",
 	"Bakatonosama Mahjong Manyuuki (MOM-002 ~ MOH-002)\0", NULL, "Monolith Corp.", "Neo Geo MVS",
 	L"\u30D0\u30AB\u6BBF\u69D8 \u9EBB\u96C0\u6F2B\u904A\u8A18\0Bakatonosama Mahjong Manyuki (MOM-002 ~ MOH-002)\0", NULL, NULL, NULL,
@@ -12818,7 +12853,7 @@ static struct BurnRomInfo turfmastRomDesc[] = {
 STDROMPICKEXT(turfmast, turfmast, neogeo)
 STD_ROM_FN(turfmast)
 
-struct BurnDriver BurnDrvturfmast = {
+struct BurnDriver BurnDrvTurfmast = {
 	"turfmast", NULL, "neogeo", NULL, "1996",
 	"Neo Turf Masters / Big Tournament Golf\0", NULL, "Nazca", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -12850,7 +12885,7 @@ static struct BurnRomInfo mslugRomDesc[] = {
 STDROMPICKEXT(mslug, mslug, neogeo)
 STD_ROM_FN(mslug)
 
-struct BurnDriver BurnDrvmslug = {
+struct BurnDriver BurnDrvMslug = {
 	"mslug", NULL, "neogeo", NULL, "1996",
 	"Metal Slug - Super Vehicle-001\0", NULL, "Nazca", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -12884,7 +12919,7 @@ static struct BurnRomInfo zedbladeRomDesc[] = {
 STDROMPICKEXT(zedblade, zedblade, neogeo)
 STD_ROM_FN(zedblade)
 
-struct BurnDriver BurnDrvzedblade = {
+struct BurnDriver BurnDrvZedblade = {
 	"zedblade", NULL, "neogeo", NULL, "1994",
 	"Zed Blade / Operation Ragnarok\0", NULL, "NMK", "Neo Geo MVS",
 	L"Zed Blade\0Operation Ragnarok\0\u4F5C\u6226\u540D\uFF02\u30E9\u30B0\u30CA\u30ED\u30AF\uFF02\0", NULL, NULL, NULL,
@@ -12931,7 +12966,7 @@ static INT32 s1945pInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvs1945p = {
+struct BurnDriver BurnDrvS1945p = {
 	"s1945p", NULL, "neogeo", NULL, "1999",
 	"Strikers 1945 Plus\0", NULL, "Psikyo", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -12965,7 +13000,7 @@ static struct BurnRomInfo quizkofRomDesc[] = {
 STDROMPICKEXT(quizkof, quizkof, neogeo)
 STD_ROM_FN(quizkof)
 
-struct BurnDriver BurnDrvquizkof = {
+struct BurnDriver BurnDrvQuizkof = {
 	"quizkof", NULL, "neogeo", NULL, "1995",
 	"Quiz King of Fighters (SAM-080 ~ SAH-080)\0", NULL, "Saurus (SNK license)", "Neo Geo MVS",
 	L"\u30AF\u30A4\u30BA\u30AD\u30F3\u30B0\u30AA\u30D6\u30D5\u30A1\u30A4\u30BF\u30FC\u30BA\0Quiz King of Fighters (SAM-080 ~ SAH-080)\0", NULL, NULL, NULL,
@@ -13001,7 +13036,7 @@ static struct BurnRomInfo quizkofkRomDesc[] = {
 STDROMPICKEXT(quizkofk, quizkofk, neogeo)
 STD_ROM_FN(quizkofk)
 
-struct BurnDriver BurnDrvquizkofk = {
+struct BurnDriver BurnDrvQuizkofk = {
 	"quizkofk", "quizkof", "neogeo", NULL, "1996",
 	"Quiz King of Fighters (Korea)\0", NULL, "Saurus / Viccom (SNK license)", "Neo Geo MVS",
 	L"\u30AF\u30A4\u30BA\u30AD\u30F3\u30B0\u30AA\u30D6\u30D5\u30A1\u30A4\u30BF\u30FC\u30BA\0Quiz King of Fighters (Korean release)\0", NULL, NULL, NULL,
@@ -13032,7 +13067,7 @@ static struct BurnRomInfo stakwinRomDesc[] = {
 STDROMPICKEXT(stakwin, stakwin, neogeo)
 STD_ROM_FN(stakwin)
 
-struct BurnDriver BurnDrvstakwin = {
+struct BurnDriver BurnDrvStakwin = {
 	"stakwin", NULL, "neogeo", NULL, "1995",
 	"Stakes Winner / Stakes Winner - GI Kinzen Seiha e no Michi\0", NULL, "Saurus", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -13068,7 +13103,7 @@ static struct BurnRomInfo ragnagrdRomDesc[] = {
 STDROMPICKEXT(ragnagrd, ragnagrd, neogeo)
 STD_ROM_FN(ragnagrd)
 
-struct BurnDriver BurnDrvragnagrd = {
+struct BurnDriver BurnDrvRagnagrd = {
 	"ragnagrd", NULL, "neogeo", NULL, "1996",
 	"Ragnagard / Shin-Oh-Ken\0", NULL, "Saurus", "Neo Geo MVS",
 	L"Operation Ragnagard\0\u795E\u51F0\u62F3\0", NULL, NULL, NULL,
@@ -13100,7 +13135,7 @@ static struct BurnRomInfo pgoalRomDesc[] = {
 STDROMPICKEXT(pgoal, pgoal, neogeo)
 STD_ROM_FN(pgoal)
 
-struct BurnDriver BurnDrvpgoal = {
+struct BurnDriver BurnDrvPgoal = {
 	"pgoal", NULL, "neogeo", NULL, "1996",
 	"Pleasure Goal / Futsal - 5 on 5 Mini Soccer (NGM-219)\0", NULL, "Saurus", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -13132,7 +13167,7 @@ static struct BurnRomInfo ironcladRomDesc[] = {
 STDROMPICKEXT(ironclad, ironclad, neogeo)
 STD_ROM_FN(ironclad)
 
-struct BurnDriver BurnDrvironclad = {
+struct BurnDriver BurnDrvIronclad = {
 	"ironclad", NULL, "neogeo", NULL, "1996",
 	"Choutetsu Brikin'ger / Iron Clad (prototype)\0", NULL, "Saurus", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -13164,7 +13199,7 @@ static struct BurnRomInfo ironcladoRomDesc[] = {
 STDROMPICKEXT(ironclado, ironclado, neogeo)
 STD_ROM_FN(ironclado)
 
-struct BurnDriver BurnDrvironclado = {
+struct BurnDriver BurnDrvIronclado = {
 	"ironclado", "ironclad", "neogeo", NULL, "1996",
 	"Choutetsu Brikin'ger / Iron Clad (prototype, bootleg)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -13196,7 +13231,7 @@ static struct BurnRomInfo stakwin2RomDesc[] = {
 STDROMPICKEXT(stakwin2, stakwin2, neogeo)
 STD_ROM_FN(stakwin2)
 
-struct BurnDriver BurnDrvstakwin2 = {
+struct BurnDriver BurnDrvStakwin2 = {
 	"stakwin2", NULL, "neogeo", NULL, "1996",
 	"Stakes Winner 2\0", NULL, "Saurus", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -13234,7 +13269,7 @@ static struct BurnRomInfo shocktroRomDesc[] = {
 STDROMPICKEXT(shocktro, shocktro, neogeo)
 STD_ROM_FN(shocktro)
 
-struct BurnDriver BurnDrvshocktro = {
+struct BurnDriver BurnDrvShocktro = {
 	"shocktro", NULL, "neogeo", NULL, "1997",
 	"Shock Troopers (set 1)\0", NULL, "Saurus", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -13272,7 +13307,7 @@ static struct BurnRomInfo shocktroaRomDesc[] = {
 STDROMPICKEXT(shocktroa, shocktroa, neogeo)
 STD_ROM_FN(shocktroa)
 
-struct BurnDriver BurnDrvshocktroa = {
+struct BurnDriver BurnDrvShocktroa = {
 	"shocktroa", "shocktro", "neogeo", NULL, "1997",
 	"Shock Troopers (set 2)\0", NULL, "Saurus", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -13308,7 +13343,7 @@ static struct BurnRomInfo shocktr2RomDesc[] = {
 STDROMPICKEXT(shocktr2, shocktr2, neogeo)
 STD_ROM_FN(shocktr2)
 
-struct BurnDriver BurnDrvshocktr2 = {
+struct BurnDriver BurnDrvShocktr2 = {
 	"shocktr2", NULL, "neogeo", NULL, "1998",
 	"Shock Troopers - 2nd Squad\0", NULL, "Saurus", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -13354,15 +13389,15 @@ static void lans2004Callback()
 		static const INT32 sec[] = { 0x3, 0x8, 0x7, 0xc, 0x1, 0xa, 0x6, 0xd };
 
 		for (i = 0; i < 8; i++)
-			memcpy (dst + i * 0x20000, Neo68KROMActive + sec[i] * 0x20000, 0x20000);
+			memcpy(dst + i * 0x20000, Neo68KROMActive + sec[i] * 0x20000, 0x20000);
 
-		memcpy (dst + 0x0bbb00, Neo68KROMActive + 0x045b00, 0x001710);
-		memcpy (dst + 0x02fff0, Neo68KROMActive + 0x1a92be, 0x000010);
-		memcpy (Neo68KROMActive, dst, 0x100000);
+		memcpy(dst + 0x0bbb00, Neo68KROMActive + 0x045b00, 0x001710);
+		memcpy(dst + 0x02fff0, Neo68KROMActive + 0x1a92be, 0x000010);
+		memcpy(Neo68KROMActive, dst, 0x100000);
 		BurnFree (dst);
 	}
 
-	memmove (Neo68KROMActive + 0x100000, Neo68KROMActive + 0x200000, 0x400000);
+	memmove(Neo68KROMActive + 0x100000, Neo68KROMActive + 0x200000, 0x400000);
 
 	for (i = 0xbbb00; i < 0xbe000; i+=2) {
 		if ((BURN_ENDIAN_SWAP_INT16(*((UINT16 *)(Neo68KROMActive + i + 0))) & 0xf2bf) == BURN_ENDIAN_SWAP_INT16(0x42b9) &&
@@ -13401,7 +13436,7 @@ static INT32 lans2004Init()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvlans2004 = {
+struct BurnDriver BurnDrvLans2004 = {
 	"lans2004", "shocktr2", "neogeo", NULL, "1998",
 	"Lansquenet 2004 (bootleg of Shock Troopers - 2nd Squad)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -13438,7 +13473,7 @@ static struct BurnRomInfo galaxyfgRomDesc[] = {
 STDROMPICKEXT(galaxyfg, galaxyfg, neogeo)
 STD_ROM_FN(galaxyfg)
 
-struct BurnDriver BurnDrvgalaxyfg = {
+struct BurnDriver BurnDrvGalaxyfg = {
 	"galaxyfg", NULL, "neogeo", NULL, "1995",
 	"Galaxy Fight - Universal Warriors\0", NULL, "Sunsoft", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -13473,7 +13508,7 @@ static struct BurnRomInfo wakuwak7RomDesc[] = {
 STDROMPICKEXT(wakuwak7, wakuwak7, neogeo)
 STD_ROM_FN(wakuwak7)
 
-struct BurnDriver BurnDrvwakuwak7 = {
+struct BurnDriver BurnDrvWakuwak7 = {
 	"wakuwak7", NULL, "neogeo", NULL, "1996",
 	"Waku Waku 7\0", NULL, "Sunsoft", "Neo Geo MVS",
 	L"Waku Waku 7\0\u308F\u304F\u308F\u304F\uFF17\0", NULL, NULL, NULL,
@@ -13512,7 +13547,7 @@ static struct BurnRomInfo pbobblenRomDesc[] = {
 STDROMPICKEXT(pbobblen, pbobblen, neogeo)
 STD_ROM_FN(pbobblen)
 
-struct BurnDriver BurnDrvpbobblen = {
+struct BurnDriver BurnDrvPbobblen = {
 	"pbobblen", NULL, "neogeo", NULL, "1994",
 	"Puzzle Bobble / Bust-A-Move (Neo-Geo, NGM-083)\0", NULL, "Taito", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -13542,7 +13577,7 @@ static struct BurnRomInfo pbobblenbRomDesc[] = {
 STDROMPICKEXT(pbobblenb, pbobblenb, neogeo)
 STD_ROM_FN(pbobblenb)
 
-struct BurnDriver BurnDrvpbobblenb = {
+struct BurnDriver BurnDrvPbobblenb = {
 	"pbobblenb", "pbobblen", "neogeo", NULL, "1994",
 	"Puzzle Bobble / Bust-A-Move (Neo-Geo, bootleg)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -13576,7 +13611,7 @@ static struct BurnRomInfo pbobbl2nRomDesc[] = {
 STDROMPICKEXT(pbobbl2n, pbobbl2n, neogeo)
 STD_ROM_FN(pbobbl2n)
 
-struct BurnDriver BurnDrvpbobbl2n = {
+struct BurnDriver BurnDrvPbobbl2n = {
 	"pbobbl2n", NULL, "neogeo", NULL, "1999",
 	"Puzzle Bobble 2 / Bust-A-Move Again (Neo-Geo)\0", NULL, "Taito (SNK license)", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -13618,7 +13653,7 @@ INT32 pnyaaInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvpnyaa = {
+struct BurnDriver BurnDrvPnyaa = {
 	"pnyaa", NULL, "neogeo", NULL, "2003",
 	"Pochi and Nyaa (Ver 2.02)\0", NULL, "Aiky / Taito", "Neo Geo MVS",
 	L"Pochi and Nyaa\0\u30DD\u30C1\u30C3\u3068\u306B\u3083\uFF5E (Ver 2.02)\0", NULL, NULL, NULL,
@@ -13648,7 +13683,7 @@ static struct BurnRomInfo pnyaaaRomDesc[] = {
 STDROMPICKEXT(pnyaaa, pnyaaa, neogeo)
 STD_ROM_FN(pnyaaa)
 
-struct BurnDriver BurnDrvpnyaaa = {
+struct BurnDriver BurnDrvPnyaaa = {
 	"pnyaaa", "pnyaa", "neogeo", NULL, "2003",
 	"Pochi and Nyaa (Ver 2.00)\0", NULL, "Aiky / Taito", "Neo Geo MVS",
 	L"Pochi and Nyaa\0\u30DD\u30C1\u30C3\u3068\u306B\u3083\uFF5E (Ver 2.00)\0", NULL, NULL, NULL,
@@ -13680,7 +13715,7 @@ static struct BurnRomInfo marukodqRomDesc[] = {
 STDROMPICKEXT(marukodq, marukodq, neogeo)
 STD_ROM_FN(marukodq)
 
-struct BurnDriver BurnDrvmarukodq = {
+struct BurnDriver BurnDrvMarukodq = {
 	"marukodq", NULL, "neogeo", NULL, "1995",
 	"Chibi Maruko-chan: Maruko Deluxe Quiz\0", NULL, "Takara", "Neo Geo MVS",
 	L"\u3061\u3073\u307E\u308B\u5B50\u3061\u3083\u3093 \u307E\u308B\u5B50\u30C7\u30E9\u30C3\u30AF\u30B9\u30AF\u30A4\u30BA\0Chibi Marukochan Deluxe Quiz\0", NULL, NULL, NULL,
@@ -13717,7 +13752,7 @@ static struct BurnRomInfo doubledrRomDesc[] = {
 STDROMPICKEXT(doubledr, doubledr, neogeo)
 STD_ROM_FN(doubledr)
 
-struct BurnDriver BurnDrvdoubledr = {
+struct BurnDriver BurnDrvDoubledr = {
 	"doubledr", NULL, "neogeo", NULL, "1995",
 	"Double Dragon (Neo-Geo)\0", NULL, "Technos Japan", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -13754,7 +13789,7 @@ static struct BurnRomInfo gowcaizrRomDesc[] = {
 STDROMPICKEXT(gowcaizr, gowcaizr, neogeo)
 STD_ROM_FN(gowcaizr)
 
-struct BurnDriver BurnDrvgowcaizr = {
+struct BurnDriver BurnDrvGowcaizr = {
 	"gowcaizr", NULL, "neogeo", NULL, "1995",
 	"Voltage Fighter - Gowcaizer / Choujin Gakuen Gowcaizer\0", NULL, "Technos Japan", "Neo Geo MVS",
 	L"Voltage Fighter - Gowcaizer\0\u8D85\u4EBA\u5B66\u5712\u30B4\u30A6\u30AB\u30A4\u30B6\u30FC\0", NULL, NULL, NULL,
@@ -13786,7 +13821,7 @@ static struct BurnRomInfo sdodgebRomDesc[] = {
 STDROMPICKEXT(sdodgeb, sdodgeb, neogeo)
 STD_ROM_FN(sdodgeb)
 
-struct BurnDriver BurnDrvsdodgeb = {
+struct BurnDriver BurnDrvSdodgeb = {
 	"sdodgeb", NULL, "neogeo", NULL, "1996",
 	"Super Dodge Ball / Kunio no Nekketsu Toukyuu Densetsu\0", NULL, "Technos Japan", "Neo Geo MVS",
 	L"Super Dodge Ball\0\u304F\u306B\u304A\u306E\u71B1\u8840\u95D8\u7403\u4F1D\u8AAC\0", NULL, NULL, NULL,
@@ -13830,7 +13865,7 @@ static INT32 DragonshInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvdragonsh = {
+struct BurnDriver BurnDrvDragonsh = {
 	"dragonsh", NULL, "neogeo", NULL, "1997",
 	"Dragon's Heaven (development board)\0", NULL, "Face", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -13863,7 +13898,7 @@ static struct BurnRomInfo twsoc96RomDesc[] = {
 STDROMPICKEXT(twsoc96, twsoc96, neogeo)
 STD_ROM_FN(twsoc96)
 
-struct BurnDriver BurnDrvtwsoc96 = {
+struct BurnDriver BurnDrvTwsoc96 = {
 	"twsoc96", NULL, "neogeo", NULL, "1996",
 	"Tecmo World Soccer '96\0", NULL, "Tecmo", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -13896,7 +13931,7 @@ static struct BurnRomInfo fightfevRomDesc[] = {
 STDROMPICKEXT(fightfev, fightfev, neogeo)
 STD_ROM_FN(fightfev)
 
-struct BurnDriver BurnDrvfightfev = {
+struct BurnDriver BurnDrvFightfev = {
 	"fightfev", NULL, "neogeo", NULL, "1994",
 	"Fight Fever / Wang Jung Wang (set 1)\0", NULL, "Viccom", "Neo Geo MVS",
 	L"Fight Fever\0\uC655\uC911\uC655 (set 1)\0", NULL, NULL, NULL,
@@ -13947,7 +13982,7 @@ static INT32 fightfevaInit()
  	return NeoInit();
 }
 
-struct BurnDriver BurnDrvfightfeva = {
+struct BurnDriver BurnDrvFightfeva = {
 	"fightfeva", "fightfev", "neogeo", NULL, "1994",
 	"Fight Fever / Wang Jung Wang (set 2)\0", NULL, "Viccom", "Neo Geo MVS",
 	L"Fight Fever\0\uC655\uC911\uC655 (set 2)\0", NULL, NULL, NULL,
@@ -13983,7 +14018,7 @@ static struct BurnRomInfo pspikes2RomDesc[] = {
 STDROMPICKEXT(pspikes2, pspikes2, neogeo)
 STD_ROM_FN(pspikes2)
 
-struct BurnDriver BurnDrvpspikes2 = {
+struct BurnDriver BurnDrvPspikes2 = {
 	"pspikes2", NULL, "neogeo", NULL, "1994",
 	"Power Spikes II (NGM-068)\0", NULL, "Video System Co.", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -14015,7 +14050,7 @@ static struct BurnRomInfo sonicwi2RomDesc[] = {
 STDROMPICKEXT(sonicwi2, sonicwi2, neogeo)
 STD_ROM_FN(sonicwi2)
 
-struct BurnDriver BurnDrvsonicwi2 = {
+struct BurnDriver BurnDrvSonicwi2 = {
 	"sonicwi2", NULL, "neogeo", NULL, "1994",
 	"Aero Fighters 2 / Sonic Wings 2\0", NULL, "Video System Co.", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -14047,7 +14082,7 @@ static struct BurnRomInfo sonicwi3RomDesc[] = {
 STDROMPICKEXT(sonicwi3, sonicwi3, neogeo)
 STD_ROM_FN(sonicwi3)
 
-struct BurnDriver BurnDrvsonicwi3 = {
+struct BurnDriver BurnDrvSonicwi3 = {
 	"sonicwi3", NULL, "neogeo", NULL, "1995",
 	"Aero Fighters 3 / Sonic Wings 3\0", NULL, "Video System Co.", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -14077,7 +14112,7 @@ static struct BurnRomInfo popbouncRomDesc[] = {
 STDROMPICKEXT(popbounc, popbounc, neogeo)
 STD_ROM_FN(popbounc)
 
-struct BurnDriver BurnDrvpopbounc = {
+struct BurnDriver BurnDrvPopbounc = {
 	"popbounc", NULL, "neogeo", NULL, "1997",
 	"Pop 'n Bounce / Gapporin\0", NULL, "Video System Co.", "Neo Geo MVS",
 	L"Pop 'n Bounce\0\u30AC\u30C3\u30DD\u30EA\u30F3\0", NULL, NULL, NULL,
@@ -14108,7 +14143,7 @@ static struct BurnRomInfo androdunRomDesc[] = {
 STDROMPICKEXT(androdun, androdun, neogeo)
 STD_ROM_FN(androdun)
 
-struct BurnDriver BurnDrvandrodun = {
+struct BurnDriver BurnDrvAndrodun = {
 	"androdun", NULL, "neogeo", NULL, "1992",
 	"Andro Dunos (NGM-049 ~ NGH-049)\0", NULL, "Visco", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -14138,7 +14173,7 @@ static struct BurnRomInfo b2bRomDesc[] = {
 STDROMPICKEXT(b2b, b2b, neogeo)
 STD_ROM_FN(b2b)
 
-struct BurnDriver BurnDrvb2b = {
+struct BurnDriver BurnDrvB2b = {
 	"b2b", NULL, "neogeo", NULL, "2000",
 	"Bang Bang Busters (2010 NCI release)\0", NULL, "Visco", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -14169,7 +14204,7 @@ static struct BurnRomInfo puzzledpRomDesc[] = {
 STDROMPICKEXT(puzzledp, puzzledp, neogeo)
 STD_ROM_FN(puzzledp)
 
-struct BurnDriver BurnDrvpuzzledp = {
+struct BurnDriver BurnDrvPuzzledp = {
 	"puzzledp", NULL, "neogeo", NULL, "1995",
 	"Puzzle De Pon!\0", NULL, "Visco", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -14201,7 +14236,7 @@ static struct BurnRomInfo neomrdoRomDesc[] = {
 STDROMPICKEXT(neomrdo, neomrdo, neogeo)
 STD_ROM_FN(neomrdo)
 
-struct BurnDriver BurnDrvneomrdo = {
+struct BurnDriver BurnDrvNeomrdo = {
 	"neomrdo", NULL, "neogeo", NULL, "1996",
 	"Neo Mr. Do!\0", NULL, "Visco", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -14233,7 +14268,7 @@ static struct BurnRomInfo goalx3RomDesc[] = {
 STDROMPICKEXT(goalx3, goalx3, neogeo)
 STD_ROM_FN(goalx3)
 
-struct BurnDriver BurnDrvgoalx3 = {
+struct BurnDriver BurnDrvGoalx3 = {
 	"goalx3", NULL, "neogeo", NULL, "1995",
 	"Goal! Goal! Goal!\0", NULL, "Visco", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -14264,7 +14299,7 @@ static struct BurnRomInfo neodriftRomDesc[] = {
 STDROMPICKEXT(neodrift, neodrift, neogeo)
 STD_ROM_FN(neodrift)
 
-struct BurnDriver BurnDrvneodrift = {
+struct BurnDriver BurnDrvNeodrift = {
 	"neodrift", NULL, "neogeo", NULL, "1996",
 	"Neo Drift Out - New Technology\0", NULL, "Visco", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -14296,7 +14331,7 @@ static struct BurnRomInfo breakersRomDesc[] = {
 STDROMPICKEXT(breakers, breakers, neogeo)
 STD_ROM_FN(breakers)
 
-struct BurnDriver BurnDrvbreakers = {
+struct BurnDriver BurnDrvBreakers = {
 	"breakers", NULL, "neogeo", NULL, "1996",
 	"Breakers\0", NULL, "Visco", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -14327,7 +14362,7 @@ static struct BurnRomInfo puzzldprRomDesc[] = {
 STDROMPICKEXT(puzzldpr, puzzldpr, neogeo)
 STD_ROM_FN(puzzldpr)
 
-struct BurnDriver BurnDrvpuzzldpr = {
+struct BurnDriver BurnDrvPuzzldpr = {
 	"puzzldpr", NULL, "neogeo", NULL, "1997",
 	"Puzzle De Pon! R!\0", NULL, "Visco", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -14363,7 +14398,7 @@ static struct BurnRomInfo breakrevRomDesc[] = {
 STDROMPICKEXT(breakrev, breakrev, neogeo)
 STD_ROM_FN(breakrev)
 
-struct BurnDriver BurnDrvbreakrev = {
+struct BurnDriver BurnDrvBreakrev = {
 	"breakrev", NULL, "neogeo", NULL, "1998",
 	"Breakers Revenge\0", NULL, "Visco", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -14393,7 +14428,7 @@ static struct BurnRomInfo flipshotRomDesc[] = {
 STDROMPICKEXT(flipshot, flipshot, neogeo)
 STD_ROM_FN(flipshot)
 
-struct BurnDriver BurnDrvflipshot = {
+struct BurnDriver BurnDrvFlipshot = {
 	"flipshot", NULL, "neogeo", NULL, "1998",
 	"Battle Flip Shot\0", NULL, "Visco", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -14424,7 +14459,7 @@ static struct BurnRomInfo ctomadayRomDesc[] = {
 STDROMPICKEXT(ctomaday, ctomaday, neogeo)
 STD_ROM_FN(ctomaday)
 
-struct BurnDriver BurnDrvctomaday = {
+struct BurnDriver BurnDrvCtomaday = {
 	"ctomaday", NULL, "neogeo", NULL, "1999",
 	"Captain Tomaday\0", NULL, "Visco", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -14459,7 +14494,7 @@ static INT32 ganryuInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvganryu = {
+struct BurnDriver BurnDrvGanryu = {
 	"ganryu", NULL, "neogeo", NULL, "1999",
 	"Ganryu / Musashi Ganryuki\0", NULL, "Visco", "Neo Geo MVS",
 	L"Ganryu\0\u6B66\u8535\u5DCC\u6D41\u8A18\0", NULL, NULL, NULL,
@@ -14495,7 +14530,7 @@ static INT32 bangbeadInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvbangbead = {
+struct BurnDriver BurnDrvBangbead = {
 	"bangbead", NULL, "neogeo", NULL, "2000",
 	"Bang Bead\0", NULL, "Visco", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -14552,7 +14587,7 @@ static INT32 mslug4Init()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvmslug4 = {
+struct BurnDriver BurnDrvMslug4 = {
 	"mslug4", NULL, "neogeo", NULL, "2002",
 	"Metal Slug 4 (NGM-2630)\0", NULL, "Mega / Noise Factory / Playmore", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -14590,7 +14625,7 @@ static struct BurnRomInfo mslug4hRomDesc[] = {
 STDROMPICKEXT(mslug4h, mslug4h, neogeo)
 STD_ROM_FN(mslug4h)
 
-struct BurnDriver BurnDrvmslug4h = {
+struct BurnDriver BurnDrvMslug4h = {
 	"mslug4h", "mslug4", "neogeo", NULL, "2002",
 	"Metal Slug 4 (NGH-2630)\0", NULL, "Mega / Noise Factory / Playmore", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -14625,7 +14660,7 @@ static struct BurnRomInfo ms4plusRomDesc[] = {
 STDROMPICKEXT(ms4plus, ms4plus, neogeo)
 STD_ROM_FN(ms4plus)
 
-struct BurnDriver BurnDrvms4plus = {
+struct BurnDriver BurnDrvMs4plus = {
 	"ms4plus", "mslug4", "neogeo", NULL, "2002",
 	"Metal Slug 4 Plus (bootleg)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -14675,7 +14710,7 @@ static INT32 rotdInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvrotd = {
+struct BurnDriver BurnDrvRotd = {
 	"rotd", NULL, "neogeo", NULL, "2002",
 	"Rage of the Dragons (NGM-2640?)\0", NULL, "Evoga / Playmore", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -14711,7 +14746,7 @@ struct BurnDriver BurnDrvrotd = {
 STDROMPICKEXT(rotdh, rotdh, neogeo)
 STD_ROM_FN(rotdh)
 
-struct BurnDriver BurnDrvrotdh = {
+struct BurnDriver BurnDrvRotdh = {
 	"rotdh", "rotd", "neogeo", NULL, "2002",
 	"Rage of the Dragons (NGH-2640?)\0", NULL, "Evoga / Playmore", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -14770,7 +14805,7 @@ static INT32 matrimInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvmatrim = {
+struct BurnDriver BurnDrvMatrim = {
 	"matrim", NULL, "neogeo", NULL, "2003",
 	"Matrimelee / Shin Gouketsuji Ichizoku Toukon (NGM-2660 ~ NGH-2660)\0", NULL, "Noise Factory / Atlus", "Neo Geo MVS",
 	L"\u65B0\u8C6A\u8840\u5BFA\u4E00\u65CF - \u95D8\u5A5A\0Matrimelee (NGM-2660 ~ NGH-2660)\0", NULL, NULL, NULL,
@@ -14849,7 +14884,7 @@ static INT32 matrimblInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvmatrimbl = {
+struct BurnDriver BurnDrvMatrimbl = {
 	"matrimbl", "matrim", "neogeo", NULL, "2003",
 	"Matrimelee / Shin Gouketsuji Ichizoku Toukon (bootleg)\0", NULL, "bootleg", "Neo Geo MVS",
 	L"\u65B0\u8C6A\u8840\u5BFA\u4E00\u65CF - \u95D8\u5A5A\0Matrimelee (bootleg)\0", NULL, NULL, NULL,
@@ -14888,7 +14923,7 @@ INT32 jockeygpInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvjockeygp = {
+struct BurnDriver BurnDrvJockeygp = {
 	"jockeygp", NULL, "neogeo", NULL, "2001",
 	"Jockey Grand Prix (set 1)\0", NULL, "Sun Amusement / BrezzaSoft", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -14921,7 +14956,7 @@ static struct BurnRomInfo jockeygpaRomDesc[] = {
 STDROMPICKEXT(jockeygpa, jockeygpa, neogeo)
 STD_ROM_FN(jockeygpa)
 
-struct BurnDriver BurnDrvjockeygpa = {
+struct BurnDriver BurnDrvJockeygpa = {
 	"jockeygpa", "jockeygp", "neogeo", NULL, "2001",
 	"Jockey Grand Prix (set 2)\0", NULL, "Sun Amusement / BrezzaSoft", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -14957,7 +14992,7 @@ static INT32 vlinerInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvvliner = {
+struct BurnDriver BurnDrvVliner = {
 	"vliner", NULL, "neogeo", NULL, "2001",
 	"V-Liner (v0.7a)\0", NULL, "Dyna / BrezzaSoft", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -14986,7 +15021,7 @@ static struct BurnRomInfo vliner7eRomDesc[] = {
 STDROMPICKEXT(vliner7e, vliner7e, neogeo)
 STD_ROM_FN(vliner7e)
 
-struct BurnDriver BurnDrvvliner7e = {
+struct BurnDriver BurnDrvVliner7e = {
 	"vliner7e", "vliner", "neogeo", NULL, "2001",
 	"V-Liner (v0.7e)\0", NULL, "Dyna / BrezzaSoft", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -15015,7 +15050,7 @@ static struct BurnRomInfo vliner6eRomDesc[] = {
 STDROMPICKEXT(vliner6e, vliner6e, neogeo)
 STD_ROM_FN(vliner6e)
 
-struct BurnDriver BurnDrvvliner6e = {
+struct BurnDriver BurnDrvVliner6e = {
 	"vliner6e", "vliner", "neogeo", NULL, "2001",
 	"V-Liner (v0.6e)\0", NULL, "Dyna / BrezzaSoft", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -15044,7 +15079,7 @@ static struct BurnRomInfo vliner54RomDesc[] = {
 STDROMPICKEXT(vliner54, vliner54, neogeo)
 STD_ROM_FN(vliner54)
 
-struct BurnDriver BurnDrvvliner54 = {
+struct BurnDriver BurnDrvVliner54 = {
 	"vliner54", "vliner", "neogeo", NULL, "2001",
 	"V-Liner (v0.54)\0", NULL, "Dyna / BrezzaSoft", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -15073,7 +15108,7 @@ static struct BurnRomInfo vliner53RomDesc[] = {
 STDROMPICKEXT(vliner53, vliner53, neogeo)
 STD_ROM_FN(vliner53)
 
-struct BurnDriver BurnDrvvliner53 = {
+struct BurnDriver BurnDrvVliner53 = {
 	"vliner53", "vliner", "neogeo", NULL, "2001",
 	"V-Liner (v0.53)\0", NULL, "Dyna / BrezzaSoft", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -15102,7 +15137,7 @@ static struct BurnRomInfo diggermaRomDesc[] = {
 STDROMPICKEXT(diggerma, diggerma, neogeo)
 STD_ROM_FN(diggerma)
 
-struct BurnDriver BurnDrvdiggerma = {
+struct BurnDriver BurnDrvDiggerma = {
 	"diggerma", NULL, "neogeo", NULL, "2000",
 	"Digger Man (prototype)\0", NULL, "Kyle Hodgetts", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -15225,7 +15260,7 @@ static struct BurnRomInfo bangbedpRomDesc[] = {
 STDROMPICKEXT(bangbedp, bangbedp, neogeo)
 STD_ROM_FN(bangbedp)
 
-struct BurnDriver BurnDrvbangbedp = {
+struct BurnDriver BurnDrvBangbedp = {
 	"bangbedp", "bangbead", "neogeo", NULL, "2000",
 	"Bang Bead (Prototype?)\0", NULL, "Visco", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -15402,7 +15437,7 @@ static INT32 kof96epInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvkof96ep = {
+struct BurnDriver BurnDrvKof96ep = {
 	"kof96ep", "kof96", "neogeo", NULL, "1996",
 	"The King of Fighters '96 (bootleg / hack)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -15486,7 +15521,7 @@ static INT32 kof97plaInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvkof97pla = {
+struct BurnDriver BurnDrvKof97pla = {
 	"kof97pla", "kof97", "neogeo", NULL, "2003",
 	"The King of Fighters '97 Chongchu Jianghu Plus 2003 (bootleg, set 2)\0", NULL, "bootleg", "Neo Geo MVS",
 	L"The King of Fighters '97 \u91cd\u51fa\u6c5f\u6e56 Plus 2003 (bootleg, set 2)\0", NULL, NULL, NULL,
@@ -15570,7 +15605,7 @@ static INT32 cthd2k3aInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvcthd2k3a = {
+struct BurnDriver BurnDrvCthd2k3a = {
 	"cthd2k3a", "kof2001", "neogeo", NULL, "2003",
 	"Crouching Tiger Hidden Dragon 2003 (The King of Fighters 2001 bootleg, set 2)\0", NULL, "bootleg", "Neo Geo MVS",
 	L"\u81e5\u864e\u85cf\u9f8d 2003 (The King of Fighters 2001 bootleg, set 2)\0", NULL, NULL, NULL,
@@ -15616,7 +15651,7 @@ static INT32 kf2k1plsInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvkf2k1pls = {
+struct BurnDriver BurnDrvKf2k1pls = {
 	"kf2k1pls", "kof2001", "neogeo", NULL, "2002",
 	"The King of Fighters 2001 Plus (set 1, bootleg / hack)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -15670,7 +15705,7 @@ static INT32  kf2k1plaInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvkf2k1pla = {
+struct BurnDriver BurnDrvKf2k1pla = {
 	"kf2k1pla", "kof2001", "neogeo", NULL, "2002",
 	"The King of Fighters 2001 Plus (set 2, bootleg / hack)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -15707,7 +15742,7 @@ static struct BurnRomInfo kf2k2plbRomDesc[] = {
 STDROMPICKEXT(kf2k2plb, kf2k2plb, neogeo)
 STD_ROM_FN(kf2k2plb)
 
-struct BurnDriver BurnDrvkf2k2plb = {
+struct BurnDriver BurnDrvKf2k2plb = {
 	"kf2k2plb", "kof2002", "neogeo", NULL, "2002",
 	"The King of Fighters 2002 Plus (bootleg set 3)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -15769,7 +15804,7 @@ static INT32 kf2k2plcInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvkf2k2plc = {
+struct BurnDriver BurnDrvKf2k2plc = {
 	"kf2k2plc", "kof2002", "neogeo", NULL, "2002",
 	"The King of Fighters 2002 Super (bootleg)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -15844,7 +15879,7 @@ static INT32 kf2k4plsInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvkf2k4pls = {
+struct BurnDriver BurnDrvKf2k4pls = {
 	"kf2k4pls", "kof2002", "neogeo", NULL, "2004",
 	"The King of Fighters Special Edition 2004 Plus (bootleg)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -15923,7 +15958,7 @@ static struct BurnRomInfo lastbladaRomDesc[] = {
 STDROMPICKEXT(lastblada, lastblada, neogeo)
 STD_ROM_FN(lastblada)
 
-struct BurnDriver BurnDrvlastblada = {
+struct BurnDriver BurnDrvLastblada = {
 	"lastblada", "lastblad", "neogeo", NULL, "1997",
 	"The Last Blade / Bakumatsu Roman - Gekka no Kenshi (NGM-2340, alt board)\0", NULL, "SNK", "Neo Geo MVS",
 	L"The Last Blade\0\u5E55\u672B\u6D6A\u6F2B \u6708\u83EF\u306E\u5263\u58EB (NGM-2340, alt board)\0", NULL, NULL, NULL,
@@ -15956,7 +15991,7 @@ static struct BurnRomInfo wh2jaRomDesc[] = {
 STDROMPICKEXT(wh2ja, wh2ja, neogeo)
 STD_ROM_FN(wh2ja)
 
-struct BurnDriver BurnDrvwh2ja = {
+struct BurnDriver BurnDrvWh2ja = {
 	"wh2ja", "wh2j", "neogeo", NULL, "1994",
 	"World Heroes 2 Jet (ADM-007)\0", NULL, "ADK / SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -15989,7 +16024,7 @@ static struct BurnRomInfo totcRomDesc[] = {
 STDROMPICKEXT(totc, totc, neogeo)
 STD_ROM_FN(totc)
 
-struct BurnDriver BurnDrvtotc = {
+struct BurnDriver BurnDrvTotc = {
 	"totc", NULL, "neogeo", NULL, "2011",
 	"Treasure of the Caribbean\0", NULL, "FACE Corporation / N.C.I - Le Cortex", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -16022,7 +16057,7 @@ static struct BurnRomInfo crswd2blRomDesc[] = {
 STDROMPICKEXT(crswd2bl, crswd2bl, neogeo)
 STD_ROM_FN(crswd2bl)
 
-struct BurnDriver BurnDrvcrswd2bl = {
+struct BurnDriver BurnDrvCrswd2bl = {
 	"crswd2bl", NULL, "neogeo", NULL, "1996",
 	"Crossed Swords 2 (bootleg of CD version)\0", NULL, "bootleg (Razoola)", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -16051,7 +16086,7 @@ static struct BurnRomInfo froman2bRomDesc[] = {
 STDROMPICKEXT(froman2b, froman2b, neogeo)
 STD_ROM_FN(froman2b)
 
-struct BurnDriver BurnDrvfroman2b = {
+struct BurnDriver BurnDrvFroman2b = {
 	"froman2b", NULL, "neogeo", NULL, "1995",
 	"Idol Mahjong Final Romance 2 (Neo-Geo, bootleg of CD version)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -16085,7 +16120,7 @@ static struct BurnRomInfo lasthopeRomDesc[] = {
 STDROMPICKEXT(lasthope, lasthope, neogeo)
 STD_ROM_FN(lasthope)
 
-struct BurnDriver BurnDrvlasthope = {
+struct BurnDriver BurnDrvLasthope = {
 	"lasthope", NULL, "neogeo", NULL, "2005",
 	"Last Hope (bootleg AES to MVS conversion, no coin support)\0", NULL, "NG:DEV.TEAM", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -16163,13 +16198,13 @@ static INT32 mslug5bInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvmslug5b = {
+struct BurnDriver BurnDrvMslug5b = {
 	"mslug5b", "mslug5", "neogeo", NULL, "2003",
 	"Metal Slug 5 (bootleg, set 1)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_BOOTLEG, 2, HARDWARE_PREFIX_CARTRIDGE | HARDWARE_SNK_NEOGEO, GBF_RUNGUN, FBF_MSLUG,
 	NULL, mslug5bRomInfo, mslug5bRomName, NULL, NULL, NULL, NULL, neogeoInputInfo, neogeoDIPInfo,
-	mslug5bInit, NeoPVCExit, NeoFrame, NeoRender, NeoScan, &NeoRecalcPalette,
+	mslug5bInit, NeoExit, NeoFrame, NeoRender, NeoScan, &NeoRecalcPalette,
 	0x1000,	304, 224, 4, 3
 };
 
@@ -16232,7 +16267,7 @@ static INT32 mslug5b2Init()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvmslug5b2 = {
+struct BurnDriver BurnDrvMslug5b2 = {
 	"mslug5b2", "mslug5", "neogeo", NULL, "2003",
 	"Metal Slug 5 (bootleg, set 2)\0", NULL, "bootleg", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -16309,6 +16344,38 @@ struct BurnDriver BurnDrv_19yyo = {
 };
 
 
+// 2020 Super Baseball (Neo CD conversion)
+
+static struct BurnRomInfo bb2020cdRomDesc[] = {
+	{ "030-p1ch.p1",	0x080000, 0xe13d8a8a, 1 | BRF_ESS | BRF_PRG }, //  0 68K code
+
+	{ "030-s1.s1",		0x020000, 0x7015b8fc, 2 | BRF_GRA },           //  1 Text layer tiles
+
+	{ "030-c1.c1",		0x100000, 0x4f5e19bd, 3 | BRF_GRA },           //  2 Sprite data
+	{ "030-c2.c2",		0x100000, 0xd6314bf0, 3 | BRF_GRA },           //  3
+	{ "030-c3.c3",		0x100000, 0x47fddfee, 3 | BRF_GRA },           //  4
+	{ "030-c4.c4",		0x100000, 0x780d1c4e, 3 | BRF_GRA },           //  5
+
+	{ "030-m1ch.m1",	0x010000, 0x124d7b4f, 4 | BRF_ESS | BRF_PRG }, //  6 Z80 code
+
+	{ "030-v1ch.v1",	0x100000, 0xd725a649, 5 | BRF_SND },           //  7 Sound data
+	{ "030-v2.v2",		0x100000, 0x54994455, 5 | BRF_SND },           //  8
+};
+
+STDROMPICKEXT(bb2020cd, bb2020cd, neogeo)
+STD_ROM_FN(bb2020cd)
+
+struct BurnDriver BurnDrvBb2020cd = {
+	"2020bbcd", "2020bb", "neogeo", NULL, "1991",
+	"2020 Super Baseball (Neo CD conversion)\0", NULL, "hack", "Neo Geo MVS",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK, 2, HARDWARE_PREFIX_CARTRIDGE | HARDWARE_SNK_NEOGEO, GBF_SPORTSMISC, 0,
+	NULL, bb2020cdRomInfo, bb2020cdRomName, NULL, NULL, NULL, NULL, neogeoInputInfo, neogeoDIPInfo,
+	NeoInit, NeoExit, NeoFrame, NeoRender, NeoScan, &NeoRecalcPalette,
+	0x1000, 304, 224, 4, 3
+};
+
+
 // Last Hope (Neo CD conversion)
 
 static struct BurnRomInfo lhcdbRomDesc[] = {
@@ -16331,7 +16398,7 @@ static struct BurnRomInfo lhcdbRomDesc[] = {
 STDROMPICKEXT(lhcdb, lhcdb, neogeo)
 STD_ROM_FN(lhcdb)
 
-struct BurnDriver BurnDrvlhcdb = {
+struct BurnDriver BurnDrvLhcdb = {
 	"lhcdb", NULL, "neogeo", NULL, "2007",
 	"Last Hope CD Beta (Neo CD conversion)\0", "Imperfect graphics", "NG:Dev.Team", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -16366,7 +16433,7 @@ static struct BurnRomInfo rallychRomDesc[] = {
 STDROMPICKEXT(rallych, rallych, neogeo)
 STD_ROM_FN(rallych)
 
-struct BurnDriver BurnDrvrallych = {
+struct BurnDriver BurnDrvRallych = {
 	"rallych", "trally", "neogeo", NULL, "1991",
 	"Rally Chase (Neo CD conversion)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -16395,7 +16462,7 @@ static struct BurnRomInfo zintrkcdRomDesc[] = {
 STDROMPICKEXT(zintrkcd, zintrkcd, neogeo)
 STD_ROM_FN(zintrkcd)
 
-struct BurnDriver BurnDrvzintrkcd = {
+struct BurnDriver BurnDrvZintrkcd = {
 	"zintrkcd", "zintrckb", "neogeo", NULL, "1996",
 	"Zintrick / Oshidashi Zentrix (Neo CD conversion)\0", NULL, "hack", "Neo Geo MVS",
 	L"Zintrick\0\u62BC\u3057\u51FA\u3057\u30B8\u30F3\u30C8\u30EA\u30C3\u30AF (Neo CD conversion)\0", NULL, NULL, NULL,
@@ -16436,7 +16503,7 @@ static struct BurnRomInfo blazstarcmRomDesc[] = {
 STDROMPICKEXT(blazstarcm, blazstarcm, neogeo)
 STD_ROM_FN(blazstarcm)
 
-struct BurnDriver BurnDrvblazstarcm = {
+struct BurnDriver BurnDrvBlazstarcm = {
 	"blazstarcm", "blazstar", "neogeo", NULL, "2020",
 	"Blazing Star (Stage Select Hack)\0", NULL, "Clear Paper, NeoCverA, JustinG", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -16469,7 +16536,7 @@ static struct BurnRomInfo cakefghtRomDesc[] = {
 STDROMPICKEXT(cakefght, cakefght, neogeo)
 STD_ROM_FN(cakefght)
 
-struct BurnDriver BurnDrvcakefght = {
+struct BurnDriver BurnDrvCakefght = {
 	"cakefght", "twinspri", "neogeo", NULL, "2022",
 	"Cake Fighter (hack of Twinkle Star Sprites)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -16483,10 +16550,10 @@ struct BurnDriver BurnDrvcakefght = {
 // Voltage Fighter - Gowcaizer / Choujin Gakuen Gowcaizer (Eternal, Hack)
 // Modified by jlima
 // https://www.ppxclub.com/forum.php?mod=viewthread&tid=724160
-// 20240305
+// 20240411
 
 static struct BurnRomInfo gowcaietRomDesc[] = {
-	{ "094-p1et.p1",	0x200000, 0x0cb07b54, 1 | BRF_ESS | BRF_PRG },
+	{ "094-p1et.p1",	0x200000, 0xfe5df757, 1 | BRF_ESS | BRF_PRG },
 
 	{ "094-s1.s1",		0x020000, 0x2f8748a2, 2 | BRF_GRA },
 
@@ -16509,7 +16576,7 @@ static struct BurnRomInfo gowcaietRomDesc[] = {
 STDROMPICKEXT(gowcaiet, gowcaiet, neogeo)
 STD_ROM_FN(gowcaiet)
 
-struct BurnDriver BurnDrvGowcaizr = {
+struct BurnDriver BurnDrvGowcaiet = {
 	"gowcaiet", "gowcaizr", "neogeo", NULL, "2024",
 	"Voltage Fighter - Gowcaizer / Choujin Gakuen Gowcaizer (Eternal, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	L"Voltage Fighter - Gowcaizer\0\u8D85\u4EBA\u5B66\u5712\u30B4\u30A6\u30AB\u30A4\u30B6\u30FC (Eternal, Hack)\0", NULL, NULL, NULL,
@@ -16543,7 +16610,7 @@ static struct BurnRomInfo karnovreRomDesc[] = {
 STDROMPICKEXT(karnovre, karnovre, neogeo)
 STD_ROM_FN(karnovre)
 
-struct BurnDriver BurnDrvkarnovre = {
+struct BurnDriver BurnDrvKarnovre = {
 	"karnovre", "karnovr", "neogeo", NULL, "2023",
 	"Karnov's Revenge / Fighter's History Dynamite (Revolution v0.1, Hack)\0", NULL, "GameHackFan", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -16651,7 +16718,7 @@ static struct BurnRomInfo sdodgebhRomDesc[] = {
 STDROMPICKEXT(sdodgebh, sdodgebh, neogeo)
 STD_ROM_FN(sdodgebh)
 
-struct BurnDriver BurnDrvsdodgebh = {
+struct BurnDriver BurnDrvSdodgebh = {
 	"sdodgebh", "sdodgeb", "neogeo", NULL, "1996",
 	"Super Dodge Ball / Kunio no Nekketsu Toukyuu Densetsu (Secret Character Hack)\0", NULL, "hack", "Neo Geo MVS",
 	L"Super Dodge Ball\0\u304F\u306B\u304A\u306E\u71B1\u8840\u95D8\u7403\u4F1D\u8AAC (Secret Character Hack)\0", NULL, NULL, NULL,
@@ -16714,7 +16781,7 @@ static struct BurnRomInfo aof2bhsRomDesc[] = {
 STDROMPICKEXT(aof2bhs, aof2bhs, neogeo)
 STD_ROM_FN(aof2bhs)
 
-struct BurnDriver BurnDrvaof2bhs = {
+struct BurnDriver BurnDrvAof2bhs = {
 	"aof2bhs", "aof2", "neogeo", NULL, "2018",
 	"Art of Fighting 2 / Ryuuko no Ken 2 (Boss With Simple Attack Edition, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	L"Art of Fighting 2\0\u9F8D\u864E\u306E\u62F3\uFF12 (Boss With Simple Attack Edition, Hack)\0", NULL, NULL, NULL,
@@ -16793,7 +16860,7 @@ static struct BurnRomInfo breakrevbhRomDesc[] = {
 STDROMPICKEXT(breakrevbh, breakrevbh, neogeo)
 STD_ROM_FN(breakrevbh)
 
-struct BurnDriver BurnDrvbreakrevbh = {
+struct BurnDriver BurnDrvBreakrevbh = {
 	"breakrevbh", "breakrev", "neogeo", NULL, "2007",
 	"Breakers Revenge (Boss Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -16815,7 +16882,7 @@ static struct BurnRomInfo brkrevextRomDesc[] = {
 STDROMPICKEXT(brkrevext, brkrevext, neogeo)
 STD_ROM_FN(brkrevext)
 
-struct BurnDriver BurnDrvbrkrevext = {
+struct BurnDriver BurnDrvBrkrevext = {
 	"brkrevext", "breakrev", "neogeo", NULL, "2018",
 	"Breakers Revenge (Extra Mode, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -16839,7 +16906,7 @@ static struct BurnRomInfo brkrevjqRomDesc[] = {
 STDROMPICKEXT(brkrevjq, brkrevjq, neogeo)
 STD_ROM_FN(brkrevjq)
 
-struct BurnDriver BurnDrvbrkrevjq = {
+struct BurnDriver BurnDrvBrkrevjq = {
 	"brkrevjq", "breakrev", "neogeo", NULL, "2022",
 	"Breakers Revenge (Enhanced, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -16894,7 +16961,7 @@ static struct BurnRomInfo doubledrbhRomDesc[] = {
 STDROMPICKEXT(doubledrbh, doubledrbh, neogeo)
 STD_ROM_FN(doubledrbh)
 
-struct BurnDriver BurnDrvdoubledrbh = {
+struct BurnDriver BurnDrvDoubledrbh = {
 	"doubledrbh", "doubledr", "neogeo", NULL, "1995",
 	"Double Dragon (Boss hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -16918,7 +16985,7 @@ static struct BurnRomInfo doubledpRomDesc[] = {
 STDROMPICKEXT(doubledp, doubledp, neogeo)
 STD_ROM_FN(doubledp)
 
-struct BurnDriver BurnDrvdoubledp = {
+struct BurnDriver BurnDrvDoubledp = {
 	"doubledp", "doubledr", "neogeo", NULL, "2015",
 	"Double Dragon (Plus, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -16942,7 +17009,7 @@ static struct BurnRomInfo doubledtRomDesc[] = {
 STDROMPICKEXT(doubledt, doubledt, neogeo)
 STD_ROM_FN(doubledt)
 
-struct BurnDriver BurnDrvdoubledt = {
+struct BurnDriver BurnDrvDoubledt = {
 	"doubledt", "doubledr", "neogeo", NULL, "2014",
 	"Double Dragon (Optimized, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -17014,7 +17081,7 @@ static INT32 doubldspInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvdoubldrsp = {
+struct BurnDriver BurnDrvDoubldrsp = {
 	"doubldsp", "doubledr", "neogeo", NULL, "2023",
 	"Double Dragon (Special 2017, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -17055,7 +17122,7 @@ static struct BurnRomInfo kabukiklbRomDesc[] = {
 STDROMPICKEXT(kabukiklb, kabukiklb, neogeo)
 STD_ROM_FN(kabukiklb)
 
-struct BurnDriver BurnDrvkabukiklb = {
+struct BurnDriver BurnDrvKabukiklb = {
 	"kabukiklb", "kabukikl", "neogeo", NULL, "2008",
 	"Far East of Eden - Kabuki Klash / Tengai Makyou - Shin Den (Add hidden characters)\0", NULL, "Ydmis / Creamymami[EGCG]", "Neo Geo MVS",
 	L"Kabuki Klash - far east of eden\0\u5929\u5916\u9B54\u5883 - \u771F\u4F1D (Add hidden characters)\0", NULL, NULL, NULL,
@@ -17079,7 +17146,7 @@ static struct BurnRomInfo kabukijqRomDesc[] = {
 STDROMPICKEXT(kabukijq, kabukijq, neogeo)
 STD_ROM_FN(kabukijq)
 
-struct BurnDriver BurnDrvkabukijq = {
+struct BurnDriver BurnDrvKabukijq = {
 	"kabukijq", "kabukikl", "neogeo", NULL, "2023",
 	"Far East of Eden - Kabuki Klash / Tengai Makyou - Shin Den (Enhanced, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	L"Kabuki Klash - far east of eden\0\u5929\u5916\u9B54\u5883 - \u771F\u4F1D (Enhanced, Hack)\0", NULL, NULL, NULL,
@@ -17119,7 +17186,7 @@ static struct BurnRomInfo ffury1bsRomDesc[] = {
 STDROMPICKEXT(ffury1bs, ffury1bs, neogeo)
 STD_ROM_FN(ffury1bs)
 
-struct BurnDriver BurnDrvffury1bs = {
+struct BurnDriver BurnDrvFfury1bs = {
 	"ffury1bs", "fatfury1", "neogeo", NULL, "1992",
 	"Fatal Fury - King of Fighters / Garou Densetsu - Shukumei no Tatakai (Boss, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	L"Fatal Fury - King of Fighters\0\u9913\u72FC\u4F1D\u8AAC - \u5BBF\u547D\u306E\u95D8\u3044 (Boss, Hack)\0", NULL, NULL, NULL,
@@ -17250,7 +17317,7 @@ static struct BurnRomInfo ffury3bsRomDesc[] = {
 STDROMPICKEXT(ffury3bs, ffury3bs, neogeo)
 STD_ROM_FN(ffury3bs)
 
-struct BurnDriver BurnDrvffury3bs = {
+struct BurnDriver BurnDrvFfury3bs = {
 	"ffury3bs", "fatfury3", "neogeo", NULL, "2015",
 	"Fatal Fury 3 - Road to the Final Victory / Garou Densetsu 3 - Haruka-naru Tatakai (Ancient Battles Resurgence, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	L"Fatal Fury 3 - Road to the Final Victory\0\u9913\u72FC\u4F1D\u8AAC\uFF13 (Ancient Battles Resurgence, Hack)\0", NULL, NULL, NULL,
@@ -17315,7 +17382,7 @@ static struct BurnRomInfo rbffspbsRomDesc[] = {
 STDROMPICKEXT(rbffspbs, rbffspbs, neogeo)
 STD_ROM_FN(rbffspbs)
 
-struct BurnDriver BurnDrvrbffspbs = {
+struct BurnDriver BurnDrvRbffspbs = {
 	"rbffspbs", "rbffspec", "neogeo", NULL, "1996",
 	"Real Bout Fatal Fury Special / Real Bout Garou Densetsu Special (Boss, Hack)\0", "Select Geese Howard with portrait, press 'B+C' to select EX characters", "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -17354,7 +17421,7 @@ static struct BurnRomInfo rbff2bsRomDesc[] = {
 STDROMPICKEXT(rbff2bs, rbff2bs, neogeo)
 STD_ROM_FN(rbff2bs)
 
-struct BurnDriver BurnDrvrbff2bs = {
+struct BurnDriver BurnDrvRbff2bs = {
 	"rbff2bs", "rbff2", "neogeo", NULL, "1998",
 	"Real Bout Fatal Fury 2 - The Newcomers / Real Bout Garou Densetsu 2 - The Newcomers (Secret Character, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	L"Real Bout Fatal Fury 2 - The Newcomers\0Real Bout \u9913\u72FC\u4F1D\u8AAC\uFF12 (Secret Character, Hack)\0", NULL, NULL, NULL,
@@ -17394,7 +17461,7 @@ static struct BurnRomInfo garoubsRomDesc[] = {
 STDROMPICKEXT(garoubs, garoubs, neogeo)
 STD_ROM_FN(garoubs)
 
-struct BurnDriver BurnDrvgaroubs = {
+struct BurnDriver BurnDrvGaroubs = {
 	"garoubs", "garou", "neogeo", NULL, "1999",
 	"Garou - Mark of the Wolves (Enable hidden characters, Hack)\0", NULL, "Ydmis", "Neo Geo MVS",
 	L"Garou\0\u9913\u72FC - Mark of the Wolves (Enable hidden characters, Hack)\0", NULL, NULL, NULL,
@@ -17434,7 +17501,7 @@ static struct BurnRomInfo garoujqRomDesc[] = {
 STDROMPICKEXT(garoujq, garoujq, neogeo)
 STD_ROM_FN(garoujq)
 
-struct BurnDriver BurnDrvgaroujq = {
+struct BurnDriver BurnDrvGaroujq = {
 	"garoujq", "garou", "neogeo", NULL, "2023",
 	"Garou - Mark of the Wolves (Enhanced, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	L"Garou\0\u9913\u72FC - Mark of the Wolves (Enhanced, Hack)\0", NULL, NULL, NULL,
@@ -17487,7 +17554,7 @@ static struct BurnRomInfo lastbldpRomDesc[] = {
 STDROMPICKEXT(lastbldp, lastbldp, neogeo)
 STD_ROM_FN(lastbldp)
 
-struct BurnDriver BurnDrvlastbldp = {
+struct BurnDriver BurnDrvLastbldp = {
 	"lastbldp", "lastblad", "neogeo", NULL, "2014",
 	"The Last Blade / Bakumatsu Roman - Gekka no Kenshi (Plus, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	L"The Last Blade\0\u5E55\u672B\u6D6A\u6F2B \u6708\u83EF\u306E\u5263\u58EB (Plus, Hack)\0", NULL, NULL, NULL,
@@ -17510,7 +17577,7 @@ static struct BurnRomInfo lastbldiRomDesc[] = {
 STDROMPICKEXT(lastbldi, lastbldi, neogeo)
 STD_ROM_FN(lastbldi)
 
-struct BurnDriver BurnDrvlastbldi = {
+struct BurnDriver BurnDrvLastbldi = {
 	"lastbldi", "lastblad", "neogeo", NULL, "2023",
 	"The Last Blade / Bakumatsu Roman - Gekka no Kenshi (Infinite Energy, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	L"The Last Blade\0\u5E55\u672B\u6D6A\u6F2B \u6708\u83EF\u306E\u5263\u58EB (Infinite Energy, Hack)\0", NULL, NULL, NULL,
@@ -17590,7 +17657,7 @@ static INT32 lastblspInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvlastblsp = {
+struct BurnDriver BurnDrvLastblsp = {
 	"lastblsp", "lastblad", "neogeo", NULL, "2023",
 	"The Last Blade / Bakumatsu Roman - Gekka no Kenshi (Special 2017, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	L"The Last Blade\0\u5E55\u672B\u6D6A\u6F2B \u6708\u83EF\u306E\u5263\u58EB (Special 2017, Hack)\0", NULL, NULL, NULL,
@@ -17663,7 +17730,7 @@ static struct BurnRomInfo lastbd2tRomDesc[] = {
 STDROMPICKEXT(lastbd2t, lastbd2t, neogeo)
 STD_ROM_FN(lastbd2t)
 
-struct BurnDriver BurnDrvlastbd2t = {
+struct BurnDriver BurnDrvLastbd2t = {
 	"lastbd2t", "lastbld2", "neogeo", NULL, "2015",
 	"The Last Blade 2 / Bakumatsu Roman - Dai Ni Maku Gekka no Kenshi (Team, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	L"The Last Blade 2\0\u5E55\u672B\u6D6A\u6F2B\u7B2C\u4E8C\u5E55 - \u6708\u83EF\u306E\u5263\u58EB - \u6708\u306B\u54B2\u304F\u83EF\u3001\u6563\u308A\u3086\u304F\u82B1 (Team, Hack)\0", NULL, NULL, NULL,
@@ -17735,7 +17802,7 @@ static struct BurnRomInfo lastbd2bRomDesc[] = {
 STDROMPICKEXT(lastbd2b, lastbd2b, neogeo)
 STD_ROM_FN(lastbd2b)
 
-struct BurnDriver BurnDrvlastbd2b = {
+struct BurnDriver BurnDrvLastbd2b = {
 	"lastbd2b", "lastbld2", "neogeo", NULL, "1998",
 	"The Last Blade 2 / Bakumatsu Roman - Dai Ni Maku Gekka no Kenshi (Enable Hidden Characters V4)\0", NULL, "Dodowang[EGCG]", "Neo Geo MVS",
 	L"The Last Blade 2\0\u5E55\u672B\u6D6A\u6F2B\u7B2C\u4E8C\u5E55 - \u6708\u83EF\u306E\u5263\u58EB - \u6708\u306B\u54B2\u304F\u83EF\u3001\u6563\u308A\u3086\u304F\u82B1 (Enable Hidden Characters V4)\0", NULL, NULL, NULL,
@@ -17774,7 +17841,7 @@ static struct BurnRomInfo magdrop3bhRomDesc[] = {
 STDROMPICKEXT(magdrop3bh, magdrop3bh, neogeo)
 STD_ROM_FN(magdrop3bh)
 
-struct BurnDriver BurnDrvmagdrop3bh = {
+struct BurnDriver BurnDrvMagdrop3bh = {
 	"magdrop3bh", "magdrop3", "neogeo", NULL, "1997",
 	"Magical Drop III (Secret Character Hack)\0", NULL, "hack", "Neo Geo MVS",
 	L"Magical Drop III\0\u30DE\u30B8\u30AB\u30EB\u30C9\u30ED\u30C3\u30D7III (Secret Character Hack)\0", NULL, NULL, NULL,
@@ -17804,7 +17871,7 @@ static struct BurnRomInfo magdrop3teRomDesc[] = {
 STDROMPICKEXT(magdrop3te, magdrop3te, neogeo)
 STD_ROM_FN(magdrop3te)
 
-struct BurnDriver BurnDrvmagdrop3te = {
+struct BurnDriver BurnDrvMagdrop3te = {
 	"magdrop3te", "magdrop3", "neogeo", NULL, "2022",
 	"Magical Drop III Tournament Edition\0", NULL, "hack", "Neo Geo MVS",
 	L"Magical Drop III\0\u30DE\u30B8\u30AB\u30EB\u30C9\u30ED\u30C3\u30D7III Tournament Edition\0", NULL, NULL, NULL,
@@ -17843,7 +17910,7 @@ static struct BurnRomInfo mslugunityRomDesc[] = {
 STDROMPICKEXT(mslugunity, mslugunity, neogeo)
 STD_ROM_FN(mslugunity)
 
-struct BurnDriver BurnDrvmslugunity = {
+struct BurnDriver BurnDrvMslugunity = {
 	"mslugunity", "mslug", "neogeo", NULL, "2021",
 	"Metal Slug Unity (Added Timer Ver. 2021-02-05)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -17868,7 +17935,7 @@ static struct BurnRomInfo mslugdgRomDesc[] = {
 STDROMPICKEXT(mslugdg, mslugdg, neogeo)
 STD_ROM_FN(mslugdg)
 
-struct BurnDriver BurnDrvmslugdg = {
+struct BurnDriver BurnDrvMslugdg = {
 	"mslugdg", "mslug", "neogeo", NULL, "2018",
 	"Metal Slug - Super Vehicle-001 (Multifunction, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -17893,7 +17960,7 @@ static struct BurnRomInfo mslug1v2RomDesc[] = {
 STDROMPICKEXT(mslug1v2, mslug1v2, neogeo)
 STD_ROM_FN(mslug1v2)
 
-struct BurnDriver BurnDrvmslug1v2 = {
+struct BurnDriver BurnDrvMslug1v2 = {
 	"mslug1v2", "mslug", "neogeo", NULL, "2023",
 	"Metal Slug - Super Vehicle-001 (1v2 Mode, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -17906,10 +17973,10 @@ struct BurnDriver BurnDrvmslug1v2 = {
 
 // Metal Slug - Super Vehicle-001 (Origins, Hack)
 // Modified by 合金弹头爱克斯
-// GOTVG 20240127
+// Bug fixed by Alice - 20240409
 
 static struct BurnRomInfo mslugqyRomDesc[] = {
-	{ "201-p1qy.p1",	0x100000, 0xa054f7ba, 1 | BRF_ESS | BRF_PRG },
+	{ "201-p1qy.p1",	0x100000, 0x16068dc1, 1 | BRF_ESS | BRF_PRG },
 	{ "201-p2dg.sp2",	0x100000, 0xc3cb544c, 1 | BRF_ESS | BRF_PRG },
 
 	MSLUG_COMPONENTS
@@ -17918,7 +17985,7 @@ static struct BurnRomInfo mslugqyRomDesc[] = {
 STDROMPICKEXT(mslugqy, mslugqy, neogeo)
 STD_ROM_FN(mslugqy)
 
-struct BurnDriver BurnDrvmslugqy = {
+struct BurnDriver BurnDrvMslugqy = {
 	"mslugqy", "mslug", "neogeo", NULL, "2024",
 	"Metal Slug - Super Vehicle-001 (Origins, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -17929,13 +17996,38 @@ struct BurnDriver BurnDrvmslugqy = {
 };
 
 
-// Metal Slug - Super Vehicle-001 (Item Random FC2, Hack)
+// Metal Slug - Super Vehicle-001 (Origins Item Random, Hack)
 // Modified by Alice
-// 20240228
+// 20240410
+
+static struct BurnRomInfo msqyfc1RomDesc[] = {
+	{ "201-p1qyfc1.p1",		0x100000, 0x4f107600, 1 | BRF_ESS | BRF_PRG },
+	{ "201-p2dgfc1.sp2",	0x100000, 0xf0b93488, 1 | BRF_ESS | BRF_PRG },
+
+	MSLUG_COMPONENTS
+};
+
+STDROMPICKEXT(msqyfc1, msqyfc1, neogeo)
+STD_ROM_FN(msqyfc1)
+
+struct BurnDriver BurnDrvMsqyfc1 = {
+	"msqyfc1", "mslug", "neogeo", NULL, "2024",
+	"Metal Slug - Super Vehicle-001 (Origins Item Random, Hack)\0", NULL, "Alice", "Neo Geo MVS",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK, 2, HARDWARE_PREFIX_CARTRIDGE | HARDWARE_SNK_NEOGEO, GBF_RUNGUN, FBF_MSLUG,
+	NULL, msqyfc1RomInfo, msqyfc1RomName, NULL, NULL, NULL, NULL, neogeoInputInfo, neogeoDIPInfo,
+	NeoInit, NeoExit, NeoFrame, NeoRender, NeoScan, &NeoRecalcPalette,
+	0x1000,	304, 224, 4, 3
+};
+
+
+// Metal Slug - Super Vehicle-001 (Random Item, Hack)
+// Modified by Alice
+// 20240415
 
 static struct BurnRomInfo mslugfc1RomDesc[] = {
-	{ "201-p1fc1.p1",	0x100000, 0xdb8f7d81, 1 | BRF_ESS | BRF_PRG },
-	{ "201-p2fc1.sp2",	0x100000, 0xf3d34029, 1 | BRF_ESS | BRF_PRG },
+	{ "201-p1fc1.p1",	0x100000, 0x267042be, 1 | BRF_ESS | BRF_PRG },
+	{ "201-p2fc1.sp2",	0x100000, 0x65749e35, 1 | BRF_ESS | BRF_PRG },
 
 	MSLUG_COMPONENTS
 };
@@ -17943,9 +18035,9 @@ static struct BurnRomInfo mslugfc1RomDesc[] = {
 STDROMPICKEXT(mslugfc1, mslugfc1, neogeo)
 STD_ROM_FN(mslugfc1)
 
-struct BurnDriver BurnDrvmslugfc1 = {
+struct BurnDriver BurnDrvMslugfc1 = {
 	"mslugfc1", "mslug", "neogeo", NULL, "2024",
-	"Metal Slug - Super Vehicle-001 (Item Random FC2, Hack)\0", NULL, "hack", "Neo Geo MVS",
+	"Metal Slug - Super Vehicle-001 (Random Item, Hack)\0", NULL, "Alice", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK, 2, HARDWARE_PREFIX_CARTRIDGE | HARDWARE_SNK_NEOGEO, GBF_RUNGUN, FBF_MSLUG,
 	NULL, mslugfc1RomInfo, mslugfc1RomName, NULL, NULL, NULL, NULL, neogeoInputInfo, neogeoDIPInfo,
@@ -17954,13 +18046,13 @@ struct BurnDriver BurnDrvmslugfc1 = {
 };
 
 
-// Metal Slug - Super Vehicle-001 (Item Random & Powerful Enemy Defense FC2, Hack)
+// Metal Slug - Super Vehicle-001 (Random Item & Powerful Enemy Defense, Hack)
 // Modified by Alice
-// 20240228
+// 20240415
 
 static struct BurnRomInfo mslugfc2RomDesc[] = {
-	{ "201-p1fc2.p1",	0x100000, 0xb079dd40, 1 | BRF_ESS | BRF_PRG },
-	{ "201-p2fc2.sp2",	0x100000, 0x8211a964, 1 | BRF_ESS | BRF_PRG },
+	{ "201-p1fc2.p1",	0x100000, 0x4d86e27f, 1 | BRF_ESS | BRF_PRG },
+	{ "201-p2fc2.sp2",	0x100000, 0x14b67778, 1 | BRF_ESS | BRF_PRG },
 
 	MSLUG_COMPONENTS
 };
@@ -17968,9 +18060,9 @@ static struct BurnRomInfo mslugfc2RomDesc[] = {
 STDROMPICKEXT(mslugfc2, mslugfc2, neogeo)
 STD_ROM_FN(mslugfc2)
 
-struct BurnDriver BurnDrvmslugfc2 = {
+struct BurnDriver BurnDrvMslugfc2 = {
 	"mslugfc2", "mslug", "neogeo", NULL, "2024",
-	"Metal Slug - Super Vehicle-001 (Item Random & Powerful Enemy Defense FC2, Hack)\0", NULL, "hack", "Neo Geo MVS",
+	"Metal Slug - Super Vehicle-001 (Random Item & Powerful Enemy Defense, Hack)\0", NULL, "Alice", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK, 2, HARDWARE_PREFIX_CARTRIDGE | HARDWARE_SNK_NEOGEO, GBF_RUNGUN, FBF_MSLUG,
 	NULL, mslugfc2RomInfo, mslugfc2RomName, NULL, NULL, NULL, NULL, neogeoInputInfo, neogeoDIPInfo,
@@ -17992,7 +18084,7 @@ static struct BurnRomInfo mslugfsRomDesc[] = {
 STDROMPICKEXT(mslugfs, mslugfs, neogeo)
 STD_ROM_FN(mslugfs)
 
-struct BurnDriver BurnDrvmslugfs = {
+struct BurnDriver BurnDrvMslugfs = {
 	"mslugfs", "mslug", "neogeo", NULL, "2024",
 	"Metal Slug - Super Vehicle-001 (Firepower Showdown, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18038,7 +18130,7 @@ static struct BurnRomInfo mslug2unityRomDesc[] = {
 STDROMPICKEXT(mslug2unity, mslug2unity, neogeo)
 STD_ROM_FN(mslug2unity)
 
-struct BurnDriver BurnDrvmslug2unity = {
+struct BurnDriver BurnDrvMslug2unity = {
 	"mslug2unity", "mslug2", "neogeo", NULL, "2021",
 	"Metal Slug 2 - Super Vehicle-001/II Unity (Added Timer Ver. 2021-01-22)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18063,7 +18155,7 @@ static struct BurnRomInfo mslug2fmRomDesc[] = {
 STDROMPICKEXT(mslug2fm, mslug2fm, neogeo)
 STD_ROM_FN(mslug2fm)
 
-struct BurnDriver BurnDrvmslug2fm = {
+struct BurnDriver BurnDrvMslug2fm = {
 	"mslug2fm", "mslug2", "neogeo", NULL, "2021",
 	"Metal Slug 2 - Super Vehicle-001/II (Friendly Fire FC2, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18096,7 +18188,7 @@ static struct BurnRomInfo mslug2ddRomDesc[] = {
 STDROMPICKEXT(mslug2dd, mslug2dd, neogeo)
 STD_ROM_FN(mslug2dd)
 
-struct BurnDriver BurnDrvmslug2dd = {
+struct BurnDriver BurnDrvMslug2dd = {
 	"mslug2dd", "mslug2", "neogeo", NULL, "2022",
 	"Metal Slug 2 - Super Vehicle-001/II (Starlight, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18121,7 +18213,7 @@ static struct BurnRomInfo mslug2dgRomDesc[] = {
 STDROMPICKEXT(mslug2dg, mslug2dg, neogeo)
 STD_ROM_FN(mslug2dg)
 
-struct BurnDriver BurnDrvmslug2dg = {
+struct BurnDriver BurnDrvMslug2dg = {
 	"mslug2dg", "mslug2", "neogeo", NULL, "2017",
 	"Metal Slug 2 - Super Vehicle-001/II (Multifunction, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18147,7 +18239,7 @@ static struct BurnRomInfo mslug2ctRomDesc[] = {
 STDROMPICKEXT(mslug2ct, mslug2ct, neogeo)
 STD_ROM_FN(mslug2ct)
 
-struct BurnDriver BurnDrvmslug2ct = {
+struct BurnDriver BurnDrvMslug2ct = {
 	"mslug2ct", "mslug2", "neogeo", NULL, "2018",
 	"Metal Slug 2 - Super Vehicle-001/II (Survival, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18172,7 +18264,7 @@ static struct BurnRomInfo mslug2rRomDesc[] = {
 STDROMPICKEXT(mslug2r, mslug2r, neogeo)
 STD_ROM_FN(mslug2r)
 
-struct BurnDriver BurnDrvmslug2r = {
+struct BurnDriver BurnDrvMslug2r = {
 	"mslug2r", "mslug2", "neogeo", NULL, "2014",
 	"Metal Slug 2 - Super Vehicle-001/II (Enemy Remix, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18197,7 +18289,7 @@ static struct BurnRomInfo mslug2pRomDesc[] = {
 STDROMPICKEXT(mslug2p, mslug2p, neogeo)
 STD_ROM_FN(mslug2p)
 
-struct BurnDriver BurnDrvmslug2p = {
+struct BurnDriver BurnDrvMslug2p = {
 	"mslug2p", "mslug2", "neogeo", NULL, "2015",
 	"Metal Slug 2 - Super Vehicle-001/II (Weapon Storage, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18222,7 +18314,7 @@ static struct BurnRomInfo ms21v2RomDesc[] = {
 STDROMPICKEXT(ms21v2, ms21v2, neogeo)
 STD_ROM_FN(ms21v2)
 
-struct BurnDriver BurnDrvms21v2 = {
+struct BurnDriver BurnDrvMs21v2 = {
 	"ms21v2", "mslug2", "neogeo", NULL, "2019",
 	"Metal Slug 2 - Super Vehicle-001/II (1v2 Mode, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18256,7 +18348,7 @@ static struct BurnRomInfo mslug2egRomDesc[] = {
 STDROMPICKEXT(mslug2eg, mslug2eg, neogeo)
 STD_ROM_FN(mslug2eg)
 
-struct BurnDriver BurnDrvmslug2eg = {
+struct BurnDriver BurnDrvMslug2eg = {
 	"mslug2eg", "mslug2", "neogeo", NULL, "2021",
 	"Metal Slug 2 - Super Vehicle-001/II (Extraction Green Turbo, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18310,7 +18402,7 @@ static struct BurnRomInfo mslugxunityRomDesc[] = {
 STDROMPICKEXT(mslugxunity, mslugxunity, neogeo)
 STD_ROM_FN(mslugxunity)
 
-struct BurnDriver BurnDrvmslugxunity = {
+struct BurnDriver BurnDrvMslugxunity = {
 	"mslugxunity", "mslugx", "neogeo", NULL, "2021",
 	"Metal Slug X - Super Vehicle-001 Unity (Added Timer Ver. 2021-01-23)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18335,7 +18427,7 @@ static struct BurnRomInfo mslugxc1RomDesc[] = {
 STDROMPICKEXT(mslugxc1, mslugxc1, neogeo)
 STD_ROM_FN(mslugxc1)
 
-struct BurnDriver BurnDrvmslugxc1 = {
+struct BurnDriver BurnDrvMslugxc1 = {
 	"mslugxc1", "mslugx", "neogeo", NULL, "2013",
 	"Metal Slug X - Super Vehicle-001 (Multi Vehicle, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18360,7 +18452,7 @@ static struct BurnRomInfo mslugxc2RomDesc[] = {
 STDROMPICKEXT(mslugxc2, mslugxc2, neogeo)
 STD_ROM_FN(mslugxc2)
 
-struct BurnDriver BurnDrvmslugxc2 = {
+struct BurnDriver BurnDrvMslugxc2 = {
 	"mslugxc2", "mslugx", "neogeo", NULL, "2013",
 	"Metal Slug X - Super Vehicle-001 (Enemy Remix, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18385,7 +18477,7 @@ static struct BurnRomInfo mslugxifRomDesc[] = {
 STDROMPICKEXT(mslugxif, mslugxif, neogeo)
 STD_ROM_FN(mslugxif)
 
-struct BurnDriver BurnDrvmslugxif = {
+struct BurnDriver BurnDrvMslugxif = {
 	"mslugxif", "mslugx", "neogeo", NULL, "2021",
 	"Metal Slug X - Super Vehicle-001 (Infinite Firepower, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18410,7 +18502,7 @@ static struct BurnRomInfo mslugx2rRomDesc[] = {
 STDROMPICKEXT(mslugx2r, mslugx2r, neogeo)
 STD_ROM_FN(mslugx2r)
 
-struct BurnDriver BurnDrvmslugx2r = {
+struct BurnDriver BurnDrvMslugx2r = {
 	"mslugx2r", "mslugx", "neogeo", NULL, "2020",
 	"Metal Slug X - Super Vehicle-001 (2R, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18435,7 +18527,7 @@ static struct BurnRomInfo mslugxebRomDesc[] = {
 STDROMPICKEXT(mslugxeb, mslugxeb, neogeo)
 STD_ROM_FN(mslugxeb)
 
-struct BurnDriver BurnDrvmslugxeb = {
+struct BurnDriver BurnDrvMslugxeb = {
 	"mslugxeb", "mslugx", "neogeo", NULL, "2016",
 	"Metal Slug X - Super Vehicle-001 (Blue, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18460,7 +18552,7 @@ static struct BurnRomInfo msxsrfRomDesc[] = {
 STDROMPICKEXT(msxsrf, msxsrf, neogeo)
 STD_ROM_FN(msxsrf)
 
-struct BurnDriver BurnDrvmsxsrf = {
+struct BurnDriver BurnDrvMsxsrf = {
 	"msxsrf", "mslugx", "neogeo", NULL, "2021",
 	"Metal Slug X - Super Vehicle-001 (AzStar Soda Remix FC2, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18485,7 +18577,7 @@ static struct BurnRomInfo msx2rebRomDesc[] = {
 STDROMPICKEXT(msx2reb, msx2reb, neogeo)
 STD_ROM_FN(msx2reb)
 
-struct BurnDriver BurnDrvmsx2reb = {
+struct BurnDriver BurnDrvMsx2reb = {
 	"msx2reb", "mslugx", "neogeo", NULL, "2020",
 	"Metal Slug X - Super Vehicle-001 (2R Blue, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18510,7 +18602,7 @@ static struct BurnRomInfo msx2r1v2RomDesc[] = {
 STDROMPICKEXT(msx2r1v2, msx2r1v2, neogeo)
 STD_ROM_FN(msx2r1v2)
 
-struct BurnDriver BurnDrvmsx2r1v2 = {
+struct BurnDriver BurnDrvMsx2r1v2 = {
 	"msx2r1v2", "mslugx", "neogeo", NULL, "2020",
 	"Metal Slug X - Super Vehicle-001 (2R 1v2 Mode, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18535,7 +18627,7 @@ static struct BurnRomInfo mslugxxrRomDesc[] = {
 STDROMPICKEXT(mslugxxr, mslugxxr, neogeo)
 STD_ROM_FN(mslugxxr)
 
-struct BurnDriver BurnDrvmslugxxr = {
+struct BurnDriver BurnDrvMslugxxr = {
 	"mslugxxr", "mslugx", "neogeo", NULL, "2021",
 	"Metal Slug X - Super Vehicle-001 (Warriors, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18560,7 +18652,7 @@ static struct BurnRomInfo mslugxsvRomDesc[] = {
 STDROMPICKEXT(mslugxsv, mslugxsv, neogeo)
 STD_ROM_FN(mslugxsv)
 
-struct BurnDriver BurnDrvmslugxsv = {
+struct BurnDriver BurnDrvMslugxsv = {
 	"mslugxsv", "mslugx", "neogeo", NULL, "2021",
 	"Metal Slug X - Super Vehicle-001 (Unbounded, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18594,7 +18686,7 @@ static struct BurnRomInfo mslugxscRomDesc[] = {
 STDROMPICKEXT(mslugxsc, mslugxsc, neogeo)
 STD_ROM_FN(mslugxsc)
 
-struct BurnDriver BurnDrvmslugxsc = {
+struct BurnDriver BurnDrvMslugxsc = {
 	"mslugxsc", "mslugx", "neogeo", NULL, "2023",
 	"Metal Slug X - Super Vehicle-001 (Survival, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18629,7 +18721,7 @@ static struct BurnRomInfo mslugxcqRomDesc[] = {
 STDROMPICKEXT(mslugxcq, mslugxcq, neogeo)
 STD_ROM_FN(mslugxcq)
 
-struct BurnDriver BurnDrvmslugxcq = {
+struct BurnDriver BurnDrvMslugxcq = {
 	"mslugxcq", "mslugx", "neogeo", NULL, "2024",
 	"Metal Slug X - Super Vehicle-001 (Legend, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18663,7 +18755,7 @@ static struct BurnRomInfo mslugxfsRomDesc[] = {
 STDROMPICKEXT(mslugxfs, mslugxfs, neogeo)
 STD_ROM_FN(mslugxfs)
 
-struct BurnDriver BurnDrvmslugxfs = {
+struct BurnDriver BurnDrvMslugxfs = {
 	"mslugxfs", "mslugx", "neogeo", NULL, "2024",
 	"Metal Slug X - Super Vehicle-001 (Firepower Showdown, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18688,7 +18780,7 @@ static struct BurnRomInfo mslugxdgRomDesc[] = {
 STDROMPICKEXT(mslugxdg, mslugxdg, neogeo)
 STD_ROM_FN(mslugxdg)
 
-struct BurnDriver BurnDrvmslugxdg = {
+struct BurnDriver BurnDrvMslugxdg = {
 	"mslugxdg", "mslugx", "neogeo", NULL, "2023",
 	"Metal Slug X - Super Vehicle-001 (Multifunction, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18713,7 +18805,7 @@ static struct BurnRomInfo msx1v2RomDesc[] = {
 STDROMPICKEXT(msx1v2, msx1v2, neogeo)
 STD_ROM_FN(msx1v2)
 
-struct BurnDriver BurnDrvmsx1v2 = {
+struct BurnDriver BurnDrvMsx1v2 = {
 	"msx1v2", "mslugx", "neogeo", NULL, "2019",
 	"Metal Slug X - Super Vehicle-001 (1v2 Mode, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18747,7 +18839,7 @@ static struct BurnRomInfo mslugxddRomDesc[] = {
 STDROMPICKEXT(mslugxdd, mslugxdd, neogeo)
 STD_ROM_FN(mslugxdd)
 
-struct BurnDriver BurnDrvmslugxdd = {
+struct BurnDriver BurnDrvMslugxdd = {
 	"mslugxdd", "mslugx", "neogeo", NULL, "2022",
 	"Metal Slug X - Super Vehicle-001 (Starlight, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18781,7 +18873,7 @@ static struct BurnRomInfo mslugxlbRomDesc[] = {
 STDROMPICKEXT(mslugxlb, mslugxlb, neogeo)
 STD_ROM_FN(mslugxlb)
 
-struct BurnDriver BurnDrvmslugxlb = {
+struct BurnDriver BurnDrvMslugxlb = {
 	"mslugxlb", "mslugx", "neogeo", NULL, "2015",
 	"Metal Slug X - Super Vehicle-001 (Extreme Space, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18836,7 +18928,7 @@ static struct BurnRomInfo mslug3unityRomDesc[] = {
 STDROMPICKEXT(mslug3unity, mslug3unity, neogeo)
 STD_ROM_FN(mslug3unity)
 
-struct BurnDriver BurnDrvmslug3unity = {
+struct BurnDriver BurnDrvMslug3unity = {
 	"mslug3unity", "mslug3", "neogeo", NULL, "2021",
 	"Metal Slug 3 Unity (Added Timer Ver. 2021-02-13)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18865,7 +18957,7 @@ static struct BurnRomInfo mslug3iRomDesc[] = {
 STDROMPICKEXT(mslug3i, mslug3i, neogeo)
 STD_ROM_FN(mslug3i)
 
-struct BurnDriver BurnDrvmslug3i = {
+struct BurnDriver BurnDrvMslug3i = {
 	"mslug3i", "mslug3", "neogeo", NULL, "2021",
 	"Metal Slug 3 (Firepower Enhance, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18894,7 +18986,7 @@ static struct BurnRomInfo ms31v2RomDesc[] = {
 STDROMPICKEXT(ms31v2, ms31v2, neogeo)
 STD_ROM_FN(ms31v2)
 
-struct BurnDriver BurnDrvms31v2 = {
+struct BurnDriver BurnDrvMs31v2 = {
 	"ms31v2", "mslug3", "neogeo", NULL, "2019",
 	"Metal Slug 3 (1v2 Mode, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18923,7 +19015,7 @@ static struct BurnRomInfo mslug3ebRomDesc[] = {
 STDROMPICKEXT(mslug3eb, mslug3eb, neogeo)
 STD_ROM_FN(mslug3eb)
 
-struct BurnDriver BurnDrvmslug3eb = {
+struct BurnDriver BurnDrvMslug3eb = {
 	"mslug3eb", "mslug3", "neogeo", NULL, "2014",
 	"Metal Slug 3 (Blue, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18937,7 +19029,7 @@ struct BurnDriver BurnDrvmslug3eb = {
 
 
 #define MSLUG3_DECRYPTED_TEXT								\
-	{ "256-s1d.s1",	0x020000, 0x8458fff9, 2 | BRF_GRA },
+	{ "256-s1d.s1",	0x020000, 0x8458fff9, 2 | BRF_GRA },	// Data segment (0x020000~0x03ffff) in s1 (512KB) from mslug3.
 #define MSLUG3_DECRYPTED_SPR1								\
 	{ "256-c1d.c1",	0x800000, 0x3540398c, 3 | BRF_GRA },	\
 	{ "256-c2d.c2",	0x800000, 0xbdd220f0, 3 | BRF_GRA },
@@ -18971,7 +19063,7 @@ static struct BurnRomInfo mslug3fdRomDesc[] = {
 STDROMPICKEXT(mslug3fd, mslug3fd, neogeo)
 STD_ROM_FN(mslug3fd)
 
-struct BurnDriver BurnDrvmslug3fd = {
+struct BurnDriver BurnDrvMslug3fd = {
 	"mslug3fd", "mslug3", "neogeo", NULL, "2000",
 	"Metal Slug 3 (Fully Decrypted)\0", NULL, "SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -18995,7 +19087,7 @@ static struct BurnRomInfo mslug3vRomDesc[] = {
 STDROMPICKEXT(mslug3v, mslug3v, neogeo)
 STD_ROM_FN(mslug3v)
 
-struct BurnDriver BurnDrvmslug3v = {
+struct BurnDriver BurnDrvMslug3v = {
 	"mslug3v", "mslug3", "neogeo", NULL, "2012",
 	"Metal Slug 3 (Enhanced Violence, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19030,7 +19122,7 @@ static struct BurnRomInfo mslug3ddRomDesc[] = {
 STDROMPICKEXT(mslug3dd, mslug3dd, neogeo)
 STD_ROM_FN(mslug3dd)
 
-struct BurnDriver BurnDrvmslug3dd = {
+struct BurnDriver BurnDrvMslug3dd = {
 	"mslug3dd", "mslug3", "neogeo", NULL, "2022",
 	"Metal Slug 3 (Starlight, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19065,7 +19157,7 @@ static struct BurnRomInfo mslug3kiRomDesc[] = {
 STDROMPICKEXT(mslug3ki, mslug3ki, neogeo)
 STD_ROM_FN(mslug3ki)
 
-struct BurnDriver BurnDrvmslug3ki = {
+struct BurnDriver BurnDrvMslug3ki = {
 	"mslug3ki", "mslug3", "neogeo", NULL, "2022",
 	"Metal Slug 3 (Komorebi, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19090,7 +19182,7 @@ static struct BurnRomInfo mslug3cRomDesc[] = {
 STDROMPICKEXT(mslug3c, mslug3c, neogeo)
 STD_ROM_FN(mslug3c)
 
-struct BurnDriver BurnDrvmslug3c = {
+struct BurnDriver BurnDrvMslug3c = {
 	"mslug3c", "mslug3", "neogeo", NULL, "2019",
 	"Metal Slug 3 (Enemy Remix, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19114,7 +19206,7 @@ static struct BurnRomInfo mslug3seRomDesc[] = {
 STDROMPICKEXT(mslug3se, mslug3se, neogeo)
 STD_ROM_FN(mslug3se)
 
-struct BurnDriver BurnDrvmslug3se = {
+struct BurnDriver BurnDrvMslug3se = {
 	"mslug3se", "mslug3", "neogeo", NULL, "2022",
 	"Metal Slug 3 (Special, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19152,7 +19244,7 @@ static struct BurnRomInfo mslug3psRomDesc[] = {
 STDROMPICKEXT(mslug3ps, mslug3ps, neogeo)
 STD_ROM_FN(mslug3ps)
 
-struct BurnDriver BurnDrvmslug3ps = {
+struct BurnDriver BurnDrvMslug3ps = {
 	"mslug3ps", "mslug3", "neogeo", NULL, "2023",
 	"Metal Slug 3 (Pigeon Slug, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19168,7 +19260,7 @@ struct BurnDriver BurnDrvmslug3ps = {
 // GOTVG 20230506
 
 static struct BurnRomInfo mslug3lwRomDesc[] = {
-	{ "256-plw.p1",		0x100000, 0x94527837, 1 | BRF_ESS | BRF_PRG },
+	{ "256-p1lw.p1",	0x100000, 0x94527837, 1 | BRF_ESS | BRF_PRG },
 	{ "256-p2ps.sp2",	0x400000, 0x08ee1fe3, 1 | BRF_ESS | BRF_PRG },
 
 	MSLUG3_DECRYPTED_COMPONENTS
@@ -19177,7 +19269,7 @@ static struct BurnRomInfo mslug3lwRomDesc[] = {
 STDROMPICKEXT(mslug3lw, mslug3lw, neogeo)
 STD_ROM_FN(mslug3lw)
 
-struct BurnDriver BurnDrvmslug3lw = {
+struct BurnDriver BurnDrvMslug3lw = {
 	"mslug3lw", "mslug3", "neogeo", NULL, "2023",
 	"Metal Slug 3 (Last Bullet Remix, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19202,7 +19294,7 @@ static struct BurnRomInfo mslug3sdRomDesc[] = {
 STDROMPICKEXT(mslug3sd, mslug3sd, neogeo)
 STD_ROM_FN(mslug3sd)
 
-struct BurnDriver BurnDrvmslug3sd = {
+struct BurnDriver BurnDrvMslug3sd = {
 	"mslug3sd", "mslug3", "neogeo", NULL, "2017",
 	"Metal Slug 3 (Shop, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19239,7 +19331,7 @@ static struct BurnRomInfo mslug3gwRomDesc[] = {
 STDROMPICKEXT(mslug3gw, mslug3gw, neogeo)
 STD_ROM_FN(mslug3gw)
 
-struct BurnDriver BurnDrvmslug3gw = {
+struct BurnDriver BurnDrvMslug3gw = {
 	"mslug3gw", "mslug3", "neogeo", NULL, "2018",
 	"Metal Slug 3 (Onimusha Samanosuke, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19274,7 +19366,7 @@ static struct BurnRomInfo mslug3cqRomDesc[] = {
 STDROMPICKEXT(mslug3cq, mslug3cq, neogeo)
 STD_ROM_FN(mslug3cq)
 
-struct BurnDriver BurnDrvmslug3cq = {
+struct BurnDriver BurnDrvMslug3cq = {
 	"mslug3cq", "mslug3", "neogeo", NULL, "2024",
 	"Metal Slug 3 (Legend, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19309,7 +19401,7 @@ static struct BurnRomInfo mslug3fsRomDesc[] = {
 STDROMPICKEXT(mslug3fs, mslug3fs, neogeo)
 STD_ROM_FN(mslug3fs)
 
-struct BurnDriver BurnDrvmslug3fs = {
+struct BurnDriver BurnDrvMslug3fs = {
 	"mslug3fs", "mslug3", "neogeo", NULL, "2024",
 	"Metal Slug 3 (Firepower Showdown, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19344,7 +19436,7 @@ static struct BurnRomInfo mslug3scRomDesc[] = {
 STDROMPICKEXT(mslug3sc, mslug3sc, neogeo)
 STD_ROM_FN(mslug3sc)
 
-struct BurnDriver BurnDrvmslug3sc = {
+struct BurnDriver BurnDrvMslug3sc = {
 	"mslug3sc", "mslug3", "neogeo", NULL, "2023",
 	"Metal Slug 3 (Survival, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19369,7 +19461,7 @@ static struct BurnRomInfo mslug3zhRomDesc[] = {
 STDROMPICKEXT(mslug3zh, mslug3zh, neogeo)
 STD_ROM_FN(mslug3zh)
 
-struct BurnDriver BurnDrvmslug3zh = {
+struct BurnDriver BurnDrvMslug3zh = {
 	"mslug3zh", "mslug3", "neogeo", NULL, "2017",
 	"Metal Slug 3 (Vehicle Summon, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19404,7 +19496,7 @@ static struct BurnRomInfo mslug3gRomDesc[] = {
 STDROMPICKEXT(mslug3g, mslug3g, neogeo)
 STD_ROM_FN(mslug3g)
 
-struct BurnDriver BurnDrvmslug3g = {
+struct BurnDriver BurnDrvMslug3g = {
 	"mslug3g", "mslug3", "neogeo", NULL, "2022",
 	"Metal Slug 3 (Multifunction, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19450,7 +19542,7 @@ static struct BurnRomInfo mslug4unityRomDesc[] = {
 STDROMPICKEXT(mslug4unity, mslug4unity, neogeo)
 STD_ROM_FN(mslug4unity)
 
-struct BurnDriver BurnDrvmslug4unity = {
+struct BurnDriver BurnDrvMslug4unity = {
 	"mslug4unity", "mslug4", "neogeo", NULL, "2021",
 	"Metal Slug 4 Unity (Added Timer Ver. 2021-01-30)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19464,7 +19556,7 @@ struct BurnDriver BurnDrvmslug4unity = {
 
 
 #define MSLUG4_DECRYPTED_TEXT								\
-	{ "263-s1d.s1",	0x020000, 0xa9446774, 2 | BRF_GRA },
+	{ "263-s1d.s1",	0x020000, 0xa9446774, 2 | BRF_GRA },	// Data segment (0x040000~0x05ffff) in s1 (512KB) from mslug4.
 #define MSLUG4_DECRYPTED_SPR1								\
 	{ "263-c1d.c1",	0x800000, 0xa75ffcde, 3 | BRF_GRA },	\
 	{ "263-c2d.c2",	0x800000, 0x5ab0d12b, 3 | BRF_GRA },
@@ -19500,7 +19592,7 @@ static struct BurnRomInfo mslug4fdRomDesc[] = {
 STDROMPICKEXT(mslug4fd, mslug4fd, neogeo)
 STD_ROM_FN(mslug4fd)
 
-struct BurnDriver BurnDrvmslug4fd = {
+struct BurnDriver BurnDrvMslug4fd = {
 	"mslug4fd", "mslug4", "neogeo", NULL, "2002",
 	"Metal Slug 4 (Fully Decrypted)\0", NULL, "Mega / Noise Factory / Playmore", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19538,7 +19630,7 @@ static struct BurnRomInfo mslug4lwRomDesc[] = {
 STDROMPICKEXT(mslug4lw, mslug4lw, neogeo)
 STD_ROM_FN(mslug4lw)
 
-struct BurnDriver BurnDrvmslug4lw = {
+struct BurnDriver BurnDrvMslug4lw = {
 	"mslug4lw", "mslug4", "neogeo", NULL, "2023",
 	"Metal Slug 4 (Last Bullet Remix, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19576,7 +19668,7 @@ static struct BurnRomInfo mslug4lqRomDesc[] = {
 STDROMPICKEXT(mslug4lq, mslug4lq, neogeo)
 STD_ROM_FN(mslug4lq)
 
-struct BurnDriver BurnDrvmslug4lq = {
+struct BurnDriver BurnDrvMslug4lq = {
 	"mslug4lq", "mslug4", "neogeo", NULL, "2023",
 	"Metal Slug 4 (Last Bullet Remix - Without body armor, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19593,7 +19685,7 @@ struct BurnDriver BurnDrvmslug4lq = {
 
 static struct BurnRomInfo mslug4arRomDesc[] = {
 	{ "263-p1ar.p1",	0x100000, 0x21b68d31, 1 | BRF_ESS | BRF_PRG },
-	{ "263-p2lq.sp2",	0x500000, 0x7deba8eb, 1 | BRF_ESS | BRF_PRG },
+	{ "263-p2lw.sp2",	0x500000, 0x7deba8eb, 1 | BRF_ESS | BRF_PRG },
 
 	MSLUG4_DECRYPTED_COMPONENTS
 };
@@ -19601,7 +19693,7 @@ static struct BurnRomInfo mslug4arRomDesc[] = {
 STDROMPICKEXT(mslug4ar, mslug4ar, neogeo)
 STD_ROM_FN(mslug4ar)
 
-struct BurnDriver BurnDrvmslug4ar = {
+struct BurnDriver BurnDrvMslug4ar = {
 	"mslug4ar", "mslug4", "neogeo", NULL, "2023",
 	"Metal Slug 4 (Random Ammunition, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19626,7 +19718,7 @@ static struct BurnRomInfo mslug4aRomDesc[] = {
 STDROMPICKEXT(mslug4a, mslug4a, neogeo)
 STD_ROM_FN(mslug4a)
 
-struct BurnDriver BurnDrvmslug4a = {
+struct BurnDriver BurnDrvMslug4a = {
 	"mslug4a", "mslug4", "neogeo", NULL, "2021",
 	"Metal Slug 4 (20th Anniversary, Hack)\0", "Enter [Soft Dip] to turn on level display", "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19651,7 +19743,7 @@ static struct BurnRomInfo mslug4qRomDesc[] = {
 STDROMPICKEXT(mslug4q, mslug4q, neogeo)
 STD_ROM_FN(mslug4q)
 
-struct BurnDriver BurnDrvmslug4q = {
+struct BurnDriver BurnDrvMslug4q = {
 	"mslug4q", "mslug4", "neogeo", NULL, "2022",
 	"Metal Slug 4 (The Longest Battle, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19664,7 +19756,7 @@ struct BurnDriver BurnDrvmslug4q = {
 
 // Metal Slug 4 (Starlight, Hack)
 // Modified by 浅蹊m~
-// GOTVG 20220511
+// GOTVG 20221005
 
 static struct BurnRomInfo mslug4ddRomDesc[] = {
 	{ "263-p1dd.p1",	0x100000, 0x02ce0fcd, 1 | BRF_ESS | BRF_PRG },
@@ -19685,7 +19777,7 @@ static struct BurnRomInfo mslug4ddRomDesc[] = {
 STDROMPICKEXT(mslug4dd, mslug4dd, neogeo)
 STD_ROM_FN(mslug4dd)
 
-struct BurnDriver BurnDrvmslug4dd = {
+struct BurnDriver BurnDrvMslug4dd = {
 	"mslug4dd", "mslug4", "neogeo", NULL, "2022",
 	"Metal Slug 4 (Starlight, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19698,7 +19790,7 @@ struct BurnDriver BurnDrvmslug4dd = {
 
 // Metal Slug 4 (Komorebi, Hack)
 // Modified by 浅蹊m~
-// GOTVG 20220511
+// GOTVG 20220520
 
 static struct BurnRomInfo mslug4kiRomDesc[] = {
 	{ "263-p1ki.p1",	0x100000, 0x4e2363d3, 1 | BRF_ESS | BRF_PRG },
@@ -19719,7 +19811,7 @@ static struct BurnRomInfo mslug4kiRomDesc[] = {
 STDROMPICKEXT(mslug4ki, mslug4ki, neogeo)
 STD_ROM_FN(mslug4ki)
 
-struct BurnDriver BurnDrvmslug4ki = {
+struct BurnDriver BurnDrvMslug4ki = {
 	"mslug4ki", "mslug4", "neogeo", NULL, "2022",
 	"Metal Slug 4 (Komorebi, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19744,7 +19836,7 @@ static struct BurnRomInfo mslug4dgRomDesc[] = {
 STDROMPICKEXT(mslug4dg, mslug4dg, neogeo)
 STD_ROM_FN(mslug4dg)
 
-struct BurnDriver BurnDrvmslug4dg = {
+struct BurnDriver BurnDrvMslug4dg = {
 	"mslug4dg", "mslug4", "neogeo", NULL, "2017",
 	"Metal Slug 4 (Multifunction, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19769,7 +19861,7 @@ static struct BurnRomInfo ms41v2RomDesc[] = {
 STDROMPICKEXT(ms41v2, ms41v2, neogeo)
 STD_ROM_FN(ms41v2)
 
-struct BurnDriver BurnDrvms41v2 = {
+struct BurnDriver BurnDrvMs41v2 = {
 	"ms41v2", "mslug4", "neogeo", NULL, "2019",
 	"Metal Slug 4 (1v2 Mode, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19782,10 +19874,10 @@ struct BurnDriver BurnDrvms41v2 = {
 
 // Metal Slug 4 (Enemy Remix, Hack)
 // Modified by Tuhr123
-// GOTVG 20191117
+// GOTVG 20200210
 
 static struct BurnRomInfo mslug4cRomDesc[] = {
-	{ "263-p1c.p1",		0x100000, 0x81fd4ae9, 1 | BRF_ESS | BRF_PRG },
+	{ "263-p1c.p1",		0x100000, 0xf8145f8d, 1 | BRF_ESS | BRF_PRG },
 	{ "263-p2.sp2",		0x400000, 0xfdb7aed8, 1 | BRF_ESS | BRF_PRG },
 
 	MSLUG4_DECRYPTED_COMPONENTS
@@ -19794,8 +19886,8 @@ static struct BurnRomInfo mslug4cRomDesc[] = {
 STDROMPICKEXT(mslug4c, mslug4c, neogeo)
 STD_ROM_FN(mslug4c)
 
-struct BurnDriver BurnDrvmslug4c = {
-	"mslug4c", "mslug4", "neogeo", NULL, "2019",
+struct BurnDriver BurnDrvMslug4c = {
+	"mslug4c", "mslug4", "neogeo", NULL, "2020",
 	"Metal Slug 4 (Enemy Remix, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK, 2, HARDWARE_PREFIX_CARTRIDGE | HARDWARE_SNK_NEOGEO, GBF_RUNGUN, FBF_MSLUG,
@@ -19842,7 +19934,7 @@ static struct BurnRomInfo mslug5unityRomDesc[] = {
 STDROMPICKEXT(mslug5unity, mslug5unity, neogeo)
 STD_ROM_FN(mslug5unity)
 
-struct BurnDriver BurnDrvmslug5unity = {
+struct BurnDriver BurnDrvMslug5unity = {
 	"mslug5unity", "mslug5", "neogeo", NULL, "2021",
 	"Metal Slug 5 Unity (Added Timer Ver. 2021-04-23)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19893,7 +19985,7 @@ static struct BurnRomInfo mslug5fdRomDesc[] = {
 STDROMPICKEXT(mslug5fd, mslug5fd, neogeo)
 STD_ROM_FN(mslug5fd)
 
-struct BurnDriver BurnDrvmslug5fd = {
+struct BurnDriver BurnDrvMslug5fd = {
 	"mslug5fd", "mslug5", "neogeo", NULL, "2003",
 	"Metal Slug 5 (Fully Decrypted)\0", NULL, "SNK Playmore", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19915,7 +20007,7 @@ static struct BurnRomInfo mslug5ndRomDesc[] = {
 STDROMPICKEXT(mslug5nd, mslug5nd, neogeo)
 STD_ROM_FN(mslug5nd)
 
-struct BurnDriver BurnDrvmslug5nd = {
+struct BurnDriver BurnDrvMslug5nd = {
 	"mslug5nd", "mslug5", "neogeo", NULL, "2003",
 	"Metal Slug 5 (Not Encrypted)\0", NULL, "SNK Playmore", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19949,7 +20041,7 @@ static struct BurnRomInfo ms5plushRomDesc[] = {
 STDROMPICKEXT(ms5plush, ms5plush, neogeo)
 STD_ROM_FN(ms5plush)
 
-struct BurnDriver BurnDrvms5plush = {
+struct BurnDriver BurnDrvMs5plush = {
 	"ms5plush", "mslug5", "neogeo", NULL, "2019",
 	"Metal Slug 5 (Plus, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19973,7 +20065,7 @@ static struct BurnRomInfo mslug5exRomDesc[] = {
 STDROMPICKEXT(mslug5ex, mslug5ex, neogeo)
 STD_ROM_FN(mslug5ex)
 
-struct BurnDriver BurnDrvmslug5ex = {
+struct BurnDriver BurnDrvMslug5ex = {
 	"mslug5ex", "mslug5", "neogeo", NULL, "2022",
 	"Metal Slug 5 (Extend v1.2, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -19997,7 +20089,7 @@ static struct BurnRomInfo mslug5esRomDesc[] = {
 STDROMPICKEXT(mslug5es, mslug5es, neogeo)
 STD_ROM_FN(mslug5es)
 
-struct BurnDriver BurnDrvmslug5es = {
+struct BurnDriver BurnDrvMslug5es = {
 	"mslug5es", "mslug5", "neogeo", NULL, "2023",
 	"Metal Slug 5 (The Longest Battle, Hack)\0", "Enter [Soft Dip] to turn on level display", "hack", "Neo Geo",
 	NULL, NULL, NULL, NULL,
@@ -20021,7 +20113,7 @@ static struct BurnRomInfo ms5esrRomDesc[] = {
 STDROMPICKEXT(ms5esr, ms5esr, neogeo)
 STD_ROM_FN(ms5esr)
 
-struct BurnDriver BurnDrvms5esr = {
+struct BurnDriver BurnDrvMs5esr = {
 	"ms5esr", "mslug5", "neogeo", NULL, "2023",
 	"Metal Slug 5 (Double Enemy, Hack)\0", "Enter [Soft Dip] to turn on level display", "hack", "Neo Geo",
 	NULL, NULL, NULL, NULL,
@@ -20058,7 +20150,7 @@ static struct BurnRomInfo mslug5wRomDesc[] = {
 STDROMPICKEXT(mslug5w, mslug5w, neogeo)
 STD_ROM_FN(mslug5w)
 
-struct BurnDriver BurnDrvmslug5w = {
+struct BurnDriver BurnDrvMslug5w = {
 	"mslug5w", "mslug5", "neogeo", NULL, "2015",
 	"Metal Slug 5 (New Battle, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -20095,7 +20187,7 @@ static struct BurnRomInfo mslug5fRomDesc[] = {
 STDROMPICKEXT(mslug5f, mslug5f, neogeo)
 STD_ROM_FN(mslug5f)
 
-struct BurnDriver BurnDrvmslug5f = {
+struct BurnDriver BurnDrvMslug5f = {
 	"mslug5f", "mslug5", "neogeo", NULL, "2015",
 	"Metal Slug 5 (Fierce Battle, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -20108,10 +20200,10 @@ struct BurnDriver BurnDrvmslug5f = {
 
 // Metal Slug 5 (Stone Turtle, Hack)
 // Modified by 合金弹头爱克斯
-// GOTVG 20230518
+// 20240411
 
 static struct BurnRomInfo mslug5sgRomDesc[] = {
-	{ "268-p1sg.p1",	0x600000, 0x1b6a6163, 1 | BRF_ESS | BRF_PRG },
+	{ "268-p1sg.p1",	0x600000, 0xb6cb640e, 1 | BRF_ESS | BRF_PRG },
 
 	MSLUG5_DECRYPTED_COMPONENTS
 };
@@ -20119,8 +20211,8 @@ static struct BurnRomInfo mslug5sgRomDesc[] = {
 STDROMPICKEXT(mslug5sg, mslug5sg, neogeo)
 STD_ROM_FN(mslug5sg)
 
-struct BurnDriver BurnDrvmslug5sg = {
-	"mslug5sg", "mslug5", "neogeo", NULL, "2023",
+struct BurnDriver BurnDrvMslug5sg = {
+	"mslug5sg", "mslug5", "neogeo", NULL, "2024",
 	"Metal Slug 5 (Stone Turtle, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK, 2, HARDWARE_PREFIX_CARTRIDGE | HARDWARE_SNK_NEOGEO, GBF_RUNGUN, FBF_MSLUG,
@@ -20153,7 +20245,7 @@ static struct BurnRomInfo mslug5scRomDesc[] = {
 STDROMPICKEXT(mslug5sc, mslug5sc, neogeo)
 STD_ROM_FN(mslug5sc)
 
-struct BurnDriver BurnDrvmslug5sc = {
+struct BurnDriver BurnDrvMslug5sc = {
 	"mslug5sc", "mslug5", "neogeo", NULL, "2023",
 	"Metal Slug 5 (Survival, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -20166,18 +20258,18 @@ struct BurnDriver BurnDrvmslug5sc = {
 
 // Metal Slug 5 (Legend, Hack)
 // Modified by 合金弹头爱克斯
-// 20240313
+// 20240330
 
 static struct BurnRomInfo mslug5cqRomDesc[] = {
-	{ "268-p1cq.p1",	0xa00000, 0x7a1b3a62, 1 | BRF_ESS | BRF_PRG },
+	{ "268-p1cq.p1",	0xa00000, 0x9a08884a, 1 | BRF_ESS | BRF_PRG },
 
 	MSLUG5_DECRYPTED_TEXT
 
 	MSLUG5_DECRYPTED_SPR1
 	MSLUG5_DECRYPTED_SPR2
 	MSLUG5_DECRYPTED_SPR3
-	{ "268-c7cq.c7",	0x800000, 0x0b287889, 3 | BRF_GRA },
-	{ "268-c8cq.c8",	0x800000, 0xdb89d860, 3 | BRF_GRA },
+	{ "268-c7cq.c7",	0x800000, 0xe5ebe937, 3 | BRF_GRA },
+	{ "268-c8cq.c8",	0x800000, 0x43995e2b, 3 | BRF_GRA },
 
 	MSLUG5_DECRYPTED_Z80
 
@@ -20200,10 +20292,10 @@ struct BurnDriver BurnDrvMslug5cq = {
 
 // Metal Slug 5 (Boss Battles, Hack)
 // Modified by 合金弹头爱克斯
-// 20240314
+// 20240420
 
 static struct BurnRomInfo mslug5bsRomDesc[] = {
-	{ "268-p1bs.p1",	0x600000, 0x4d2aa270, 1 | BRF_ESS | BRF_PRG },
+	{ "268-p1bs.p1",	0x600000, 0x8bb8c097, 1 | BRF_ESS | BRF_PRG },
 
 	MSLUG5_DECRYPTED_COMPONENTS
 };
@@ -20211,7 +20303,7 @@ static struct BurnRomInfo mslug5bsRomDesc[] = {
 STDROMPICKEXT(mslug5bs, mslug5bs, neogeo)
 STD_ROM_FN(mslug5bs)
 
-struct BurnDriver BurnDrvmslug5bs = {
+struct BurnDriver BurnDrvMslug5bs = {
 	"mslug5bs", "mslug5", "neogeo", NULL, "2024",
 	"Metal Slug 5 (Boss Battles, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -20235,7 +20327,7 @@ static struct BurnRomInfo mslug5zhRomDesc[] = {
 STDROMPICKEXT(mslug5zh, mslug5zh, neogeo)
 STD_ROM_FN(mslug5zh)
 
-struct BurnDriver BurnDrvmslug5zh = {
+struct BurnDriver BurnDrvMslug5zh = {
 	"mslug5zh", "mslug5", "neogeo", NULL, "2018",
 	"Metal Slug 5 (Vehicle Summon, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -20259,7 +20351,7 @@ static struct BurnRomInfo ms51v2RomDesc[] = {
 STDROMPICKEXT(ms51v2, ms51v2, neogeo)
 STD_ROM_FN(ms51v2)
 
-struct BurnDriver BurnDrvms51v2 = {
+struct BurnDriver BurnDrvMs51v2 = {
 	"ms51v2", "mslug5", "neogeo", NULL, "2019",
 	"Metal Slug 5 (1v2 Mode, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -20283,7 +20375,7 @@ static struct BurnRomInfo mslug5dgRomDesc[] = {
 STDROMPICKEXT(mslug5dg, mslug5dg, neogeo)
 STD_ROM_FN(mslug5dg)
 
-struct BurnDriver BurnDrvmslug5dg = {
+struct BurnDriver BurnDrvMslug5dg = {
 	"mslug5dg", "mslug5", "neogeo", NULL, "2017",
 	"Metal Slug 5 (Multifunction, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -20306,7 +20398,7 @@ static struct BurnRomInfo ms5sgfRomDesc[] = {
 STDROMPICKEXT(ms5sgf, ms5sgf, neogeo)
 STD_ROM_FN(ms5sgf)
 
-struct BurnDriver BurnDrvms5sgf = {
+struct BurnDriver BurnDrvMs5sgf = {
 	"ms5sgf", "mslug5", "neogeo", NULL, "2021",
 	"Metal Slug 5 (Remake FC2, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -20330,7 +20422,7 @@ static struct BurnRomInfo mslug5cRomDesc[] = {
 STDROMPICKEXT(mslug5c, mslug5c, neogeo)
 STD_ROM_FN(mslug5c)
 
-struct BurnDriver BurnDrvmslug5c = {
+struct BurnDriver BurnDrvMslug5c = {
 	"mslug5c", "mslug5", "neogeo", NULL, "2019",
 	"Metal Slug 5 (Enemy Remix, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -20354,7 +20446,7 @@ static struct BurnRomInfo mslug5mgRomDesc[] = {
 STDROMPICKEXT(mslug5mg, mslug5mg, neogeo)
 STD_ROM_FN(mslug5mg)
 
-struct BurnDriver BurnDrvmslug5mg = {
+struct BurnDriver BurnDrvMslug5mg = {
 	"mslug5mg", "mslug5", "neogeo", NULL, "2019",
 	"Metal Slug 5 (Devil Enemy Remix, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -20378,7 +20470,7 @@ static struct BurnRomInfo mslug5xRomDesc[] = {
 STDROMPICKEXT(mslug5x, mslug5x, neogeo)
 STD_ROM_FN(mslug5x)
 
-struct BurnDriver BurnDrvmslug5x = {
+struct BurnDriver BurnDrvMslug5x = {
 	"mslug5x", "mslug5", "neogeo", NULL, "2022",
 	"Metal Slug 5 (X, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -20402,7 +20494,7 @@ static struct BurnRomInfo mslug5dbRomDesc[] = {
 STDROMPICKEXT(mslug5db, mslug5db, neogeo)
 STD_ROM_FN(mslug5db)
 
-struct BurnDriver BurnDrvmslug5db = {
+struct BurnDriver BurnDrvMslug5db = {
 	"mslug5db", "mslug5", "neogeo", NULL, "2022",
 	"Metal Slug 5 (Enemy Enhance, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -20426,7 +20518,7 @@ static struct BurnRomInfo mslug5ddRomDesc[] = {
 STDROMPICKEXT(mslug5dd, mslug5dd, neogeo)
 STD_ROM_FN(mslug5dd)
 
-struct BurnDriver BurnDrvmslug5dd = {
+struct BurnDriver BurnDrvMslug5dd = {
 	"mslug5dd", "mslug5", "neogeo", NULL, "2022",
 	"Metal Slug 5 (Starlight, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -20450,7 +20542,7 @@ static struct BurnRomInfo mslug5kiRomDesc[] = {
 STDROMPICKEXT(mslug5ki, mslug5ki, neogeo)
 STD_ROM_FN(mslug5ki)
 
-struct BurnDriver BurnDrvmslug5ki = {
+struct BurnDriver BurnDrvMslug5ki = {
 	"mslug5ki", "mslug5", "neogeo", NULL, "2022",
 	"Metal Slug 5 (Komorebi, Hack)\0", NULL, "hack", "Neo Geo",
 	NULL, NULL, NULL, NULL,
@@ -20499,7 +20591,7 @@ static struct BurnRomInfo samshobsRomDesc[] = {
 STDROMPICKEXT(samshobs, samshobs, neogeo)
 STD_ROM_FN(samshobs)
 
-struct BurnDriver BurnDrvsamshobs = {
+struct BurnDriver BurnDrvSamshobs = {
 	"samshobs", "samsho", "neogeo", NULL, "2003",
 	"Samurai Shodown / Samurai Spirits (Boss, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -20575,7 +20667,7 @@ static INT32 samsh2spInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvsamsh2sp = {
+struct BurnDriver BurnDrvSamsh2sp = {
 	"samsh2sp", "samsho2", "neogeo", NULL, "2023",
 	"Samurai Shodown II / Shin Samurai Spirits - Haohmaru Jigokuhen (Special 2017, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	L"Samurai Shodown II\0\u771F Samurai Spirits - \u8987\u738B\u4E38\u5730\u7344\u5909 (Special 2017, Hack)\0", NULL, NULL, NULL,
@@ -20611,7 +20703,7 @@ static struct BurnRomInfo samsho2tRomDesc[] = {
 STDROMPICKEXT(samsho2t, samsho2t, neogeo)
 STD_ROM_FN(samsho2t)
 
-struct BurnDriver BurnDrvsamsho2t = {
+struct BurnDriver BurnDrvSamsho2t = {
 	"samsho2t", "samsho2", "neogeo", NULL, "2020",
 	"Samurai Shodown II / Shin Samurai Spirits - Haohmaru Jigokuhen (Optimized, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	L"Samurai Shodown II\0\u771F Samurai Spirits - \u8987\u738B\u4E38\u5730\u7344\u5909 (Optimized, Hack)\0", NULL, NULL, NULL,
@@ -20645,7 +20737,7 @@ static struct BurnRomInfo samsh2jqRomDesc[] = {
 STDROMPICKEXT(samsh2jq, samsh2jq, neogeo)
 STD_ROM_FN(samsh2jq)
 
-struct BurnDriver BurnDrvsamsh2jq = {
+struct BurnDriver BurnDrvSamsh2jq = {
 	"samsh2jq", "samsho2", "neogeo", NULL, "2023",
 	"Samurai Shodown II / Shin Samurai Spirits - Haohmaru Jigokuhen (Infinite Power, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	L"Samurai Shodown II\0\u771F Samurai Spirits - \u8987\u738B\u4E38\u5730\u7344\u5909 (Infinite Power, Hack)\0", NULL, NULL, NULL,
@@ -20656,12 +20748,12 @@ struct BurnDriver BurnDrvsamsh2jq = {
 };
 
 
-// Samurai Shodown II Perfect Hack v. 1.9 - 2024-01-21
+// Samurai Shodown II Perfect Hack v. 2.0 - 2024-05-01
 
 static struct BurnRomInfo samsho2peRomDesc[] = {
-	{ "063-p1pe.p1",	0x100000, 0xd4b8d39c, 1 | BRF_ESS | BRF_PRG }, //  0 68K code
-	{ "063-p2pe.sp2",	0x100000, 0x6c833c91, 1 | BRF_ESS | BRF_PRG }, //  1
-	{ "063-p3pe.p3",	0x020000, 0xedffbd8a, 1 | BRF_ESS | BRF_PRG }, //  2 Extra ROM
+	{ "063-p1pe.p1",	0x100000, 0x7af0612c, 1 | BRF_ESS | BRF_PRG }, //  0 68K code
+	{ "063-p2pe.sp2",	0x100000, 0x5fb8a564, 1 | BRF_ESS | BRF_PRG }, //  1
+	{ "063-p3pe.p3",	0x020000, 0x74c7e103, 1 | BRF_ESS | BRF_PRG }, //  2 Extra ROM
 
 	SAMSHO2_COMPONENTS
 };
@@ -20671,8 +20763,8 @@ STD_ROM_FN(samsho2pe)
 
 struct BurnDriver BurnDrvSamsho2pe = {
 	"samsho2pe", "samsho2", "neogeo", NULL, "2024",
-	"Samurai Shodown II / Shin Samurai Spirits - Haohmaru Jigokuhen (Perfect V. 1.9, Hack)\0", NULL, "Bear", "Neo Geo MVS",
-	L"Samurai Shodown II\0\u771F Samurai Spirits - \u8987\u738B\u4E38\u5730\u7344\u5909 (Perfect V. 1.9, Hack)\0", NULL, NULL, NULL,
+	"Samurai Shodown II / Shin Samurai Spirits - Haohmaru Jigokuhen (Perfect V. 2.0, Hack)\0", NULL, "Bear", "Neo Geo MVS",
+	L"Samurai Shodown II\0\u771F Samurai Spirits - \u8987\u738B\u4E38\u5730\u7344\u5909 (Perfect V. 2.0, Hack)\0", NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK, 2, HARDWARE_PREFIX_CARTRIDGE | HARDWARE_SNK_NEOGEO, GBF_VSFIGHT, FBF_SAMSHO,
 	NULL, samsho2peRomInfo, samsho2peRomName, NULL, NULL, NULL, NULL, neogeoInputInfo, neogeoDIPInfo,
 	samsh2spInit, NeoExit, NeoFrame, NeoRender, NeoScan, &NeoRecalcPalette,
@@ -20740,7 +20832,7 @@ static struct BurnRomInfo samsh3bsRomDesc[] = {
 STDROMPICKEXT(samsh3bs, samsh3bs, neogeo)
 STD_ROM_FN(samsh3bs)
 
-struct BurnDriver BurnDrvsamsh3bs = {
+struct BurnDriver BurnDrvSamsh3bs = {
 	"samsh3bs", "samsho3", "neogeo", NULL, "2003",
 	"Samurai Shodown III / Samurai Spirits - Zankurou Musouken (Boss, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	L"Samurai Shodown III\0\u30B5\u30E0\u30E9\u30A4\u30B9\u30D4\u30EA\u30C3\u30C4 - \u65AC\u7D05\u90CE\u7121\u53CC\u5263 (Boss, Hack)\0", NULL, NULL, NULL,
@@ -20794,7 +20886,7 @@ static struct BurnRomInfo samsh4bsRomDesc[] = {
 STDROMPICKEXT(samsh4bs, samsh4bs, neogeo)
 STD_ROM_FN(samsh4bs)
 
-struct BurnDriver BurnDrvsamsh4bs = {
+struct BurnDriver BurnDrvSamsh4bs = {
 	"samsh4bs", "samsho4", "neogeo", NULL, "2004",
 	"Samurai Shodown IV - Amakusa's Revenge / Samurai Spirits - Amakusa Kourin (Boss, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	L"Samurai Shodown IV - Amakusa's Revenge\0\u30B5\u30E0\u30E9\u30A4\u30B9\u30D4\u30EA\u30C3\u30C4 - \u5929\u8349\u964D\u81E8 (Boss, Hack)\0", NULL, NULL, NULL,
@@ -20830,7 +20922,7 @@ static struct BurnRomInfo samsh4spRomDesc[] = {
 STDROMPICKEXT(samsh4sp, samsh4sp, neogeo)
 STD_ROM_FN(samsh4sp)
 
-struct BurnDriver BurnDrvsamsh4sp = {
+struct BurnDriver BurnDrvSamsh4sp = {
 	"samsh4sp", "samsho4", "neogeo", NULL, "2017",
 	"Samurai Shodown IV - Amakusa's Revenge / Samurai Spirits - Amakusa Kourin (Special 2017, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	L"Samurai Shodown IV - Amakusa's Revenge\0\u30B5\u30E0\u30E9\u30A4\u30B9\u30D4\u30EA\u30C3\u30C4 - \u5929\u8349\u964D\u81E8 (Special 2017, Hack)\0", NULL, NULL, NULL,
@@ -20887,7 +20979,7 @@ static struct BurnRomInfo samsh5fdRomDesc[] = {
 STDROMPICKEXT(samsh5fd, samsh5fd, neogeo)
 STD_ROM_FN(samsh5fd)
 
-struct BurnDriver BurnDrvsamsh5fd = {
+struct BurnDriver BurnDrvSamsh5fd = {
 	"samsh5fd", "samsho5", "neogeo", NULL, "2003",
 	"Samurai Shodown V / Samurai Spirits Zero (Fully Decrypted)\0", NULL, "Yuki Enterprise / SNK Playmore", "Neo Geo MVS",
 	L"Samurai Shodown V\0\u30B5\u30E0\u30E9\u30A4\u30B9\u30D4\u30EA\u30C3\u30C4\u96F6 (Fully Decrypted)\0", NULL, NULL, NULL,
@@ -20920,7 +21012,7 @@ static struct BurnRomInfo samsh5bsRomDesc[] = {
 STDROMPICKEXT(samsh5bs, samsh5bs, neogeo)
 STD_ROM_FN(samsh5bs)
 
-struct BurnDriver BurnDrvsamsh5bs = {
+struct BurnDriver BurnDrvSamsh5bs = {
 	"samsh5bs", "samsho5", "neogeo", NULL, "2004",
 	"Samurai Shodown V / Samurai Spirits Zero (Boss, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	L"Samurai Shodown V\0\u30B5\u30E0\u30E9\u30A4\u30B9\u30D4\u30EA\u30C3\u30C4\u96F6 (Boss, Hack)\0", NULL, NULL, NULL,
@@ -20957,7 +21049,7 @@ static struct BurnRomInfo samsho5xRomDesc[] = {
 STDROMPICKEXT(samsho5x, samsho5x, neogeo)
 STD_ROM_FN(samsho5x)
 
-struct BurnDriver BurnDrvsamsho5x = {
+struct BurnDriver BurnDrvSamsho5x = {
 	"samsho5x", "samsho5", "neogeo", NULL, "2013",
 	"Samurai Shodown V / Samurai Spirits Zero (hack of XBOX version)\0", NULL, "hack", "Neo Geo MVS",
 	L"Samurai Shodown V\0\u30B5\u30E0\u30E9\u30A4\u30B9\u30D4\u30EA\u30C3\u30C4\u96F6 (hack of XBOX version)\0", NULL, NULL, NULL,
@@ -20994,7 +21086,7 @@ static struct BurnRomInfo ss5spfdRomDesc[] = {
 STDROMPICKEXT(ss5spfd, ss5spfd, neogeo)
 STD_ROM_FN(ss5spfd)
 
-struct BurnDriver BurnDrvss5spfd = {
+struct BurnDriver BurnDrvSs5spfd = {
 	"ss5spfd", "samsh5sp", "neogeo", NULL, "2004",
 	"Samurai Shodown V Special / Samurai Spirits Zero Special (Fully Decrypted)\0", NULL, "Yuki Enterprise / SNK Playmore", "Neo Geo MVS",
 	L"Samurai Shodown V Special\0\u30B5\u30E0\u30E9\u30A4\u30B9\u30D4\u30EA\u30C3\u30C4\u96F6 Special (Fully Decrypted)\0", NULL, NULL, NULL,
@@ -21030,7 +21122,7 @@ static struct BurnRomInfo samsh5pfRomDesc[] = {
 STDROMPICKEXT(samsh5pf, samsh5pf, neogeo)
 STD_ROM_FN(samsh5pf)
 
-struct BurnDriver BurnDrvsamsh5pf = {
+struct BurnDriver BurnDrvSamsh5pf = {
 	"samsh5pf", "samsh5sp", "neogeo", NULL, "2020",
 	"Samurai Shodown V Perfect / Samurai Spirits Zero Perfect (bootleg, hack)\0", NULL, "bootleg", "Neo Geo MVS",
 	L"Samurai Shodown V Perfect\0\u30B5\u30E0\u30E9\u30A4\u30B9\u30D4\u30EA\u30C3\u30C4\u96F6 Perfect (bootleg, hack)\0", NULL, NULL, NULL,
@@ -21066,7 +21158,7 @@ static struct BurnRomInfo samsh5feRomDesc[] = {
 STDROMPICKEXT(samsh5fe, samsh5fe, neogeo)
 STD_ROM_FN(samsh5fe)
 
-struct BurnDriver BurnDrvsamsh5fe = {
+struct BurnDriver BurnDrvSamsh5fe = {
 	"samsh5fe", "samsh5sp", "neogeo", NULL, "2004",
 	"Samurai Shodown V Special / Samurai Spirits Zero Special (NGM-272) (NGH-272) (Final Edition, location test version)\0", NULL, "Yuki Enterprise / SNK Playmore", "Neo Geo MVS",
 	L"Samurai Shodown V Special\0\u30B5\u30E0\u30E9\u30A4\u30B9\u30D4\u30EA\u30C3\u30C4\u96F6 Special (NGM-272) (NGH-272) (Final Edition, location test version)\0", NULL, NULL, NULL,
@@ -21131,7 +21223,7 @@ static struct BurnRomInfo savagerpRomDesc[] = {
 STDROMPICKEXT(savagerp, savagerp, neogeo)
 STD_ROM_FN(savagerp)
 
-struct BurnDriver BurnDrvsavagerp = {
+struct BurnDriver BurnDrvSavagerp = {
 	"savagerp", "savagere", "neogeo", NULL, "2015",
 	"Savage Reign / Fu'un Mokushiroku - Kakutou Sousei (Plus, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	L"Savage Reign\0\u98A8\u96F2\u9ED9\u793A\u9332 - \u683C\u95D8\u5275\u4E16 (Plus, Hack)\0", NULL, NULL, NULL,
@@ -21172,7 +21264,7 @@ static struct BurnRomInfo sengk3fdRomDesc[] = {
 STDROMPICKEXT(sengk3fd, sengk3fd, neogeo)
 STD_ROM_FN(sengk3fd)
 
-struct BurnDriver BurnDrvsengk3fd = {
+struct BurnDriver BurnDrvSengk3fd = {
 	"sengk3fd", "sengoku3", "neogeo", NULL, "2001",
 	"Sengoku 3 / Sengoku Densho 2001 (Fully Decrypted)\0", NULL, "Noise Factory / SNK", "Neo Geo MVS",
 	L"Sengoku 3\0\u6226\u56FD\u4F1D\u627F\uFF12\uFF10\uFF10\uFF11 (Fully Decrypted)\0", NULL, NULL, NULL,
@@ -21220,7 +21312,7 @@ static struct BurnRomInfo sengk3fsRomDesc[] = {
 STDROMPICKEXT(sengk3fs, sengk3fs, neogeo)
 STD_ROM_FN(sengk3fs)
 
-struct BurnDriver BurnDrvsengk3fs = {
+struct BurnDriver BurnDrvSengk3fs = {
 	"sengk3fs", "sengoku3", "neogeo", NULL, "2020",
 	"Sengoku 3 / Sengoku Densho 2001 (Demeanor, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	L"Sengoku 3\0\u6226\u56FD\u4F1D\u627F\uFF12\uFF10\uFF10\uFF11 (Demeanor, Hack)\0", NULL, NULL, NULL,
@@ -21243,7 +21335,7 @@ static struct BurnRomInfo sengok3iRomDesc[] = {
 STDROMPICKEXT(sengok3i, sengok3i, neogeo)
 STD_ROM_FN(sengok3i)
 
-struct BurnDriver BurnDrvsengok3i = {
+struct BurnDriver BurnDrvSengok3i = {
 	"sengok3i", "sengoku3", "neogeo", NULL, "2020",
 	"Sengoku 3 / Sengoku Densho 2001 (Infinite Power, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	L"Sengoku 3\0\u6226\u56FD\u4F1D\u627F\uFF12\uFF10\uFF10\uFF11 (Infinite Power, Hack)\0", NULL, NULL, NULL,
@@ -21294,7 +21386,7 @@ static INT32 sengk3ebInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvsengk3eb = {
+struct BurnDriver BurnDrvSengk3eb = {
 	"sengk3eb", "sengoku3", "neogeo", NULL, "2010-2013",
 	"Sengoku 3 / Sengoku Densho 2001 (Green Blue, Hack)\0", "Other versions are selected in the dipswitch", "hack", "Neo Geo MVS",
 	L"Sengoku 3\0\u6226\u56FD\u4F1D\u627F\uFF12\uFF10\uFF10\uFF11 (Green Blue, Hack)\0", NULL, NULL, NULL,
@@ -21336,7 +21428,7 @@ static struct BurnRomInfo svcfdRomDesc[] = {
 STDROMPICKEXT(svcfd, svcfd, neogeo)
 STD_ROM_FN(svcfd)
 
-struct BurnDriver BurnDrvsvcfd = {
+struct BurnDriver BurnDrvSvcfd = {
 	"svcfd", "svc", "neogeo", NULL, "2003",
 	"SNK vs. Capcom - SVC Chaos (Fully Decrypted)\0", NULL, "Playmore / Capcom", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -21376,7 +21468,7 @@ static struct BurnRomInfo svcsplseRomDesc[] = {
 STDROMPICKEXT(svcsplse, svcsplse, neogeo)
 STD_ROM_FN(svcsplse)
 
-struct BurnDriver BurnDrvsvcsplse = {
+struct BurnDriver BurnDrvSvcsplse = {
 	"svcsplse", "svc", "neogeo", NULL, "2023",
 	"SNK vs. Capcom - SVC Chaos Super Plus (Enhanced, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -21430,7 +21522,7 @@ static struct BurnRomInfo kof94bsRomDesc[] = {
 STDROMPICKEXT(kof94bs, kof94bs, neogeo)
 STD_ROM_FN(kof94bs)
 
-struct BurnDriver BurnDrvkof94bs = {
+struct BurnDriver BurnDrvKof94bs = {
 	"kof94bs", "kof94", "neogeo", NULL, "2015",
 	"The King of Fighters '94 (Boss, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -21452,7 +21544,7 @@ static struct BurnRomInfo kof94nr2RomDesc[] = {
 STDROMPICKEXT(kof94nr2, kof94nr2, neogeo)
 STD_ROM_FN(kof94nr2)
 
-struct BurnDriver BurnDrvkof94nr2 = {
+struct BurnDriver BurnDrvKof94nr2 = {
 	"kof94nr2", "kof94", "neogeo", NULL, "2018",
 	"The King of Fighters '94 (New Remix 2018 Rev.2, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -21485,7 +21577,7 @@ static struct BurnRomInfo kof94brRomDesc[] = {
 STDROMPICKEXT(kof94br, kof94br, neogeo)
 STD_ROM_FN(kof94br)
 
-struct BurnDriver BurnDrvkof94br = {
+struct BurnDriver BurnDrvKof94br = {
 	"kof94br", "kof94", "neogeo", NULL, "2006",
 	"The King of Fighters '94 (Portuguese edition, Hack)\0", "Translation ROM - Portuguese BRA", "SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -21516,7 +21608,7 @@ static struct BurnRomInfo kof94rzRomDesc[] = {
 STDROMPICKEXT(kof94rz, kof94rz, neogeo)
 STD_ROM_FN(kof94rz)
 
-struct BurnDriver BurnDrvkof94rz = {
+struct BurnDriver BurnDrvKof94rz = {
 	"kof94rz", "kof94", "neogeo", NULL, "1994",
 	"The King of Fighters '94 (Hack Boss Remixed)\0", NULL, "ZKW", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -21623,7 +21715,7 @@ static INT32 kof95spInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvkof95sp = {
+struct BurnDriver BurnDrvKof95sp = {
 	"kof95sp", "kof95", "neogeo", NULL, "2020",
 	"The King of Fighters '95 (Special 2017, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -21656,7 +21748,7 @@ static struct BurnRomInfo kof95bsRomDesc[] = {
 STDROMPICKEXT(kof95bs, kof95bs, neogeo)
 STD_ROM_FN(kof95bs)
 
-struct BurnDriver BurnDrvkof95bs = {
+struct BurnDriver BurnDrvKof95bs = {
 	"kof95bs", "kof95", "neogeo", NULL, "2022",
 	"The King of Fighters '95 (Boss, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -21680,7 +21772,7 @@ static struct BurnRomInfo kof95jqRomDesc[] = {
 STDROMPICKEXT(kof95jq, kof95jq, neogeo)
 STD_ROM_FN(kof95jq)
 
-struct BurnDriver BurnDrvkof95jq = {
+struct BurnDriver BurnDrvKof95jq = {
 	"kof95jq", "kof95", "neogeo", NULL, "2023",
 	"The King of Fighters '95 (Infinite Energy, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -21702,7 +21794,7 @@ static struct BurnRomInfo kof95bRomDesc[] = {
 STDROMPICKEXT(kof95b, kof95b, neogeo)
 STD_ROM_FN(kof95b)
 
-struct BurnDriver BurnDrvkof95b = {
+struct BurnDriver BurnDrvKof95b = {
 	"kof95b", "kof95", "neogeo", NULL, "1995",
 	"The King of Fighters '95 (Enable Hidden Characters V.[?])\0", NULL, "Ydmis & Creamymami[EGCG]", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -21724,7 +21816,7 @@ static struct BurnRomInfo kof95sr3RomDesc[] = {
 STDROMPICKEXT(kof95sr3, kof95sr3, neogeo)
 STD_ROM_FN(kof95sr3)
 
-struct BurnDriver BurnDrvkof95sr3 = {
+struct BurnDriver BurnDrvKof95sr3 = {
 	"kof95sr3", "kof95", "neogeo", NULL, "2018",
 	"The King of Fighters '95 (Super Remix V3, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -21783,7 +21875,7 @@ static struct BurnRomInfo kof96plsRomDesc[] = {
 STDROMPICKEXT(kof96pls, kof96pls, neogeo)
 STD_ROM_FN(kof96pls)
 
-struct BurnDriver BurnDrvkof96pls = {
+struct BurnDriver BurnDrvKof96pls = {
 	"kof96pls", "kof96", "neogeo", NULL, "2003",
 	"The King of Fighters '96 (Plus, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -21816,7 +21908,7 @@ static struct BurnRomInfo kof96rssRomDesc[] = {
 STDROMPICKEXT(kof96rss, kof96rss, neogeo)
 STD_ROM_FN(kof96rss)
 
-struct BurnDriver BurnDrvkof96rss = {
+struct BurnDriver BurnDrvKof96rss = {
 	"kof96rss", "kof96", "neogeo", NULL, "2005",
 	"The King of Fighters '96 (Remix Spring Special, Version 1.5, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -21883,7 +21975,7 @@ static struct BurnRomInfo kof96rRomDesc[] = {
 STDROMPICKEXT(kof96r, kof96r, neogeo)
 STD_ROM_FN(kof96r)
 
-struct BurnDriver BurnDrvkof96r = {
+struct BurnDriver BurnDrvKof96r = {
 	"kof96r", "kof96", "neogeo", NULL, "2008",
 	"The King of Fighters '96 (Revised, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -21978,7 +22070,7 @@ static INT32 kof96aeInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvkof96ae = {
+struct BurnDriver BurnDrvKof96ae = {
 	"kof96ae", "kof96", "neogeo", NULL, "2007-2020",
 	"The King of Fighters '96 (Anniversary, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -22013,7 +22105,7 @@ static struct BurnRomInfo kof96cnRomDesc[] = {
 STDROMPICKEXT(kof96cn, kof96cn, neogeo)
 STD_ROM_FN(kof96cn)
 
-struct BurnDriver BurnDrvkof96cn = {
+struct BurnDriver BurnDrvKof96cn = {
 	"kof96cn", "kof96", "neogeo", NULL, "200?",
 	"The King of Fighters '96 (Chinese Edition, ver 1.0, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -22078,7 +22170,7 @@ static struct BurnRomInfo kof97cnRomDesc[] = {
 STDROMPICKEXT(kof97cn, kof97cn, neogeo)
 STD_ROM_FN(kof97cn)
 
-struct BurnDriver BurnDrvkof97cn = {
+struct BurnDriver BurnDrvKof97cn = {
 	"kof97cn", "kof97", "neogeo", NULL, "2007",
 	"The King of Fighters '97 (10th Anniversary Chinese Edition, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -22111,7 +22203,7 @@ static struct BurnRomInfo kof97xtRomDesc[] = {
 STDROMPICKEXT(kof97xt, kof97xt, neogeo)
 STD_ROM_FN(kof97xt)
 
-struct BurnDriver BurnDrvkof97xt = {
+struct BurnDriver BurnDrvKof97xt = {
 	"kof97xt", "kof97", "neogeo", NULL, "2007",
 	"The King of Fighters '97 (Final Battle, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -22143,7 +22235,7 @@ static struct BurnRomInfo kof97plhRomDesc[] = {
 STDROMPICKEXT(kof97plh, kof97plh, neogeo)
 STD_ROM_FN(kof97plh)
 
-struct BurnDriver BurnDrvkof97plh = {
+struct BurnDriver BurnDrvKof97plh = {
 	"kof97plh", "kof97", "neogeo", NULL, "2014",
 	"The King of Fighters '97 Plus (Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -22176,7 +22268,7 @@ static struct BurnRomInfo kof97tsRomDesc[] = {
 STDROMPICKEXT(kof97ts, kof97ts, neogeo)
 STD_ROM_FN(kof97ts)
 
-struct BurnDriver BurnDrvkof97ts = {
+struct BurnDriver BurnDrvKof97ts = {
 	"kof97ts", "kof97", "neogeo", NULL, "2019",
 	"The King of Fighters '97 (Battle with Orochi, v1.2, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -22201,7 +22293,7 @@ static struct BurnRomInfo kof97mRomDesc[] = {
 STDROMPICKEXT(kof97m, kof97m, neogeo)
 STD_ROM_FN(kof97m)
 
-struct BurnDriver BurnDrvkof97m = {
+struct BurnDriver BurnDrvKof97m = {
 	"kof97m", "kof97", "neogeo", NULL, "2013",
 	"The King of Fighters '97 (Dream Back, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -22234,7 +22326,7 @@ static struct BurnRomInfo kof97cbRomDesc[] = {
 STDROMPICKEXT(kof97cb, kof97cb, neogeo)
 STD_ROM_FN(kof97cb)
 
-struct BurnDriver BurnDrvkof97cb = {
+struct BurnDriver BurnDrvKof97cb = {
 	"kof97cb", "kof97", "neogeo", NULL, "2018",
 	"The King of Fighters '97 (Combo, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -22267,7 +22359,7 @@ static struct BurnRomInfo kof97rcRomDesc[] = {
 STDROMPICKEXT(kof97rc, kof97rc, neogeo)
 STD_ROM_FN(kof97rc)
 
-struct BurnDriver BurnDrvkof97rc = {
+struct BurnDriver BurnDrvKof97rc = {
 	"kof97rc", "kof97", "neogeo", NULL, "2019",
 	"The King of Fighters '97 (Random Combo, Hack, Ver. 2010)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -22300,7 +22392,7 @@ static struct BurnRomInfo kof97cbtRomDesc[] = {
 STDROMPICKEXT(kof97cbt, kof97cbt, neogeo)
 STD_ROM_FN(kof97cbt)
 
-struct BurnDriver BurnDrvkof97cbt = {
+struct BurnDriver BurnDrvKof97cbt = {
 	"kof97cbt", "kof97", "neogeo", NULL, "2019",
 	"The King of Fighters '97 (Combo Training, Hack, Ver. 2018)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -22349,7 +22441,7 @@ static INT32 kof97plcInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvkof97plc = {
+struct BurnDriver BurnDrvKof97plc = {
 	"kof97plc", "kof97", "neogeo", NULL, "2023",
 	"The King of Fighters '97 Plus (Enhanced, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -22386,7 +22478,7 @@ static struct BurnRomInfo kof97ubpRomDesc[] = {
 STDROMPICKEXT(kof97ubp, kof97ubp, neogeo)
 STD_ROM_FN(kof97ubp)
 
-struct BurnDriver BurnDrvkof97ubp = {
+struct BurnDriver BurnDrvKof97ubp = {
 	"kof97ubp", "kof97", "neogeo", NULL, "2020",
 	"The King of Fighters '97 (Ultimate Battle Plus, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -22421,7 +22513,7 @@ static struct BurnRomInfo kof97bsRomDesc[] = {
 STDROMPICKEXT(kof97bs, kof97bs, neogeo)
 STD_ROM_FN(kof97bs)
 
-struct BurnDriver BurnDrvkof97bs = {
+struct BurnDriver BurnDrvKof97bs = {
 	"kof97bs", "kof97", "neogeo", NULL, "2023",
 	"The King of Fighters '97 (Boss, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -22551,7 +22643,7 @@ static INT32 kof97tInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvkof97t = {
+struct BurnDriver BurnDrvKof97t = {
 	"kof97t", "kof97", "neogeo", NULL, "2014-2020",
 	"The King of Fighters '97 (Optimized, Hack)\0", "Other versions are selected in the dipswitch", "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -22586,7 +22678,7 @@ static struct BurnRomInfo kof97stRomDesc[] = {
 STDROMPICKEXT(kof97st, kof97st, neogeo)
 STD_ROM_FN(kof97st)
 
-struct BurnDriver BurnDrvkof97st = {
+struct BurnDriver BurnDrvKof97st = {
 	"kof97st", "kof97", "neogeo", NULL, "2023",
 	"The King of Fighters '97 (Strengthen Innovation, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -22620,7 +22712,7 @@ static struct BurnRomInfo kof97rmRomDesc[] = {
 STDROMPICKEXT(kof97rm, kof97rm, neogeo)
 STD_ROM_FN(kof97rm)
 
-struct BurnDriver BurnDrvkof97rm = {
+struct BurnDriver BurnDrvKof97rm = {
 	"kof97rm", "kof97", "neogeo", NULL, "2022",
 	"The King of Fighters '97 (Randomized, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -22689,7 +22781,7 @@ static INT32 kof97aeInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvkof97ae = {
+struct BurnDriver BurnDrvKof97ae = {
 	"kof97ae", "kof97", "neogeo", NULL, "2018-2020",
 	"The King of Fighters '97 (Anniversary, Hack)\0", "Other versions are selected in the dipswitch", "EGHT", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -22749,7 +22841,7 @@ static INT32 kof97invInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvkof97inv = {
+struct BurnDriver BurnDrvKof97inv = {
 	"kof97inv", "kof97", "neogeo", NULL, "2021",
 	"The King of Fighters '97 (Invincible Plus!, B2.1.2107, Hack)\0", NULL, "hack", "Neo Geo AES",
 	NULL, NULL, NULL, NULL,
@@ -22840,7 +22932,7 @@ static struct BurnRomInfo kof97spRomDesc[] = {
 STDROMPICKEXT(kof97sp, kof97sp, neogeo)
 STD_ROM_FN(kof97sp)
 
-struct BurnDriver BurnDrvkof97sp = {
+struct BurnDriver BurnDrvKof97sp = {
 	"kof97sp", "kof97", "neogeo", NULL, "2015",
 	"The King of Fighters '97 (Special, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -22865,7 +22957,7 @@ static struct BurnRomInfo kof97evnRomDesc[] = {
 STDROMPICKEXT(kof97evn, kof97evn, neogeo)
 STD_ROM_FN(kof97evn)
 
-struct BurnDriver BurnDrvkof97evn = {
+struct BurnDriver BurnDrvKof97evn = {
 	"kof97evn", "kof97", "neogeo", NULL, "200?",
 	"The King of Fighters '97 (Evolution New, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -22889,7 +22981,7 @@ static struct BurnRomInfo kof97evfRomDesc[] = {
 STDROMPICKEXT(kof97evf, kof97evf, neogeo)
 STD_ROM_FN(kof97evf)
 
-struct BurnDriver BurnDrvkof97evf = {
+struct BurnDriver BurnDrvKof97evf = {
 	"kof97evf", "kof97", "neogeo", NULL, "2011",
 	"The King of Fighters '97 (Evolution FC2, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -22922,7 +23014,7 @@ static struct BurnRomInfo kof97ebRomDesc[] = {
 STDROMPICKEXT(kof97eb, kof97eb, neogeo)
 STD_ROM_FN(kof97eb)
 
-struct BurnDriver BurnDrvkof97eb = {
+struct BurnDriver BurnDrvKof97eb = {
 	"kof97eb", "kof97", "neogeo", NULL, "2022",
 	"The King of Fighters '97 (Evolution & Balance, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -22955,7 +23047,7 @@ static struct BurnRomInfo kof97btRomDesc[] = {
 STDROMPICKEXT(kof97bt, kof97bt, neogeo)
 STD_ROM_FN(kof97bt)
 
-struct BurnDriver BurnDrvkof97bt = {
+struct BurnDriver BurnDrvKof97bt = {
 	"kof97bt", "kof97", "neogeo", NULL, "2023",
 	"The King of Fighters '97 (Balanced & Optimized, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -22980,7 +23072,7 @@ static struct BurnRomInfo kof97ceRomDesc[] = {
 STDROMPICKEXT(kof97ce, kof97ce, neogeo)
 STD_ROM_FN(kof97ce)
 
-struct BurnDriver BurnDrvkof97ce = {
+struct BurnDriver BurnDrvKof97ce = {
 	"kof97ce", "kof97", "neogeo", NULL, "2024",
 	"The King of Fighters '97 (Champion  Edition, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -23052,7 +23144,7 @@ static struct BurnRomInfo kof98evoRomDesc[] = {
 STDROMPICKEXT(kof98evo, kof98evo, neogeo)
 STD_ROM_FN(kof98evo)
 
-struct BurnDriver BurnDrvkof98evo = {
+struct BurnDriver BurnDrvKof98evo = {
 	"kof98evo", "kof98", "neogeo", NULL, "200?",
 	"The King of Fighters '98 - The Slugfest / King of Fighters '98 - Dream Match Never Ends (Evolution, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -23135,7 +23227,7 @@ static INT32 kof98aeInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvkof98ae = {
+struct BurnDriver BurnDrvKof98ae = {
 	"kof98ae", "kof98", "neogeo", NULL, "2007-2016",
 	"The King of Fighters '98 - The Slugfest / King of Fighters '98 - Dream Match Never Ends (Anniversary, Hack)\0", "Other versions are selected in the dipswitch", "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -23177,7 +23269,7 @@ static struct BurnRomInfo kof98ultRomDesc[] = {
 STDROMPICKEXT(kof98ult, kof98ult, neogeo)
 STD_ROM_FN(kof98ult)
 
-struct BurnDriver BurnDrvkof98ult = {
+struct BurnDriver BurnDrvKof98ult = {
 	"kof98ult", "kof98", "neogeo", NULL, "2020",
 	"The King of Fighters '98 - The Slugfest / King of Fighters '98 - Dream Match Never Ends (Ultimate Match, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -23242,7 +23334,7 @@ static INT32 kof98cbInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvkof98cb = {
+struct BurnDriver BurnDrvKof98cb = {
 	"kof98cb", "kof98", "neogeo", NULL, "2018-2020",
 	"The King of Fighters '98 - The Slugfest / King of Fighters '98 - Dream Match Never Ends (Combo, Hack)\0", "Other versions are selected in the dipswitch", "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -23298,7 +23390,7 @@ static INT32 kof98cpInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvkof98cp = {
+struct BurnDriver BurnDrvKof98cp = {
 	"kof98cp", "kof98", "neogeo", NULL, "2020",
 	"The King of Fighters '98 - The Slugfest / King of Fighters '98 - Dream Match Never Ends (Combo Plus, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -23347,7 +23439,7 @@ static INT32 kof98bscInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvkof98bsc = {
+struct BurnDriver BurnDrvKof98bsc = {
 	"kof98bsc", "kof98", "neogeo", NULL, "2023",
 	"King of Fighters '98 - Dream Match Never Ends (Boss Chinese Edition, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -23383,7 +23475,7 @@ static struct BurnRomInfo kof98plcRomDesc[] = {
 STDROMPICKEXT(kof98plc, kof98plc, neogeo)
 STD_ROM_FN(kof98plc)
 
-struct BurnDriver BurnDrvkof98plc = {
+struct BurnDriver BurnDrvKof98plc = {
 	"kof98plc", "kof98", "neogeo", NULL, "2023",
 	"King of Fighters '98 - Dream Match Never Ends (Plus Chinese Edition, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -23416,7 +23508,7 @@ static struct BurnRomInfo kof98bc2ndRomDesc[] = {
 STDROMPICKEXT(kof98bc2nd, kof98bc2nd, neogeo)
 STD_ROM_FN(kof98bc2nd)
 
-struct BurnDriver BurnDrvkof98bc2nd = {
+struct BurnDriver BurnDrvKof98bc2nd = {
 	"kof98bc2nd", "kof98", "neogeo", NULL, "2020",
 	"The King of Fighters '98 - The Slugfest / King of Fighters '98 - Dream Match Never Ends (BC 2nd Impact Edition, Hack, Ver.2020-07-29)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -23583,14 +23675,14 @@ static INT32 kof98pfeInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvkof98pfe = {
+struct BurnDriver BurnDrvKof98pfe = {
 	"kof98pfe", "kof98", "neogeo", NULL, "2019",
 	"The King of Fighters '98 - The Slugfest / King of Fighters '98 - Dream Match Never Ends (Plus Final Edition, Hack)\0", "Other versions are selected in the dipswitch", "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK, 2, HARDWARE_PREFIX_CARTRIDGE | HARDWARE_SNK_NEOGEO, GBF_VSFIGHT, FBF_KOF,
 	NULL, kof98pfeRomInfo, kof98pfeRomName, NULL, NULL, NULL, NULL, neoverswInputInfo, kof98mixDIPInfo,
 	kof98pfeInit, NeoExit, NeoFrame, NeoRender, NeoScan, &NeoRecalcPalette,
-	0x1000,	320, 224, 4, 3
+	0x1000,	304, 224, 4, 3
 };
 
 // The King of Fighters '98 - The Slugfest / King of Fighters '98 - Dream Match Never Ends (Easy Combo King, Hack)
@@ -23619,7 +23711,7 @@ static struct BurnRomInfo kof98eckRomDesc[] = {
 	{ "242-v3eck.v3",	0x400000, 0x59c53922, 5 | BRF_SND },
 	{ "242-v4eck.v4",	0x400000, 0x46ca6f5e, 5 | BRF_SND },
 
-	/* GOTVG Version - 20190217 */
+	/* GOTVG - 20190217 */
 	{ "242-p1eg.dif",	0x100000, 0x545818c9, 0 | BRF_ESS | BRF_PRG }, // 16 68K code
 	{ "242-p2eg.dif",	0x400000, 0x1bd2a98c, 0 | BRF_ESS | BRF_PRG },
 
@@ -23641,14 +23733,14 @@ static struct BurnRomInfo kof98eckRomDesc[] = {
 	{ "242-v3eg.dif",	0x400000, 0x78097adb, 0 | BRF_SND },
 	{ "242-v4eg.dif",	0x400000, 0x57aa42a5, 0 | BRF_SND },
 
-	/* Extend Version - 20240218 */
-	{ "242-p1ex.dif",	0x100000, 0x8da31321, 0 | BRF_ESS | BRF_PRG }, // 32 68K code
-	{ "242-p2ex.dif",	0x400000, 0xf6bc5fd2, 0 | BRF_ESS | BRF_PRG },
+	/* Extend Version - 20240403 */
+	{ "242-p1ex.dif",	0x100000, 0x0d90487a, 0 | BRF_ESS | BRF_PRG }, // 32 68K code
+	{ "242-p2ex.dif",	0x400000, 0x07dc1fdc, 0 | BRF_ESS | BRF_PRG },
 
 	{ "242-s1ex.dif",	0x020000, 0xc1adc149, 0 | BRF_GRA },           // 34 Text layer tiles
 
-	{ "242-c1ex.dif",	0x800000, 0xe98b5c8a, 0 | BRF_GRA },           // 35 Sprite data
-	{ "242-c2ex.dif",	0x800000, 0xa779434e, 0 | BRF_GRA },
+	{ "242-c1ex.dif",	0x800000, 0xb612232a, 0 | BRF_GRA },           // 35 Sprite data
+	{ "242-c2ex.dif",	0x800000, 0xc444d7a0, 0 | BRF_GRA },
 	{ "242-c3ex.dif",	0x800000, 0xa747eb36, 0 | BRF_GRA },
 	{ "242-c4ex.dif",	0x800000, 0x0d7c33c9, 0 | BRF_GRA },
 	{ "242-c7ex.dif",	0x800000, 0x7deedae9, 0 | BRF_GRA },
@@ -23658,7 +23750,7 @@ static struct BurnRomInfo kof98eckRomDesc[] = {
 
 	{ "242-m1ex.dif",	0x040000, 0x0e1b3ef0, 0 | BRF_ESS | BRF_PRG }, // 43 Z80 code
 
-	{ "242-v1ex.dif",	0x400000, 0xda8f39fe, 0 | BRF_SND },           // 44 Sound data
+	{ "242-v1ex.dif",	0x400000, 0xc0c9ff22, 0 | BRF_SND },           // 44 Sound data
 	{ "242-v2ex.dif",	0x400000, 0xd2d03f2a, 0 | BRF_SND },
 	{ "242-v3ex.dif",	0x400000, 0x7b339d40, 0 | BRF_SND },
 	{ "242-v4ex.dif",	0x400000, 0x07450c5d, 0 | BRF_SND },
@@ -23699,16 +23791,16 @@ static INT32 kof98eckInit()
 
 	switch (nBurnDrvSubActive) {
 	case 0x00:
-		pszCustomNameA = "The King of Fighters '98 - The Slugfest / King of Fighters '98 - Dream Match Never Ends (wo1wan Easy Combo King, Hack)\0";
+		pszCustomNameA = "The King of Fighters '98 - Easy Combo King (wo1wan, Hack)\0";
 		break;
 
 	case 0x01:
-		pszCustomNameA = "The King of Fighters '98 - The Slugfest / King of Fighters '98 - Dream Match Never Ends (GOTVG Easy Combo King, Hack)\0";
+		pszCustomNameA = "The King of Fighters '98 - Easy Combo King (GOTVG, Hack)\0";
 		break;
 
 	case 0x02:
 		pNRI->nSpriteSize = 0x1000000;
-		pszCustomNameA = "The King of Fighters '98 - The Slugfest / King of Fighters '98 - Dream Match Never Ends (Easy Combo King Extend, Hack)\0";
+		pszCustomNameA = "The King of Fighters '98 - Easy Combo King (Extend, Hack)\0";
 		break;
 	}
 
@@ -23729,9 +23821,9 @@ static INT32 kof98eckInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvkof98eckg = {
+struct BurnDriver BurnDrvKof98eckg = {
 	"kof98eck", "kof98", "neogeo", NULL, "2019-2024",
-	"The King of Fighters '98 - The Slugfest / King of Fighters '98 - Dream Match Never Ends (Easy Combo King, Hack)\0", "Other versions are selected in the dipswitch", "hack", "Neo Geo MVS",
+	"The King of Fighters '98 - Easy Combo King (Hack)\0", "Other versions are selected in the dipswitch", "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK, 2, HARDWARE_PREFIX_CARTRIDGE | HARDWARE_SNK_NEOGEO, GBF_VSFIGHT, FBF_KOF,
 	NULL, kof98eckRomInfo, kof98eckRomName, NULL, NULL, NULL, NULL, neoverswInputInfo, kof98eckDIPInfo,
@@ -23751,7 +23843,7 @@ static struct BurnRomInfo kof98ratRomDesc[] = {
 STDROMPICKEXT(kof98rat, kof98rat, neogeo)
 STD_ROM_FN(kof98rat)
 
-struct BurnDriver BurnDrvkof98rat = {
+struct BurnDriver BurnDrvKof98rat = {
 	"kof98rat", "kof98", "neogeo", NULL, "2021",
 	"The King of Fighters '98 - The Slugfest / King of Fighters '98 - Dream Match Never Ends (Ratio, Hack)\0", NULL, "bankbank", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -23784,7 +23876,7 @@ static struct BurnRomInfo kof98bc2k2RomDesc[] = {
 STDROMPICKEXT(kof98bc2k2, kof98bc2k2, neogeo)
 STD_ROM_FN(kof98bc2k2)
 
-struct BurnDriver BurnDrvkof98bc2k2 = {
+struct BurnDriver BurnDrvKof98bc2k2 = {
 	"kof98bc2k2", "kof98", "neogeo", NULL, "20??",
 	"The King of Fighters '98 - The Slugfest / King of Fighters '98 - Dream Match Never Ends (BC Style 2002, Hack) (Unknown Author)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -23846,7 +23938,7 @@ static struct BurnRomInfo kof99fdRomDesc[] = {
 STDROMPICKEXT(kof99fd, kof99fd, neogeo)
 STD_ROM_FN(kof99fd)
 
-struct BurnDriver BurnDrvkof99fd = {
+struct BurnDriver BurnDrvKof99fd = {
 	"kof99fd", "kof99", "neogeo", NULL, "1999",
 	"The King of Fighters '99 - Millennium Battle (Fully Decrypted)\0", NULL, "SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -23898,7 +23990,7 @@ static INT32 kof99tInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvkof99t = {
+struct BurnDriver BurnDrvKof99t = {
 	"kof99t", "kof99", "neogeo", NULL, "2014-2024",
 	"The King of Fighters '99 - Millennium Battle (Optimized, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -23910,6 +24002,7 @@ struct BurnDriver BurnDrvkof99t = {
 
 
 // The King of Fighters '99 - Millennium Battle (LC+SK, Hack)
+// Modified by LIY
 // GOTVG 20240303
 
 static struct BurnRomInfo kof99skRomDesc[] = {
@@ -23922,7 +24015,7 @@ static struct BurnRomInfo kof99skRomDesc[] = {
 STDROMPICKEXT(kof99sk, kof99sk, neogeo)
 STD_ROM_FN(kof99sk)
 
-struct BurnDriver BurnDrvkof99sk = {
+struct BurnDriver BurnDrvKof99sk = {
 	"kof99sk", "kof99", "neogeo", NULL, "2024",
 	"The King of Fighters '99 - Millennium Battle (LC+SK, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -23961,7 +24054,7 @@ static INT32 kof99cbInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvkof99cb = {
+struct BurnDriver BurnDrvKof99cb = {
 	"kof99cb", "kof99", "neogeo", NULL, "2008",
 	"The King of Fighters '99 - Millennium Battle (Combo, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -23994,7 +24087,7 @@ static struct BurnRomInfo kof99jhRomDesc[] = {
 STDROMPICKEXT(kof99jh, kof99jh, neogeo)
 STD_ROM_FN(kof99jh)
 
-struct BurnDriver BurnDrvkof99jh = {
+struct BurnDriver BurnDrvKof99jh = {
 	"kof99jh", "kof99", "neogeo", NULL, "2023",
 	"The King of Fighters '99 - Millennium Battle (Evolution, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -24028,7 +24121,7 @@ static struct BurnRomInfo kof99srRomDesc[] = {
 STDROMPICKEXT(kof99sr, kof99sr, neogeo)
 STD_ROM_FN(kof99sr)
 
-struct BurnDriver BurnDrvkof99sr = {
+struct BurnDriver BurnDrvKof99sr = {
 	"kof99sr", "kof99", "neogeo", NULL, "2007",
 	"The King of Fighters '99 - Millennium Battle (Summer Revolution, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -24067,7 +24160,7 @@ static struct BurnRomInfo kof99rpRomDesc[] = {
 STDROMPICKEXT(kof99rp, kof99rp, neogeo)
 STD_ROM_FN(kof99rp)
 
-struct BurnDriver BurnDrvkof99rp = {
+struct BurnDriver BurnDrvKof99rp = {
 	"kof99rp", "kof99", "neogeo", NULL, "2022",
 	"The King of Fighters '99 - Millennium Battle (Remix Pro v2.01 Final, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -24150,7 +24243,7 @@ static INT32 kof99eurInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvkof99eur = {
+struct BurnDriver BurnDrvKof99eur = {
 	"kof99eur", "kof99", "neogeo", NULL, "201?-2015",
 	"The King of Fighters '99 - Millennium Battle (Evolution Ultra Remix, Hack)\0", "Other versions are selected in the dipswitch", "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -24187,7 +24280,7 @@ static struct BurnRomInfo kof99jqRomDesc[] = {
 STDROMPICKEXT(kof99jq, kof99jq, neogeo)
 STD_ROM_FN(kof99jq)
 
-struct BurnDriver BurnDrvkof99jq = {
+struct BurnDriver BurnDrvKof99jq = {
 	"kof99jq", "kof99", "neogeo", NULL, "2024",
 	"The King of Fighters '99 - Millennium Battle (Infinite Energy, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -24230,7 +24323,7 @@ static struct BurnRomInfo kof99aeRomDesc[] = {
 STDROMPICKEXT(kof99ae, kof99ae, neogeo)
 STD_ROM_FN(kof99ae)
 
-struct BurnDriver BurnDrvkof99ae = {
+struct BurnDriver BurnDrvKof99ae = {
 	"kof99ae", "kof99", "neogeo", NULL, "2020",
 	"The King of Fighters '99 - Millennium Battle (Anniversary, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -24264,7 +24357,7 @@ static struct BurnRomInfo kof99plsRomDesc[] = {
 STDROMPICKEXT(kof99pls, kof99pls, neogeo)
 STD_ROM_FN(kof99pls)
 
-struct BurnDriver BurnDrvkof99pls = {
+struct BurnDriver BurnDrvKof99pls = {
 	"kof99pls", "kof99", "neogeo", NULL, "2024",
 	"The King of Fighters '99 - Millennium Battle (Plus, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -24322,7 +24415,7 @@ static struct BurnRomInfo kof2kfdRomDesc[] = {
 STDROMPICKEXT(kof2kfd, kof2kfd, neogeo)
 STD_ROM_FN(kof2kfd)
 
-struct BurnDriver BurnDrvkof2kfd = {
+struct BurnDriver BurnDrvKof2kfd = {
 	"kof2kfd", "kof2000", "neogeo", NULL, "2000",
 	"The King of Fighters 2000 (Fully Decrypted)\0", NULL, "SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -24347,7 +24440,7 @@ static struct BurnRomInfo kof2000tRomDesc[] = {
 STDROMPICKEXT(kof2000t, kof2000t, neogeo)
 STD_ROM_FN(kof2000t)
 
-struct BurnDriver BurnDrvkof2000t = {
+struct BurnDriver BurnDrvKof2000t = {
 	"kof2000t", "kof2000", "neogeo", NULL, "2013",
 	"The King of Fighters 2000 (Optimized, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -24380,7 +24473,7 @@ static struct BurnRomInfo kof2kspRomDesc[] = {
 STDROMPICKEXT(kof2ksp, kof2ksp, neogeo)
 STD_ROM_FN(kof2ksp)
 
-struct BurnDriver BurnDrvkof2ksp = {
+struct BurnDriver BurnDrvKof2ksp = {
 	"kof2ksp", "kof2000", "neogeo", NULL, "2023",
 	"The King of Fighters 2000 (Special, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -24412,7 +24505,7 @@ static struct BurnRomInfo kof2kps2RomDesc[] = {
 STDROMPICKEXT(kof2kps2, kof2kps2, neogeo)
 STD_ROM_FN(kof2kps2)
 
-struct BurnDriver BurnDrvkof2kps2 = {
+struct BurnDriver BurnDrvKof2kps2 = {
 	"kof2kps2", "kof2000", "neogeo", NULL, "2013",
 	"The King of Fighters 2000 (Playstation 2, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -24483,7 +24576,7 @@ static INT32 kof2kotcInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvkof2kotc = {
+struct BurnDriver BurnDrvKof2kotc = {
 	"kof2kotc", "kof2000", "neogeo", NULL, "2022-2023",
 	"The King of Fighters 2000 (OTC, Hack)\0", "Other versions are selected in the dipswitch", "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -24537,7 +24630,7 @@ static struct BurnRomInfo kof2kplsRomDesc[] = {
 STDROMPICKEXT(kof2kpls, kof2kpls, neogeo)
 STD_ROM_FN(kof2kpls)
 
-struct BurnDriver BurnDrvkof2kpls = {
+struct BurnDriver BurnDrvKof2kpls = {
 	"kof2kpls", "kof2000", "neogeo", NULL, "2018",
 	"The King of Fighters 2000 (Plus Blue, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -24574,7 +24667,7 @@ static struct BurnRomInfo kof2kxxxRomDesc[] = {
 STDROMPICKEXT(kof2kxxx, kof2kxxx, neogeo)
 STD_ROM_FN(kof2kxxx)
 
-struct BurnDriver BurnDrvkof2kxxx = {
+struct BurnDriver BurnDrvKof2kxxx = {
 	"kof2kxxx", "kof2000", "neogeo", NULL, "2016",
 	"The King of Fighters 2000 SP XXX (Hack, Ver. 2016-01-04)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -24600,7 +24693,7 @@ static struct BurnRomInfo kof2000bcRomDesc[] = {
 STDROMPICKEXT(kof2000bc, kof2000bc, neogeo)
 STD_ROM_FN(kof2000bc)
 
-struct BurnDriver BurnDrvkof2000bc = {
+struct BurnDriver BurnDrvKof2000bc = {
 	"kof2000bc", "kof2000", "neogeo", NULL, "2021",
 	"The King of Fighters 2000 (Imitate BC 14 System, Hack By Aillis)\0", "Press AD for Start BC Mode", "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -24662,7 +24755,7 @@ static struct BurnRomInfo kof2k1fdRomDesc[] = {
 STDROMPICKEXT(kof2k1fd, kof2k1fd, neogeo)
 STD_ROM_FN(kof2k1fd)
 
-struct BurnDriver BurnDrvkof2k1fd = {
+struct BurnDriver BurnDrvKof2k1fd = {
 	"kof2k1fd", "kof2001", "neogeo", NULL, "2001",
 	"The King of Fighters 2001 (Fully Decrypted)\0", NULL, "Eolith / SNK", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -24695,7 +24788,7 @@ static struct BurnRomInfo kof2k1ruRomDesc[] = {
 STDROMPICKEXT(kof2k1ru, kof2k1ru, neogeo)
 STD_ROM_FN(kof2k1ru)
 
-struct BurnDriver BurnDrvkof2k1ru = {
+struct BurnDriver BurnDrvKof2k1ru = {
 	"kof2k1ru", "kof2001", "neogeo", NULL, "2004",
 	"The King of Fighters 2001 (Remix Ultra 2.3, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -24728,7 +24821,7 @@ static struct BurnRomInfo kof2k1rpRomDesc[] = {
 STDROMPICKEXT(kof2k1rp, kof2k1rp, neogeo)
 STD_ROM_FN(kof2k1rp)
 
-struct BurnDriver BurnDrvkof2k1rp = {
+struct BurnDriver BurnDrvKof2k1rp = {
 	"kof2k1rp", "kof2001", "neogeo", NULL, "2004",
 	"The King of Fighters 2001 (Remix Pro v1.02 Final, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -24762,7 +24855,7 @@ static struct BurnRomInfo kof2k1bsRomDesc[] = {
 STDROMPICKEXT(kof2k1bs, kof2k1bs, neogeo)
 STD_ROM_FN(kof2k1bs)
 
-struct BurnDriver BurnDrvkof2k1bs = {
+struct BurnDriver BurnDrvKof2k1bs = {
 	"kof2k1bs", "kof2001", "neogeo", NULL, "2010",
 	"The King of Fighters 2001 (Boss, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -24801,7 +24894,7 @@ static struct BurnRomInfo kf2k1pkzRomDesc[] = {
 STDROMPICKEXT(kf2k1pkz, kf2k1pkz, neogeo)
 STD_ROM_FN(kf2k1pkz)
 
-struct BurnDriver BurnDrvkf2k1pkz = {
+struct BurnDriver BurnDrvKf2k1pkz = {
 	"kf2k1pkz", "kof2001", "neogeo", NULL, "2021",
 	"The King of Fighters 2001 (PS2 Krizalid, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -24813,11 +24906,11 @@ struct BurnDriver BurnDrvkf2k1pkz = {
 
 
 // The King of Fighters 2001 (Ultimate, Hack)
-// GOTVG 20240302
+// GOTVG 20240411
 
 static struct BurnRomInfo kf2k1ultRomDesc[] = {
-	{ "262-p1ult.p1",		0x100000, 0x30a082d1, 1 | BRF_ESS | BRF_PRG },
-	{ "262-p2ult.sp2",		0x500000, 0x569e8cee, 1 | BRF_ESS | BRF_PRG },
+	{ "262-p1ult.p1",		0x100000, 0x3ca57684, 1 | BRF_ESS | BRF_PRG },
+	{ "262-p2ult.sp2",		0x500000, 0xa2466d70, 1 | BRF_ESS | BRF_PRG },
 
 	{ "262-s1ult.s1",		0x020000, 0xe8cb20be, 2 | BRF_GRA },
 
@@ -24833,8 +24926,8 @@ static struct BurnRomInfo kf2k1ultRomDesc[] = {
 	{ "262-c10ult.c10",		0x800000, 0x457c7faf, 3 | BRF_GRA },
 	{ "265-c7d.c7",			0x800000, 0x8a5b561c, 3 | BRF_GRA },
 	{ "265-c8d.c8",			0x800000, 0xbef667a3, 3 | BRF_GRA },
-	{ "262-c13ult.c13",		0x800000, 0x40f7bd65, 3 | BRF_GRA },
-	{ "262-c14ult.c14",		0x800000, 0x2471c450, 3 | BRF_GRA },
+	{ "262-c13ult.c13",		0x800000, 0x0b316a58, 3 | BRF_GRA },
+	{ "262-c14ult.c14",		0x800000, 0x648e620b, 3 | BRF_GRA },
 
 	{ "262-m1ult.m1",		0x020000, 0xe5dbafad, 4 | BRF_ESS | BRF_PRG },
 
@@ -24849,7 +24942,7 @@ static struct BurnRomInfo kf2k1ultRomDesc[] = {
 STDROMPICKEXT(kf2k1ult, kf2k1ult, neogeo)
 STD_ROM_FN(kf2k1ult)
 
-struct BurnDriver BurnDrvkf2k1ult = {
+struct BurnDriver BurnDrvKf2k1ult = {
 	"kf2k1ult", "kof2001", "neogeo", NULL, "2024",
 	"The King of Fighters 2001 (Ultimate, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -24907,7 +25000,7 @@ static struct BurnRomInfo kof2k2fdRomDesc[] = {
 STDROMPICKEXT(kof2k2fd, kof2k2fd, neogeo)
 STD_ROM_FN(kof2k2fd)
 
-struct BurnDriver BurnDrvkof2k2fd = {
+struct BurnDriver BurnDrvKof2k2fd = {
 	"kof2k2fd", "kof2002", "neogeo", NULL, "2002",
 	"The King of Fighters 2002 (Fully Decrypted)\0", NULL, "Eolith / Playmore", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -24931,7 +25024,7 @@ static struct BurnRomInfo kof2k2tsRomDesc[] = {
 STDROMPICKEXT(kof2k2ts, kof2k2ts, neogeo)
 STD_ROM_FN(kof2k2ts)
 
-struct BurnDriver BurnDrvkof2k2ts = {
+struct BurnDriver BurnDrvKof2k2ts = {
 	"kof2k2ts", "kof2002", "neogeo", NULL, "2021",
 	"The King of Fighters 2002 (Battle with Orochi, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -24956,7 +25049,7 @@ static struct BurnRomInfo kof2002tRomDesc[] = {
 STDROMPICKEXT(kof2002t, kof2002t, neogeo)
 STD_ROM_FN(kof2002t)
 
-struct BurnDriver BurnDrvkof2002t = {
+struct BurnDriver BurnDrvKof2002t = {
 	"kof2002t", "kof2002", "neogeo", NULL, "2014",
 	"The King of Fighters 2002 Plus (Optimised, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -24980,7 +25073,7 @@ static struct BurnRomInfo kof2k2lyRomDesc[] = {
 STDROMPICKEXT(kof2k2ly, kof2k2ly, neogeo)
 STD_ROM_FN(kof2k2ly)
 
-struct BurnDriver BurnDrvkof2k2ly = {
+struct BurnDriver BurnDrvKof2k2ly = {
 	"kof2k2ly", "kof2002", "neogeo", NULL, "2015",
 	"The King of Fighters 2002 (Remix, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -25013,7 +25106,7 @@ static struct BurnRomInfo kof2k2jqRomDesc[] = {
 STDROMPICKEXT(kof2k2jq, kof2k2jq, neogeo)
 STD_ROM_FN(kof2k2jq)
 
-struct BurnDriver BurnDrvkof2k2jq = {
+struct BurnDriver BurnDrvKof2k2jq = {
 	"kof2k2jq", "kof2002", "neogeo", NULL, "2022",
 	"The King of Fighters 2002 (Infinite Energy, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -25046,7 +25139,7 @@ static struct BurnRomInfo kf2k2mp3RomDesc[] = {
 STDROMPICKEXT(kf2k2mp3, kf2k2mp3, neogeo)
 STD_ROM_FN(kf2k2mp3)
 
-struct BurnDriver BurnDrvkf2k2mp3 = {
+struct BurnDriver BurnDrvKf2k2mp3 = {
 	"kf2k2mp3", "kof2002", "neogeo", NULL, "2010",
 	"The King of Fighters 2002 Magic Plus III (Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -25083,13 +25176,27 @@ static struct BurnRomInfo kof2002mRomDesc[] = {
 STDROMPICKEXT(kof2002m, kof2002m, neogeo)
 STD_ROM_FN(kof2002m)
 
-struct BurnDriver BurnDrvkof2002m = {
+static void kof2002TimePatch()
+{
+	Neo68KROMActive[0x012511] = 0x65;
+}
+
+static INT32 kof2002mInit()
+{
+	if (!bDoIpsPatch) {
+		NeoCallbackActive->pInitialise = kof2002TimePatch;
+	}
+
+	return NeoInit();
+}
+
+struct BurnDriver BurnDrvKof2002m = {
 	"kof2002m", "kof2002", "neogeo", NULL, "2023",
 	"The King of Fighters 2002 (Mugen, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK, 2, HARDWARE_PREFIX_CARTRIDGE | HARDWARE_SNK_NEOGEO, GBF_VSFIGHT, FBF_KOF,
 	NULL, kof2002mRomInfo, kof2002mRomName, NULL, NULL, NULL, NULL, neogeoInputInfo, neogeoDIPInfo,
-	NeoInit, NeoExit, NeoFrame, NeoRender, NeoScan, &NeoRecalcPalette,
+	kof2002mInit, NeoExit, NeoFrame, NeoRender, NeoScan, &NeoRecalcPalette,
 	0x1000, 304, 224, 4, 3
 };
 
@@ -25201,7 +25308,7 @@ static INT32 kf2k2ps2Init()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvkf2k2ps2 = {
+struct BurnDriver BurnDrvKf2k2ps2 = {
 	"kf2k2ps2", "kof2002", "neogeo", NULL, "2007-2023",
 	"The King of Fighters 2002 (PlayStation 2, Hack)\0", "Other versions are selected in the dipswitch", "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -25269,7 +25376,7 @@ static INT32 kf2k23rdInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvkf2k23rd = {
+struct BurnDriver BurnDrvKf2k23rd = {
 	"kf2k23rd", "kof2002", "neogeo", NULL, "2020-2022",
 	"The King of Fighters 2002 (3rd Strike of Orochi, Hack)\0", "Other versions are selected in the dipswitch", "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -25303,7 +25410,7 @@ static struct BurnRomInfo kf2k2plhRomDesc[] = {
 STDROMPICKEXT(kf2k2plh, kf2k2plh, neogeo)
 STD_ROM_FN(kf2k2plh)
 
-struct BurnDriver BurnDrvkf2k2plh = {
+struct BurnDriver BurnDrvKf2k2plh = {
 	"kf2k2plh", "kof2002", "neogeo", NULL, "2022",
 	"The King of Fighters 2002 Plus (Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -25350,7 +25457,7 @@ static INT32 kf2k2p17Init()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvkf2k2p17 = {
+struct BurnDriver BurnDrvKf2k2p17 = {
 	"kf2k2p17", "kof2002", "neogeo", NULL, "2020",
 	"The King of Fighters 2002 (Plus 2017, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -25387,7 +25494,7 @@ static struct BurnRomInfo kof2k2ruRomDesc[] = {
 STDROMPICKEXT(kof2k2ru, kof2k2ru, neogeo)
 STD_ROM_FN(kof2k2ru)
 
-struct BurnDriver BurnDrvkof2k2ru = {
+struct BurnDriver BurnDrvKof2k2ru = {
 	"kof2k2ru", "kof2002", "neogeo", NULL, "2006",
 	"The King of Fighters 2002 (Remix Ultra 3.5, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -25425,7 +25532,7 @@ static struct BurnRomInfo kf2k2mixRomDesc[] = {
 STDROMPICKEXT(kf2k2mix, kf2k2mix, neogeo)
 STD_ROM_FN(kf2k2mix)
 
-struct BurnDriver BurnDrvkf2k2mix = {
+struct BurnDriver BurnDrvKf2k2mix = {
 	"kf2k2mix", "kof2002", "neogeo", NULL, "2016",
 	"The King of Fighters 2002 (Climax, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -25477,7 +25584,7 @@ static INT32 kof2k2omgInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvkof2k2omg = {
+struct BurnDriver BurnDrvKof2k2omg = {
 	"kof2k2omg", "kof2002", "neogeo", NULL, "2002",
 	"The King of Fighters 2002 (Omega v.0?)\0", NULL, "hack", "KOF-ON Team",
 	NULL, NULL, NULL, NULL,
@@ -25514,7 +25621,7 @@ static struct BurnRomInfo kof2k2omg8RomDesc[] = {
 STDROMPICKEXT(kof2k2omg8, kof2k2omg8, neogeo)
 STD_ROM_FN(kof2k2omg8)
 
-struct BurnDriver BurnDrvkof2k2omg8 = {
+struct BurnDriver BurnDrvKof2k2omg8 = {
 	"kof2k2omg8", "kof2002", "neogeo", NULL, "2010",
 	"The King of Fighters 2002 (Omega v0.8)\0", NULL, "hack", "KOF-ON Team",
 	NULL, NULL, NULL, NULL,
@@ -25553,7 +25660,7 @@ static struct BurnRomInfo kof2k2omg9bRomDesc[] = {
 STDROMPICKEXT(kof2k2omg9b, kof2k2omg9b, neogeo)
 STD_ROM_FN(kof2k2omg9b)
 
-struct BurnDriver BurnDrvkof2k2omg9b = {
+struct BurnDriver BurnDrvKof2k2omg9b = {
 	"kof2k2omg9b", "kof2002", "neogeo", NULL, "2011",
 	"The King of Fighters 2002 (Omega v0.9 beta)\0", NULL, "hack", "KOF-ON Team",
 	NULL, NULL, NULL, NULL,
@@ -25592,7 +25699,7 @@ static struct BurnRomInfo kof2k2omg9RomDesc[] = {
 STDROMPICKEXT(kof2k2omg9, kof2k2omg9, neogeo)
 STD_ROM_FN(kof2k2omg9)
 
-struct BurnDriver BurnDrvkof2k2omg9 = {
+struct BurnDriver BurnDrvKof2k2omg9 = {
 	"kof2k2omg9", "kof2002", "neogeo", NULL, "2012",
 	"The King of Fighters 2002 (Omega v0.9)\0", NULL, "hack", "KOF-ON Team",
 	NULL, NULL, NULL, NULL,
@@ -25638,7 +25745,7 @@ static struct BurnRomInfo kof10thdRomDesc[] = {
 STDROMPICKEXT(kof10thd, kof10thd, neogeo)
 STD_ROM_FN(kof10thd)
 
-struct BurnDriver BurnDrvkof10thd = {
+struct BurnDriver BurnDrvKof10thd = {
 	"kof10thd", "kof2002", "neogeo", NULL, "200?",
 	"The King of Fighters 10th Anniversary (The King of Fighters 2002 bootleg / Fully Decrypted)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -25700,7 +25807,7 @@ static INT32 kf10thuoInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvkf10thuo = {
+struct BurnDriver BurnDrvKf10thuo = {
 	"kf10thuo", "kof2002", "neogeo", NULL, "2020",
 	"The King of Fighters 10th Anniversary (Optimized 2020, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -25759,7 +25866,7 @@ static struct BurnRomInfo kof2k3fdRomDesc[] = {
 STDROMPICKEXT(kof2k3fd, kof2k3fd, neogeo)
 STD_ROM_FN(kof2k3fd)
 
-struct BurnDriver BurnDrvkof2k3fd = {
+struct BurnDriver BurnDrvKof2k3fd = {
 	"kof2k3fd", "kof2003", "neogeo", NULL, "2003",
 	"The King of Fighters 2003 (Fully Decrypted)\0", NULL, "SNK Playmore", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -25782,7 +25889,7 @@ static struct BurnRomInfo kof2003tRomDesc[] = {
 STDROMPICKEXT(kof2003t, kof2003t, neogeo)
 STD_ROM_FN(kof2003t)
 
-struct BurnDriver BurnDrvkof2003t = {
+struct BurnDriver BurnDrvKof2003t = {
 	"kof2003t", "kof2003", "neogeo", NULL, "2014",
 	"The King of Fighters 2003 (Plus, Hack)\0", NULL, "SNK Playmore", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -25815,7 +25922,7 @@ static struct BurnRomInfo kf2k3ps2RomDesc[] = {
 STDROMPICKEXT(kf2k3ps2, kf2k3ps2, neogeo)
 STD_ROM_FN(kf2k3ps2)
 
-struct BurnDriver BurnDrvkf2k3ps2 = {
+struct BurnDriver BurnDrvKf2k3ps2 = {
 	"kf2k3ps2", "kof2003", "neogeo", NULL, "2006",
 	"The King of Fighters 2003 (PlayStation 2, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -25856,7 +25963,7 @@ static struct BurnRomInfo kf2k3p2sRomDesc[] = {
 STDROMPICKEXT(kf2k3p2s, kf2k3p2s, neogeo)
 STD_ROM_FN(kf2k3p2s)
 
-struct BurnDriver BurnDrvkf2k3p2s = {
+struct BurnDriver BurnDrvKf2k3p2s = {
 	"kf2k3p2s", "kof2003", "neogeo", NULL, "20??",
 	"The King of Fighters 2003 (PS2 Style Portraits, Hack)\0", "Secret Characters available in MVS", "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -25892,7 +25999,7 @@ static struct BurnRomInfo wakuwak7bhRomDesc[] = {
 STDROMPICKEXT(wakuwak7bh, wakuwak7bh, neogeo)
 STD_ROM_FN(wakuwak7bh)
 
-struct BurnDriver BurnDrvwakuwak7bh = {
+struct BurnDriver BurnDrvWakuwak7bh = {
 	"wakuwak7bh", "wakuwak7", "neogeo", NULL, "1996",
 	"Waku Waku 7 (Boss Hack)\0", NULL, "hack", "Neo Geo MVS",
 	L"Waku Waku 7\0\u308F\u304F\u308F\u304F\uFF17 (Boss Hack)\0", NULL, NULL, NULL,
@@ -25916,7 +26023,7 @@ static struct BurnRomInfo wakuw7jqRomDesc[] = {
 STDROMPICKEXT(wakuw7jq, wakuw7jq, neogeo)
 STD_ROM_FN(wakuw7jq)
 
-struct BurnDriver BurnDrvwakuw7jq = {
+struct BurnDriver BurnDrvWakuw7jq = {
 	"wakuw7jq", "wakuwak7", "neogeo", NULL, "2023",
 	"Waku Waku 7 (Enhanced, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	L"Waku Waku 7\0\u308F\u304F\u308F\u304F\uFF17 (Enhanced, Hack)\0", NULL, NULL, NULL,
@@ -25961,7 +26068,7 @@ static struct BurnRomInfo whpjqRomDesc[] = {
 STDROMPICKEXT(whpjq, whpjq, neogeo)
 STD_ROM_FN(whpjq)
 
-struct BurnDriver BurnDrvwhpjq = {
+struct BurnDriver BurnDrvWhpjq = {
 	"whpjq", "whp", "neogeo", NULL, "2023",
 	"World Heroes Perfect (Enhanced, Hack)\0", NULL, "hack", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -26125,7 +26232,7 @@ static INT32 syscheckInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvsyscheck = {
+struct BurnDriver BurnDrvSyscheck = {
 	"syscheck", NULL, "neogeo", NULL, "????",
 	"Neo System Check (ver 1.0b)\0", NULL, "blastar@gmx.net", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -26155,7 +26262,7 @@ static struct BurnRomInfo ngmontstRomDesc[] = {
 STDROMPICKEXT(ngmontst, ngmontst, neogeo)
 STD_ROM_FN(ngmontst)
 
-struct BurnDriver BurnDrvngmontst = {
+struct BurnDriver BurnDrvNgmontst = {
 	"ngmontst", NULL, "neogeo", NULL, "2022",
 	"Monitor Test Patterns Tool (v1.3)\0", NULL, "M.Priewe / NeoHomeBrew", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -26185,7 +26292,7 @@ static struct BurnRomInfo test240pRomDesc[] = {
 STDROMPICKEXT(test240p, test240p, neogeo)
 STD_ROM_FN(test240p)
 
-struct BurnDriver BurnDrvtest240p = {
+struct BurnDriver BurnDrvTest240p = {
 	"test240p", NULL, "neogeo", NULL, "2023",
 	"240p Test Suite (v1.0)\0", NULL, "Artemio", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -26218,7 +26325,7 @@ static struct BurnRomInfo beastRomDesc[] = {
 STDROMPICKEXT(beast, beast, neogeo)
 STD_ROM_FN(beast)
 
-struct BurnDriver BurnDrvbeast = {
+struct BurnDriver BurnDrvBeast = {
 	"beast", NULL, "neogeo", NULL, "????",
 	"Shadow of the Beast (Neo Geo demo)\0", NULL, "Jeff Kurtz", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -26247,7 +26354,7 @@ static struct BurnRomInfo neo2500RomDesc[] = {
 STDROMPICKEXT(neo2500, neo2500, neogeo)
 STD_ROM_FN(neo2500)
 
-struct BurnDriver BurnDrvneo2500 = {
+struct BurnDriver BurnDrvNeo2500 = {
 	"neo2500", NULL, "neogeo", NULL, "2004",
 	"Neo 2500 Demo\0", NULL, "blastar@gmx.net", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -26275,7 +26382,7 @@ static struct BurnRomInfo neodemoRomDesc[] = {
 STDROMPICKEXT(neodemo, neodemo, neogeo)
 STD_ROM_FN(neodemo)
 
-struct BurnDriver BurnDrvneodemo = {
+struct BurnDriver BurnDrvNeodemo = {
 	"neodemo", NULL, "neogeo", NULL, "2002",
 	"Chaos Demo (Neo Geo)\0", NULL, "Chaos", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -26310,7 +26417,7 @@ static struct BurnRomInfo cndiRomDesc[] = {
 STDROMPICKEXT(cndi, cndi, neogeo)
 STD_ROM_FN(cndi)
 
-struct BurnDriver BurnDrvcndi = {
+struct BurnDriver BurnDrvCndi = {
 	"cndi", NULL, "neogeo", NULL, "2009",
 	"Chip n Dale (FMV Demo)\0", "You must use the Universe BIOS and set region to Japan AES", "Sergi", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -26345,7 +26452,7 @@ static struct BurnRomInfo dwiRomDesc[] = {
 STDROMPICKEXT(dwi, dwi, neogeo)
 STD_ROM_FN(dwi)
 
-struct BurnDriver BurnDrvdwi = {
+struct BurnDriver BurnDrvDwi = {
 	"dwi", NULL, "neogeo", NULL, "2009",
 	"DarkWing Duck (FMV Demo)\0", "You must use the Universe BIOS and set region to Japan AES", "Sergi", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -26380,7 +26487,7 @@ static struct BurnRomInfo dwiaRomDesc[] = {
 STDROMPICKEXT(dwia, dwia, neogeo)
 STD_ROM_FN(dwia)
 
-struct BurnDriver BurnDrvdwia = {
+struct BurnDriver BurnDrvDwia = {
 	"dwia", "dwi", "neogeo", NULL, "2009",
 	"DarkWing Duck (FMV Demo, alt)\0", "You must use the Universe BIOS and set region to Japan AES", "Sergi", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -26415,7 +26522,7 @@ static struct BurnRomInfo duckiRomDesc[] = {
 STDROMPICKEXT(ducki, ducki, neogeo)
 STD_ROM_FN(ducki)
 
-struct BurnDriver BurnDrvducki = {
+struct BurnDriver BurnDrvDucki = {
 	"ducki", NULL, "neogeo", NULL, "2009",
 	"Duck Tales (FMV Demo)\0", "You must use the Universe BIOS and set region to Japan AES", "Sergi", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -26449,7 +26556,7 @@ static struct BurnRomInfo ghostbiRomDesc[] = {
 STDROMPICKEXT(ghostbi, ghostbi, neogeo)
 STD_ROM_FN(ghostbi)
 
-struct BurnDriver BurnDrvghostbi = {
+struct BurnDriver BurnDrvGhostbi = {
 	"ghostbi", NULL, "neogeo", NULL, "2009",
 	"Ghost Busters (FMV Demo)\0", "You must use the Universe BIOS and set region to Japan AES", "Sergi", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -26484,7 +26591,7 @@ static struct BurnRomInfo robocopiRomDesc[] = {
 STDROMPICKEXT(robocopi, robocopi, neogeo)
 STD_ROM_FN(robocopi)
 
-struct BurnDriver BurnDrvrobocopi = {
+struct BurnDriver BurnDrvRobocopi = {
 	"robocopi", NULL, "neogeo", NULL, "2009",
 	"Robocop (FMV Demo)\0", "You must use the Universe BIOS and set region to Japan AES", "Sergi", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -26518,7 +26625,7 @@ static struct BurnRomInfo spidermiRomDesc[] = {
 STDROMPICKEXT(spidermi, spidermi, neogeo)
 STD_ROM_FN(spidermi)
 
-struct BurnDriver BurnDrvspidermi = {
+struct BurnDriver BurnDrvSpidermi = {
 	"spidermi", NULL, "neogeo", NULL, "2009",
 	"Spiderman (FMV Demo)\0", "You must use the Universe BIOS and set region to Japan AES", "Sergi", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -26553,7 +26660,7 @@ static struct BurnRomInfo tmntiRomDesc[] = {
 STDROMPICKEXT(tmnti, tmnti, neogeo)
 STD_ROM_FN(tmnti)
 
-struct BurnDriver BurnDrvtmnti = {
+struct BurnDriver BurnDrvTmnti = {
 	"tmnti", NULL, "neogeo", NULL, "2009",
 	"Teenage Mutant Ninja Turtles (FMV Demo)\0", "You must use the Universe BIOS and set region to Japan AES", "Sergi", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -26588,7 +26695,7 @@ static struct BurnRomInfo tmntiaRomDesc[] = {
 STDROMPICKEXT(tmntia, tmntia, neogeo)
 STD_ROM_FN(tmntia)
 
-struct BurnDriver BurnDrvtmntia = {
+struct BurnDriver BurnDrvTmntia = {
 	"tmntia", "tmnti", "neogeo", NULL, "2009",
 	"Teenage Mutant Ninja Turtles (FMV Demo, alt)\0", "You must use the Universe BIOS and set region to Japan AES", "Sergi", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -26617,7 +26724,7 @@ static struct BurnRomInfo neoprimoRomDesc[] = {
 STDROMPICKEXT(neoprimo, neoprimo, neogeo)
 STD_ROM_FN(neoprimo)
 
-struct BurnDriver BurnDrvneoprimo = {
+struct BurnDriver BurnDrvNeoprimo = {
 	"neoprimo", NULL, "neogeo", NULL, "2013",
 	"Primo Demo\0", NULL, "iocerom.com", "Neo Geo",
 	NULL, NULL, NULL, NULL,
@@ -26658,7 +26765,7 @@ static INT32 CphdInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvcphd = {
+struct BurnDriver BurnDrvCphd = {
 	"cphd", NULL, "neogeo", NULL, "2013",
 	"Crouching Poney Hidden Dragon (DEMO)\0", NULL, "Le Cortex", "Neo Geo",
 	NULL, NULL, NULL, NULL,
@@ -26687,7 +26794,7 @@ static struct BurnRomInfo badappleRomDesc[] = {
 STDROMPICKEXT(badapple, badapple, neogeo)
 STD_ROM_FN(badapple)
 
-struct BurnDriver BurnDrvbadapple = {
+struct BurnDriver BurnDrvBadapple = {
 	"badapple", NULL, "neogeo", NULL, "2017",
 	"Bad Apple (Tech-Demo)\0", NULL, "Hpman", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -26810,7 +26917,7 @@ static struct BurnRomInfo ngftdemoRomDesc[] = {
 STDROMPICKEXT(ngftdemo, ngftdemo, neogeo)
 STD_ROM_FN(ngftdemo)
 
-struct BurnDriver BurnDrvngftdemo = {
+struct BurnDriver BurnDrvNgftdemo = {
 	"ngftdemo", NULL, "neogeo", NULL, "2012",
 	"NGF Transparency Demo\0", "redarmor.net", "CeL", "Neo Geo",
 	NULL, NULL, NULL, NULL,
@@ -26839,7 +26946,7 @@ static struct BurnRomInfo neocstlvRomDesc[] = {
 STDROMPICKEXT(neocstlv, neocstlv, neogeo)
 STD_ROM_FN(neocstlv)
 
-struct BurnDriver BurnDrvneocstlv = {
+struct BurnDriver BurnDrvNeocstlv = {
 	"neocstlv", NULL, "neogeo", NULL, "2004",
 	"Neo CastleVania Demo\0", NULL, "Barf/BarfHappy", "Neo Geo",
 	NULL, NULL, NULL, NULL,
@@ -26868,7 +26975,7 @@ static struct BurnRomInfo neo3ddmoRomDesc[] = {
 STDROMPICKEXT(neo3ddmo, neo3ddmo, neogeo)
 STD_ROM_FN(neo3ddmo)
 
-struct BurnDriver BurnDrvneo3ddmo = {
+struct BurnDriver BurnDrvNeo3ddmo = {
 	"neo3ddmo", NULL, "neogeo", NULL, "2012",
 	"NeoGeo 3D! Demo\0", NULL, "Oxygene", "Neo Geo",
 	NULL, NULL, NULL, NULL,
@@ -26897,7 +27004,7 @@ static struct BurnRomInfo neoww2RomDesc[] = {
 STDROMPICKEXT(neoww2, neoww2, neogeo)
 STD_ROM_FN(neoww2)
 
-struct BurnDriver BurnDrvneoww2 = {
+struct BurnDriver BurnDrvNeoww2 = {
 	"neoww2", NULL, "neogeo", NULL, "2012",
 	"WW2 (Demo) - Arcade Development Project\0", NULL, "Charles DOTY/RasterSoft (USA)", "Neo Geo",
 	NULL, NULL, NULL, NULL,
@@ -26926,7 +27033,7 @@ static struct BurnRomInfo neogalagRomDesc[] = {
 STDROMPICKEXT(neogalag, neogalag, neogeo)
 STD_ROM_FN(neogalag)
 
-struct BurnDriver BurnDrvneogalag = {
+struct BurnDriver BurnDrvNeogalag = {
 	"neogalag", NULL, "neogeo", NULL, "2013",
 	"Galaga Demo (set 1)\0", NULL, "Cristiano Bei/www.iocerom.com", "Neo Geo",
 	NULL, NULL, NULL, NULL,
@@ -26955,7 +27062,7 @@ static struct BurnRomInfo neogalagaRomDesc[] = {
 STDROMPICKEXT(neogalaga, neogalaga, neogeo)
 STD_ROM_FN(neogalaga)
 
-struct BurnDriver BurnDrvneogalaga = {
+struct BurnDriver BurnDrvNeogalaga = {
 	"neogalaga", "neogalag", "neogeo", NULL, "2013",
 	"Galaga Demo (set 2)\0", NULL, "Cristiano Bei/www.iocerom.com", "Neo Geo",
 	NULL, NULL, NULL, NULL,
@@ -26985,7 +27092,7 @@ static struct BurnRomInfo timesupdRomDesc[] = {
 STDROMPICKEXT(timesupd, timesupd, neogeo)
 STD_ROM_FN(timesupd)
 
-struct BurnDriver BurnDrvtimesupd = {
+struct BurnDriver BurnDrvTimesupd = {
 	"timesupd", "timesup", "neogeo", NULL, "2012",
 	"Time's UP! (Demo)\0", NULL, "NGF Dev. Inc.", "Neo Geo",
 	NULL, NULL, NULL, NULL,
@@ -27016,7 +27123,7 @@ static struct BurnRomInfo timesupRomDesc[] = {
 STDROMPICKEXT(timesup, timesup, neogeo)
 STD_ROM_FN(timesup)
 
-struct BurnDriver BurnDrvtimesup = {
+struct BurnDriver BurnDrvTimesup = {
 	"timesup", NULL, "neogeo", NULL, "2012",
 	"Time's UP!\0", NULL, "NGF Dev. Inc.", "Neo Geo",
 	NULL, NULL, NULL, NULL,
@@ -27045,7 +27152,7 @@ static struct BurnRomInfo neothndrRomDesc[] = {
 STDROMPICKEXT(neothndr, neothndr, neogeo)
 STD_ROM_FN(neothndr)
 
-struct BurnDriver BurnDrvneothndr = {
+struct BurnDriver BurnDrvNeothndr = {
 	"neothndr", NULL, "neogeo", NULL, "2012",
 	"Neo Thunder\0", "No Sound", "Sebastian Mihai", "Neo Geo",
 	NULL, NULL, NULL, NULL,
@@ -27074,7 +27181,7 @@ static struct BurnRomInfo cnbeRomDesc[] = {
 STDROMPICKEXT(cnbe, cnbe, neogeo)
 STD_ROM_FN(cnbe)
 
-struct BurnDriver BurnDrvcnbe = {
+struct BurnDriver BurnDrvCnbe = {
 	"cnbe", NULL, "neogeo", NULL, "2006",
 	"Codename - Blut Engel (2006-01-19)\0", NULL, "blastar@gmx.net", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -27103,7 +27210,7 @@ static struct BurnRomInfo cnbe2018RomDesc[] = {
 STDROMPICKEXT(cnbe2018, cnbe2018, neogeo)
 STD_ROM_FN(cnbe2018)
 
-struct BurnDriver BurnDrvcnbe2018 = {
+struct BurnDriver BurnDrvCnbe2018 = {
 	"cnbe2018", "cnbe", "neogeo", NULL, "2018",
 	"Codename - Blut Engel (2018-09-05)\0", NULL, "blastar@gmx.net", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -27132,7 +27239,7 @@ static struct BurnRomInfo columnsnRomDesc[] = {
 STDROMPICKEXT(columnsn, columnsn, neogeo)
 STD_ROM_FN(columnsn)
 
-struct BurnDriver BurnDrvcolumnsn = {
+struct BurnDriver BurnDrvColumnsn = {
 	"columnsn", NULL, "neogeo", NULL, "????",
 	"Columns (Neo Geo)\0", NULL, "homebrew", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -27161,7 +27268,7 @@ static struct BurnRomInfo ltorbRomDesc[] = {
 STDROMPICKEXT(ltorb, ltorb, neogeo)
 STD_ROM_FN(ltorb)
 
-struct BurnDriver BurnDrvltorb = {
+struct BurnDriver BurnDrvLtorb = {
 	"ltorb", NULL, "neogeo", NULL, "2005",
 	"Jonas Indiana and the Lost Temple of RA (20050717)\0", NULL, "blastar@gmx.net", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -27190,7 +27297,7 @@ static struct BurnRomInfo neonoponRomDesc[] = {
 STDROMPICKEXT(neonopon, neonopon, neogeo)
 STD_ROM_FN(neonopon)
 
-struct BurnDriver BurnDrvneonopon = {
+struct BurnDriver BurnDrvNeonopon = {
 	"neonopon", NULL, "neogeo", NULL, "????",
 	"Neo No Panepon (beta)\0", NULL, "blastar@gmx.net", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -27219,7 +27326,7 @@ static struct BurnRomInfo neopangRomDesc[] = {
 STDROMPICKEXT(neopang, neopang, neogeo)
 STD_ROM_FN(neopang)
 
-struct BurnDriver BurnDrvneopang = {
+struct BurnDriver BurnDrvNeopang = {
 	"neopang", NULL, "neogeo", NULL, "2010",
 	"Neo Pang\0", NULL, "CeL", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -27248,7 +27355,7 @@ static struct BurnRomInfo neopongRomDesc[] = {
 STDROMPICKEXT(neopong, neopong, neogeo)
 STD_ROM_FN(neopong)
 
-struct BurnDriver BurnDrvneopong = {
+struct BurnDriver BurnDrvNeopong = {
 	"neopong", NULL, "neogeo", NULL, "2002",
 	"Neo Pong (ver 1.1)\0", NULL, "Neo Dev Corporation", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -27284,7 +27391,7 @@ static INT32 neopongaInit()
 	return NeoInit();
 }
 
-struct BurnDriver BurnDrvneoponga = {
+struct BurnDriver BurnDrvNeoponga = {
 	"neoponga", "neopong", "neogeo", NULL, "2002",
 	"Neo Pong (ver 1.0)\0", NULL, "Neo Dev Corporation", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -27313,7 +27420,7 @@ static struct BurnRomInfo ngem2kRomDesc[] = {
 STDROMPICKEXT(ngem2k, ngem2k, neogeo)
 STD_ROM_FN(ngem2k)
 
-struct BurnDriver BurnDrvngem2k = {
+struct BurnDriver BurnDrvNgem2k = {
 	"ngem2k", NULL, "neogeo", NULL, "2006",
 	"NGEM2K (beta 2006-01-18)\0", NULL, "homebrew", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -27345,7 +27452,7 @@ static struct BurnRomInfo ngfrogRomDesc[] = {
 STDROMPICKEXT(ngfrog, ngfrog, neogeo)
 STD_ROM_FN(ngfrog)
 
-struct BurnDriver BurnDrvngfrog = {
+struct BurnDriver BurnDrvNgfrog = {
 	"ngfrog", NULL, "neogeo", NULL, "2006",
 	"Frog Feast (Neo Geo)\0", NULL, "Rastersoft", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -27374,7 +27481,7 @@ static struct BurnRomInfo poknightRomDesc[] = {
 STDROMPICKEXT(poknight, poknight, neogeo)
 STD_ROM_FN(poknight)
 
-struct BurnDriver BurnDrvpoknight = {
+struct BurnDriver BurnDrvPoknight = {
 	"poknight", NULL, "neogeo", NULL, "199?",
 	"Poker Night\0", NULL, "Jeff Kurtz", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -27404,7 +27511,7 @@ static struct BurnRomInfo proneonRomDesc[] = {
 STDROMPICKEXT(proneon, proneon, neogeo)
 STD_ROM_FN(proneon)
 
-struct BurnDriver BurnDrvproneon = {
+struct BurnDriver BurnDrvProneon = {
 	"proneon", NULL, "neogeo", NULL, "2019",
 	"Project Neon (Caravan Edition, prealpha v0.4.19)\0", NULL, "FULLSET", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -27442,7 +27549,7 @@ static struct BurnRomInfo neotrisRomDesc[] = {
 STDROMPICKEXT(neotris, neotris, neogeo)
 STD_ROM_FN(neotris)
 
-struct BurnDriver BurnDrvneotris = {
+struct BurnDriver BurnDrvNeotris = {
 	"neotris", NULL, "neogeo", NULL, "2020",
 	"NeoTRIS (Free Beta 2, Ver. 202009)\0", NULL, "Chipsonsteroids", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -27471,7 +27578,7 @@ static struct BurnRomInfo neotetRomDesc[] = {
 STDROMPICKEXT(neotet, neotet, neogeo)
 STD_ROM_FN(neotet)
 
-struct BurnDriver BurnDrvneotet = {
+struct BurnDriver BurnDrvNeotet = {
 	"neotet", NULL, "neogeo", NULL, "2013",
 	"NeoGeo 2-Player Tetris\0", NULL, "Crim/Stephen", "Neo Geo",
 	NULL, NULL, NULL, NULL,
@@ -27562,7 +27669,7 @@ static struct BurnRomInfo xeviousngRomDesc[] = {
 STDROMPICKEXT(xeviousng, xeviousng, neogeo)
 STD_ROM_FN(xeviousng)
 
-struct BurnDriver BurnDrvxeviousng = {
+struct BurnDriver BurnDrvXeviousng = {
 	"xeviousng", NULL, "neogeo", NULL, "1982-2023",
 	"Xevious (Neo-Geo Conversion)\0", NULL, "Namco", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -27685,7 +27792,7 @@ static struct BurnRomInfo santaballRomDesc[] = {
 STDROMPICKEXT(santaball, santaball, neogeo)
 STD_ROM_FN(santaball)
 
-struct BurnDriver BurnDrvsantaball = {
+struct BurnDriver BurnDrvSantaball = {
 	"santaball", NULL, "neogeo", NULL, "2012",
 	"SantaBall - Christmas Tennis Game\0", NULL, "M.Priewe / NeoHomeBrew", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -27716,7 +27823,7 @@ static struct BurnRomInfo xenocrisisRomDesc[] = {
 STDROMPICKEXT(xenocrisis, xenocrisis, neogeo)
 STD_ROM_FN(xenocrisis)
 
-struct BurnDriver BurnDrvxenocrisis = {
+struct BurnDriver BurnDrvXenocrisis = {
 	"xenocrisis", NULL, "neogeo", NULL, "2019",
 	"Xeno Crisis (NGM-BB01 ~ NGH-BB01)\0", NULL, "Bitmap Bureau", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
@@ -27810,11 +27917,11 @@ static void mslug3xCallback()
 
 	// Select a version other than the release version.
 	switch (VerSwitcher & 0x1f) {
-		case 0x01: nIndex[0] =  6; nIndex[1] =  7; break; // Public Beta
-		case 0x02: nIndex[0] =  9; nIndex[1] = 11; break; // Development 0
-		case 0x04: nIndex[0] = 15; nIndex[1] = 16; break; // Development 1
-		case 0x08: nIndex[0] = 20; nIndex[1] = 21; break; // Development 2
-		case 0x10: nIndex[0] = 25; nIndex[1] = 26; break; // Development 3
+	case 0x01: nIndex[0] =  6; nIndex[1] =  7; break;	// Public Beta
+	case 0x02: nIndex[0] =  9; nIndex[1] = 11; break;	// Development 0
+	case 0x04: nIndex[0] = 15; nIndex[1] = 16; break;	// Development 1
+	case 0x08: nIndex[0] = 20; nIndex[1] = 21; break;	// Development 2
+	case 0x10: nIndex[0] = 25; nIndex[1] = 26; break;	// Development 3
 	}
 
 	RomDiffPatch(Neo68KROMActive, nIndex[0], 0, 1);
@@ -27830,29 +27937,29 @@ static INT32 mslug3xInit()
 	nBurnDrvSubActive = (VerSwitcher & 0x1f);
 
 	switch (nBurnDrvSubActive) {
-		case 0x00:
-			pszCustomNameA = "Metal Slug 3X (Release)\0";
-			break;
+	case 0x00:
+		pszCustomNameA = "Metal Slug 3X (Release)\0";
+		break;
 
-		case 0x01:
-			pszCustomNameA = "Metal Slug 3X (Public Beta)\0";
-			break;
+	case 0x01:
+		pszCustomNameA = "Metal Slug 3X (Public Beta)\0";
+		break;
 
-		case 0x02:
-			pszCustomNameA = "Metal Slug 3X (Development 0)\0";
-			break;
+	case 0x02:
+		pszCustomNameA = "Metal Slug 3X (Development 0)\0";
+		break;
 
-		case 0x04:
-			pszCustomNameA = "Metal Slug 3X (Development 1)\0";
-			break;
+	case 0x04:
+		pszCustomNameA = "Metal Slug 3X (Development 1)\0";
+		break;
 
-		case 0x08:
-			pszCustomNameA = "Metal Slug 3X (Development 2)\0";
-			break;
+	case 0x08:
+		pszCustomNameA = "Metal Slug 3X (Development 2)\0";
+		break;
 
-		case 0x10:
-			pszCustomNameA = "Metal Slug 3X (Development 3)\0";
-			break;
+	case 0x10:
+		pszCustomNameA = "Metal Slug 3X (Development 3)\0";
+		break;
 	}
 
 	if (nBurnDrvSubActive) {
@@ -27872,7 +27979,7 @@ static INT32 mslug3xInit()
 	return nRet;
 }
 
-struct BurnDriver BurnDrvmslug3x = {
+struct BurnDriver BurnDrvMslug3x = {
 	"mslug3x", NULL, "neogeo", NULL, "2022",
 	"Metal Slug 3X (Complete Collection)\0", "Other versions are selected in the dipswitch", "WillNie", "Neo Geo AES",
 	NULL, NULL, NULL, NULL,
@@ -27880,4 +27987,98 @@ struct BurnDriver BurnDrvmslug3x = {
 	NULL, mslug3xRomInfo, mslug3xRomName, NULL, NULL, NULL, NULL, aesverswInputInfo, mslug3xDIPInfo,
 	mslug3xInit, NeoExit, NeoFrame, NeoRender, NeoScan, &NeoRecalcPalette,
 	0x1000, 304, 224, 4, 3
+};
+
+
+// Cyborg Force
+// NEO.BYTE.FORCE
+// 20230409
+// https://www.neobyteforce.com/
+
+static struct BurnRomInfo cyborgforceRomDesc[] = {
+	{ "cyborg-p1.bin",	0x0100000, 0x89e1c728, 1 | BRF_ESS | BRF_PRG }, 	//  0 68K code
+	{ "cyborg-p2.bin",	0x0300000, 0xe4a8b27a, 1 | BRF_ESS | BRF_PRG }, 	//  1
+
+	{ "cyborg-s1.bin",	0x0020000, 0x5bd29810, 2 | BRF_GRA },           	//  2 Text layer tiles
+
+	{ "cyborg-c1.bin",	0x1000000, 0x77078687, 3 | BRF_GRA },           	//  3 Sprite data
+	{ "cyborg-c2.bin",	0x1000000, 0xa5abdb83, 3 | BRF_GRA },           	//  4
+
+	{ "cyborg-m1.bin",	0x0010000, 0x06da3cec, 4 | BRF_ESS | BRF_PRG }, 	//  5 Z80 code
+
+	{ "cyborg-v1.bin",	0x0800000, 0xdc50718c, 5 | BRF_SND },           	//  6 Sound data
+	{ "cyborg-v2.bin",	0x0800000, 0x8135d5a8, 5 | BRF_SND },           	//  6 Sound data
+};
+
+STDROMPICKEXT(cyborgforce, cyborgforce, neogeo)
+STD_ROM_FN(cyborgforce)
+
+struct BurnDriver BurnDrvCyborgForce = {
+	"cyborgforce", NULL, "neogeo", NULL, "2023",
+	"Cyborg Force!\0", NULL, "NEO.BYTE.FORCE", "Neo Geo MVS",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_HOMEBREW, 2, HARDWARE_PREFIX_CARTRIDGE | HARDWARE_SNK_NEOGEO, GBF_RUNGUN | GBF_SHOOT, 0,
+	NULL, cyborgforceRomInfo, cyborgforceRomName, NULL, NULL, NULL, NULL, neogeoInputInfo, neogeoDIPInfo,
+	NeoInit, NeoExit, NeoFrame, NeoRender, NeoScan, &NeoRecalcPalette,
+	0x1000, 320, 224, 4, 3
+};
+
+
+// Abyssal Infants
+// https://kakoeimon.itch.io/abyssal-infants
+// 20210920
+
+static struct BurnRomInfo abyssaliRomDesc[] = {
+	{ "aby-p1.p1",	0x080000, 0xa8a2a8a6, 1 | BRF_ESS | BRF_PRG }, //  0 68K code
+
+	{ "aby-s1.s1",	0x020000, 0x1ebbb83e, 2 | BRF_GRA },           //  1 Text layer tiles
+
+	{ "aby-c1.c1",	0x200000, 0x24dabe27, 3 | BRF_GRA },           //  2 Sprite data
+	{ "aby-c2.c2",	0x200000, 0xbbdacc24, 3 | BRF_GRA },           //  3
+
+	{ "aby-m1.m1",	0x020000, 0x3ddf772b, 4 | BRF_ESS | BRF_PRG }, //  4 Z80 code
+
+	{ "aby-v1.v1",	0x200000, 0x1fae3797, 5 | BRF_SND },           //  5 Sound data
+};
+
+STDROMPICKEXT(abyssali, abyssali, neogeo)
+STD_ROM_FN(abyssali)
+
+struct BurnDriver BurnDrvAbyssali = {
+	"abyssali", NULL, "neogeo", NULL, "2021",
+	"Abyssal Infants\0", NULL, "Kako Eimon", "Neo Geo MVS",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_HOMEBREW, 1, HARDWARE_PREFIX_CARTRIDGE | HARDWARE_SNK_NEOGEO | HARDWARE_SNK_SWAPC, GBF_HORSHOOT, 0,
+	NULL, abyssaliRomInfo, abyssaliRomName, NULL, NULL, NULL, NULL, neogeoInputInfo, neogeoDIPInfo,
+	fatfury2Init, NeoExit, NeoFrame, NeoRender, NeoScan, &NeoRecalcPalette,
+	0x1000, 304, 224, 4, 3
+};
+
+
+// GladMort (Demo)
+
+static struct BurnRomInfo gladmortRomDesc[] = {
+	{ "gladmort-p1.bin",	0x0080000, 0xE0CEAFEC, 1 | BRF_ESS | BRF_PRG }, 	//  0 68K code
+
+	{ "gladmort-s1.bin",    0x0020000, 0x8304BE52, 2 | BRF_GRA },           //  1 Text layer tiles / MB831000
+
+	{ "gladmort-c1.bin",	0x1000000, 0x2C4FE4C3, 3 | BRF_GRA },           	//  2 Sprite data
+	{ "gladmort-c2.bin",	0x1000000, 0x1BDD21BD, 3 | BRF_GRA },           	//  3
+
+	{ "gladmort-m1.bin",    0x0010000, 0xFB945087, 4 | BRF_ESS | BRF_PRG }, //  4 Z80 code 		/ MB832000
+
+	{ "gladmort-v1.bin",  	0x1000000, 0x49D60C52, 5 | BRF_SND },           //  5 Sound data 		/ MB834200
+};
+
+STDROMPICKEXT(gladmort, gladmort, neogeo)
+STD_ROM_FN(gladmort)
+
+struct BurnDriver BurnDrvgladmort = {
+	"gladmort", NULL, "neogeo", NULL, "2024",
+	"GladMort (Demo)\0", NULL, "PixelHeart", "Neo Geo MVS",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_HOMEBREW, 2, HARDWARE_PREFIX_CARTRIDGE | HARDWARE_SNK_NEOGEO, GBF_RUNGUN, 0,
+	NULL, gladmortRomInfo, gladmortRomName, NULL, NULL, NULL, NULL, neogeoInputInfo, neogeoDIPInfo,
+	NeoInit, NeoExit, NeoFrame, NeoRender, NeoScan, &NeoRecalcPalette,
+	0x1000, 320, 224, 4, 3
 };

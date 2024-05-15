@@ -122,7 +122,6 @@ extern bool bMonitorAutoCheck;
 
 // Used for the load/save dialog in commdlg.h
 extern TCHAR szChoice[MAX_PATH];					// File chosen by the user
-extern TCHAR szRomdataName[MAX_PATH];
 extern OPENFILENAME ofn;
 
 // Used to convert strings when possibly needed
@@ -174,6 +173,8 @@ void BurnerDoGameListLocalisation();
 void BurnerExitGameListLocalisation();
 int FBALocaliseGamelistLoadTemplate();
 int FBALocaliseGamelistCreateTemplate();
+
+INT32 BurnDrvSetFullNameW(TCHAR* szName, INT32 i);
 
 // popup_win32.cpp
 enum FBAPopupType { MT_NONE = 0, MT_ERROR, MT_WARNING, MT_INFO };
@@ -505,7 +506,6 @@ INT32 GetIpsNumPatches();
 void LoadIpsActivePatches();
 INT32 GetIpsNumActivePatches();
 INT32 IpsManagerCreate(HWND hParentWND);
-void IpsPatchExit();
 
 // localise_download.cpp
 int LocaliseDownloadCreate(HWND hParentWND);

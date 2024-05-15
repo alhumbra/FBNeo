@@ -38,6 +38,7 @@ struct NeoReallocInfo {
 
 struct NEO_CALLBACK {
 	void (*pInitialise)();
+	void (*pResetCallback)();
 	void (*pInstallHandlers)();
 	void (*pRemoveHandlers)();
 	void (*pBankswitch)();
@@ -86,6 +87,8 @@ extern UINT8* YM2610ADPCMAROM[MAX_SLOT];
 extern UINT8* Neo68KFix[MAX_SLOT];
 
 extern UINT32 nNeo68KROMBank;
+
+extern UINT32 nAllCodeSize;
 
 extern UINT8 *NeoSpriteRAM, *NeoTextRAM;
 

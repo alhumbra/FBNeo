@@ -263,6 +263,7 @@
     <ClCompile Include="..\..\src\burn\drv\pst90s\d_sderby.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pst90s\d_seibuspi.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pst90s\d_shangha3.cpp" />
+    <ClCompile Include="..\..\src\burn\drv\pst90s\d_splash.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pst90s\d_topdrive.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pst90s\d_vamphalf.cpp" />
     <ClCompile Include="..\..\src\burn\drv\pst90s\d_vegaeo.cpp" />
@@ -1546,7 +1547,7 @@ del %(Filename).exe
       <IgnoreSpecificDefaultLibraries>winspool.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib</IgnoreSpecificDefaultLibraries>
     </Link>
     <PreBuildEvent>
-      <Command>$(MSBuildProjectDirectory)/../../src/dep/vs2010/pre2022.bat "$(VCInstallDir)</Command>
+      <Command>$(MSBuildProjectDirectory)/../../src/dep/visualstudio/pre2022.bat "$(VCInstallDir)</Command>
     </PreBuildEvent>
     <ResourceCompile>
       <PreprocessorDefinitions>FBNEO_DEBUG;INCLUDE_AVI_RECORDING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -1575,7 +1576,7 @@ del %(Filename).exe
       <SubSystem>Windows</SubSystem>
     </Link>
     <PreBuildEvent>
-      <Command>$(MSBuildProjectDirectory)/../../src/dep/vs2010/pre2022.bat "$(VCInstallDir)</Command>
+      <Command>$(MSBuildProjectDirectory)/../../src/dep/visualstudio/pre2022.bat "$(VCInstallDir)</Command>
     </PreBuildEvent>
     <ResourceCompile>
       <PreprocessorDefinitions>FBNEO_DEBUG;INCLUDE_AVI_RECORDING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -1608,7 +1609,7 @@ del %(Filename).exe
       <SubSystem>Windows</SubSystem>
     </Link>
     <PreBuildEvent>
-      <Command>$(MSBuildProjectDirectory)/../../src/dep/vs2010/pre2022.bat "$(VCInstallDir)</Command>
+      <Command>$(MSBuildProjectDirectory)/../../src/dep/visualstudio/pre2022.bat "$(VCInstallDir)</Command>
     </PreBuildEvent>
     <ResourceCompile>
       <PreprocessorDefinitions>INCLUDE_AVI_RECORDING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -1639,7 +1640,7 @@ del %(Filename).exe
       <SubSystem>Windows</SubSystem>
     </Link>
     <PreBuildEvent>
-      <Command>$(MSBuildProjectDirectory)/../../src/dep/vs2010/pre2022.bat "$(VCInstallDir)</Command>
+      <Command>$(MSBuildProjectDirectory)/../../src/dep/visualstudio/pre2022.bat "$(VCInstallDir)</Command>
     </PreBuildEvent>
     <ResourceCompile>
       <PreprocessorDefinitions>INCLUDE_AVI_RECORDING;%(PreprocessorDefinitions)</PreprocessorDefinitions>

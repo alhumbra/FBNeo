@@ -1757,7 +1757,7 @@ static INT32 RomLoad(INT32 v33off, INT32 gfxlen0, INT32 gfxlen1, INT32 gfxtype1,
 		if (BurnLoadRom(DrvEEPROM + 0x000000, eep, 1)) return 1;
 	}
 
-	BurnFree (tmp);
+	BurnFree(tmp);
 
 	return 0;
 }
@@ -1834,12 +1834,13 @@ static INT32 DrvInit(INT32 (*pRomLoadCallback)(), const UINT8 *sound_decrypt_tab
 	graphics_mask[0] = ((gfxlen1 * 2) - 1) / (8 * 8);
 	graphics_mask[1] = ((gfxlen2 * 2) - 1) / (16 * 16);
 
-	BurnYM2151Init(3579545);
+	BurnYM2151InitBuffered(3579545, 1, NULL, 0);
 	YM2151SetIrqHandler(0, &m92YM2151IRQHandler);
 	BurnYM2151SetAllRoutes(0.40, BURN_SND_ROUTE_BOTH);
+	BurnTimerAttachVez(7159090);
 
 	iremga20_init(0, DrvSndROM, 0x100000, 3579545);
-	itemga20_set_route(0, 1.00, BURN_SND_ROUTE_BOTH);
+	itemga20_set_route(0, 1.20, BURN_SND_ROUTE_BOTH);
 
 	MSM6295Init(0, 1000000 / 132, 0); // ppan
 	MSM6295SetRoute(0, 1.00, BURN_SND_ROUTE_BOTH);
@@ -1847,13 +1848,6 @@ static INT32 DrvInit(INT32 (*pRomLoadCallback)(), const UINT8 *sound_decrypt_tab
 	GenericTilesInit();
 
 	DrvDoReset();
-
-	FILE* f = fopen("m92_v33", "wb");
-	fwrite(DrvV33ROM, 0x0c0000, 1, f);
-	fclose(f);
-	f = fopen("m92_v30", "wb");
-	fwrite(DrvV30ROM, 0x020000, 1, f);
-	fclose(f);
 
 	return 0;
 }
@@ -2164,7 +2158,6 @@ static INT32 DrvFrame()
 	nInterleave = 256*multiplier;
 
 	// overclocking...
-	INT32 nSoundBufferPos = 0;
 	nCyclesTotal[0] = (INT32)((INT64)(9000000 / 60) * nBurnCPUSpeedAdjust / 0x0100);
 	nCyclesTotal[1] = (INT32)((INT64)(7159090 / 60) * nBurnCPUSpeedAdjust / 0x0100);
 	nCyclesDone[0] = nCyclesDone[1] = 0;
@@ -2180,34 +2173,17 @@ static INT32 DrvFrame()
 		VezClose();
 
 		VezOpen(1);
-		CPU_RUN(1, Vez);
-
-		if ((i%multiplier)==(multiplier-1)) {
-			if (pBurnSoundOut) {
-				INT32 nSegmentLength = nBurnSoundLen / (nInterleave / multiplier);
-				INT16* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
-				
-				BurnYM2151Render(pSoundBuf, nSegmentLength);
-				iremga20_update(0, pSoundBuf, nSegmentLength);
-				
-				nSoundBufferPos += nSegmentLength;
-			}
-		}
-
+		CPU_RUN_TIMER(1);
 		VezClose();
 	}
 
 	VezOpen(1);
 
 	if (pBurnSoundOut) {
-		INT32 nSegmentLength = nBurnSoundLen - nSoundBufferPos;
-		if (nSegmentLength) {
-			INT16* pSoundBuf = pBurnSoundOut + (nSoundBufferPos << 1);
-			BurnYM2151Render(pSoundBuf, nSegmentLength);
-			iremga20_update(0, pSoundBuf, nSegmentLength);
-		}
+		BurnYM2151Render(pBurnSoundOut, nBurnSoundLen);
+		iremga20_update(0, pBurnSoundOut, nBurnSoundLen);
 	}
-	
+
 	VezClose();
 
 	return 0;
@@ -2519,7 +2495,7 @@ static INT32 ppanRomLoad()
 	if (BurnLoadRom(DrvSndROM + 0x100000, 14, 1)) return 1;
 	memcpy(DrvSndROM, DrvSndROM + 0x100000, 0x40000);
 
-	BurnFree (tmp);
+	BurnFree(tmp);
 
 	DrvSprBuf = DrvSprRAM; // no sprite buffer!!
 
@@ -4649,11 +4625,11 @@ struct BurnDriver BurnDrvHookpj = {
 
 
 // Hook (Plus, Hack)
-// GOTVG 20240313
+// GOTVG 20240327
 
 static struct BurnRomInfo hookplsRomDesc[] = {
-	{ "hkpls_-h0-d.ic25",	0x040000, 0x811c7971, 1 | BRF_PRG | BRF_ESS },
-	{ "hkpls_-l0-d.ic38",	0x040000, 0x8d6ad3c2, 1 | BRF_PRG | BRF_ESS },
+	{ "hkpls_-h0-d.ic25",	0x040000, 0x3403ba10, 1 | BRF_PRG | BRF_ESS },
+	{ "hkpls_-l0-d.ic38",	0x040000, 0x5d6cf1af, 1 | BRF_PRG | BRF_ESS },
 
 	HOOK_COMPONENTS
 };
@@ -4889,11 +4865,11 @@ struct BurnDriver BurnDrvHooksw = {
 
 
 // Hook (Elite, Hack)
-// GOTVG 20240214
+// GOTVG 20240319
 
 static struct BurnRomInfo hookjyRomDesc[] = {
-	{ "hkjy_-h0-d.ic25",	0x040000, 0xceba9539, 1 | BRF_PRG | BRF_ESS },
-	{ "hkjy_-l0-d.ic38",	0x040000, 0x99e8ffda, 1 | BRF_PRG | BRF_ESS },
+	{ "hkjy_-h0-d.ic25",	0x040000, 0x671e59e8, 1 | BRF_PRG | BRF_ESS },
+	{ "hkjy_-l0-d.ic38",	0x040000, 0x221772b7, 1 | BRF_PRG | BRF_ESS },
 
 	HOOK_COMPONENTS
 };
