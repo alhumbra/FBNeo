@@ -2394,6 +2394,50 @@ struct BurnDriver BurnDrvMeikyuhbl = {
 	256, 240, 4, 3
 };
 
+// Meikyuu Hunter G (Japan, oldromset)
+
+static struct BurnRomInfo meikyuhaRomDesc[] = {
+	{ "27256.1d",	0x08000, 0xd5b5e8a2, 1 }, //  0 maincpu
+	{ "24512.3d",	0x10000, 0x40c9b0b8, 1 }, //  1
+	{ "24512.4d",	0x10000, 0x5606a8f4, 1 }, //  2
+	{ "27512.6d",	0x10000, 0x8ca6055d, 1 }, //  3
+
+	{ "27256.5f",	0x08000, 0xc28c4d82, 2 }, //  4 audiocpu
+
+	{ "27256.16b",	0x08000, 0x3d25f15c, 3 }, //  5 gfx1
+
+	{ "92.6m",		0x10000, 0x9b0dbfa9, 4 }, //  6 gfx2
+	{ "93.6o",		0x10000, 0x95683fda, 4 }, //  7
+	{ "89.6i",		0x10000, 0x1b1fcca7, 4 }, //  8
+	{ "91.6l",		0x10000, 0xe7413056, 4 }, //  9
+	{ "88.6h",		0x10000, 0x57667546, 4 }, // 10
+	{ "90.6k",		0x10000, 0x4c548db8, 4 }, // 11
+	{ "94.6p",		0x10000, 0xe5bcf927, 4 }, // 12
+	{ "95.6r",		0x10000, 0x9e10f723, 4 }, // 13
+
+	{ "27512.12f",	0x10000, 0xb65e029d, 5 }, // 14 gfx3
+	{ "27512.14f",	0x10000, 0x668d995d, 5 }, // 15
+	{ "27512.15f",	0x10000, 0x547fe4e2, 5 }, // 16
+	{ "27512.17f",	0x10000, 0x6a528d13, 5 }, // 17
+
+	{ "dw18.9d",	0x00400, 0x75f1945f, 6 }, // 18 proms
+	{ "dw19.10d",	0x00400, 0xcc16f3fa, 6 }, // 19
+
+	{ "dw.1b",		0x01000, 0x28e9ced9, 7 }, // 20 i8751 microcontroller
+};
+
+STD_ROM_PICK(meikyuha)
+STD_ROM_FN(meikyuha)
+
+struct BurnDriver BurnDrvMeikyuha = {
+	"meikyuha", "ghostb", NULL, NULL, "1987",
+	"Meikyuu Hunter G (Japan,oldromset)\0", NULL, "Data East Corporation", "DEC8",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_BOOTLEG | BDF_HISCORE_SUPPORTED, 2, HARDWARE_PREFIX_DATAEAST, GBF_SHOOT, 0,
+	NULL, meikyuhaRomInfo, meikyuhaRomName, NULL, NULL, NULL, NULL, GhostbInputInfo, MeikyuuDIPInfo,
+	DrvInit, GhostbExit, DrvFrame, DrvDraw, GhostbScan, &DrvRecalc, 0x400,
+	256, 240, 4, 3
+};
 
 static void m6809_bankswitch(INT32 data)
 {
