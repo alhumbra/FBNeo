@@ -8975,6 +8975,38 @@ static struct BurnRomInfo MegamanRomDesc[] = {
 STD_ROM_PICK(Megaman)
 STD_ROM_FN(Megaman)
 
+static struct BurnRomInfo MegamanjRomDesc[] = {
+	{ "rcmj_23c.bin",    0x080000, 0x781940FB, BRF_ESS | BRF_PRG | CPS1_68K_PROGRAM_NO_BYTESWAP },
+	{ "rcmj_22c.bin",    0x080000, 0x708268C4, BRF_ESS | BRF_PRG | CPS1_68K_PROGRAM_NO_BYTESWAP },
+	{ "rcmj_21b.bin",    0x080000, 0x4376EA95, BRF_ESS | BRF_PRG | CPS1_68K_PROGRAM_NO_BYTESWAP },
+
+	{ "rcm_01.3a",     0x080000, 0x6ecdf13f, BRF_GRA | CPS1_TILES },
+	{ "rcm_02.4a",     0x080000, 0x944d4f0f, BRF_GRA | CPS1_TILES },
+	{ "rcm_03.5a",     0x080000, 0x36f3073c, BRF_GRA | CPS1_TILES },
+	{ "rcm_04.6a",     0x080000, 0x54e622ff, BRF_GRA | CPS1_TILES },
+	{ "rcm_05.7a",     0x080000, 0x5dd131fd, BRF_GRA | CPS1_TILES },
+	{ "rcm_06.8a",     0x080000, 0xf0faf813, BRF_GRA | CPS1_TILES },
+	{ "rcm_07.9a",     0x080000, 0x826de013, BRF_GRA | CPS1_TILES },
+	{ "rcm_08.10a",    0x080000, 0xfbff64cf, BRF_GRA | CPS1_TILES },
+	{ "rcm_10.3c",     0x080000, 0x4dc8ada9, BRF_GRA | CPS1_TILES },
+	{ "rcm_11.4c",     0x080000, 0xf2b9ee06, BRF_GRA | CPS1_TILES },
+	{ "rcm_12.5c",     0x080000, 0xfed5f203, BRF_GRA | CPS1_TILES },
+	{ "rcm_13.6c",     0x080000, 0x5069d4a9, BRF_GRA | CPS1_TILES },
+	{ "rcm_14.7c",     0x080000, 0x303be3bd, BRF_GRA | CPS1_TILES },
+	{ "rcm_15.8c",     0x080000, 0x4f2d372f, BRF_GRA | CPS1_TILES },
+	{ "rcm_16.9c",     0x080000, 0x93d97fde, BRF_GRA | CPS1_TILES },
+	{ "rcm_17.10c",    0x080000, 0x92371042, BRF_GRA | CPS1_TILES },
+
+	{ "rcm_09.bin",    0x010000, 0x22ac8f5f, BRF_PRG | CPS1_Z80_PROGRAM },
+	
+	{ "rcm_18.11c",    0x020000, 0x80f1f8aa, BRF_SND | CPS1_OKIM6295_SAMPLES },
+	{ "rcm_19.12c",    0x020000, 0xf257dbe1, BRF_SND | CPS1_OKIM6295_SAMPLES },
+	
+};
+
+STD_ROM_PICK(Megamanj)
+STD_ROM_FN(Megamanj)
+
 static struct BurnRomInfo MegamanaRomDesc[] = {
 	{ "rcma_23b.8f",   0x080000, 0x61e4a397, BRF_ESS | BRF_PRG | CPS1_68K_PROGRAM_NO_BYTESWAP },
 	{ "rcma_22b.7f",   0x080000, 0x708268c4, BRF_ESS | BRF_PRG | CPS1_68K_PROGRAM_NO_BYTESWAP },
@@ -15102,6 +15134,52 @@ static struct BurnRomInfo MbombrdjRomDesc[] = {
 STD_ROM_PICK(Mbombrdj)
 STD_ROM_FN(Mbombrdj)
 
+static struct BurnRomInfo Mbomberjr1RomDesc[] = {
+	{ "mbj_23h.8f",    0x080000, 0x91CA27E4, BRF_ESS | BRF_PRG | CPS1_68K_PROGRAM_NO_BYTESWAP },
+	{ "mbj_22b.7f",    0x080000, 0xacd38478, BRF_ESS | BRF_PRG | CPS1_68K_PROGRAM_NO_BYTESWAP },
+	{ "mbj_21a.6f",    0x080000, 0xd5007b05, BRF_ESS | BRF_PRG | CPS1_68K_PROGRAM_NO_BYTESWAP },
+	{ "mbj_20a.5f",    0x080000, 0xaeb557b0, BRF_ESS | BRF_PRG | CPS1_68K_PROGRAM_NO_BYTESWAP },
+
+	{ "mb_01.3a",      0x080000, 0xa53b1c81, BRF_GRA | CPS1_TILES },
+	{ "mb_02.4a",      0x080000, 0x23fe10f6, BRF_GRA | CPS1_TILES },
+	{ "mb_03.5a",      0x080000, 0xcb866c2f, BRF_GRA | CPS1_TILES },
+	{ "mb_04.6a",      0x080000, 0xc9143e75, BRF_GRA | CPS1_TILES },
+	{ "mb_05.7a",      0x080000, 0x506b9dc9, BRF_GRA | CPS1_TILES },
+	{ "mb_06.8a",      0x080000, 0xaff8c2fb, BRF_GRA | CPS1_TILES },
+	{ "mb_07.9a",      0x080000, 0xb76c70e9, BRF_GRA | CPS1_TILES },
+	{ "mb_08.10a",     0x080000, 0xe60c9556, BRF_GRA | CPS1_TILES },
+	{ "mb_10.3c",      0x080000, 0x97976ff5, BRF_GRA | CPS1_TILES },
+	{ "mb_11.4c",      0x080000, 0xb350a840, BRF_GRA | CPS1_TILES },
+	{ "mb_12.5c",      0x080000, 0x8fb94743, BRF_GRA | CPS1_TILES },
+	{ "mb_13.6c",      0x080000, 0xda810d5f, BRF_GRA | CPS1_TILES },
+	
+	{ "mb_qa.5k",      0x020000, 0xe21a03c4, BRF_ESS | BRF_PRG | CPS1_Z80_PROGRAM },
+
+	{ "mb-q1.1k",      0x080000, 0x0630c3ce, BRF_SND | CPS1_QSOUND_SAMPLES },
+	{ "mb-q2.2k",      0x080000, 0x354f9c21, BRF_SND | CPS1_QSOUND_SAMPLES },
+	{ "mb-q3.3k",      0x080000, 0x7838487c, BRF_SND | CPS1_QSOUND_SAMPLES },
+	{ "mb-q4.4k",      0x080000, 0xab66e087, BRF_SND | CPS1_QSOUND_SAMPLES },
+	{ "mb-q5.1m",      0x080000, 0xc789fef2, BRF_SND | CPS1_QSOUND_SAMPLES },
+	{ "mb-q6.2m",      0x080000, 0xecb81b61, BRF_SND | CPS1_QSOUND_SAMPLES },
+	{ "mb-q7.3m",      0x080000, 0x041e49ba, BRF_SND | CPS1_QSOUND_SAMPLES },
+	{ "mb-q8.4m",      0x080000, 0x59fe702a, BRF_SND | CPS1_QSOUND_SAMPLES },
+	
+	A_BOARD_QSOUND_PLDS
+	
+	{ "mb63b.1a",      0x000117, 0xb8392f02, BRF_OPT },	// b-board PLDs
+	{ "iob1.12d",      0x000117, 0x3abc0700, BRF_OPT },
+	{ "bprg1.11d",     0x000117, 0x31793da7, BRF_OPT },
+	{ "ioc1.ic1",      0x000104, 0xa399772d, BRF_OPT },	// c-board PLDs
+	
+	{ "d7l1.7l",       0x000117, 0x27b7410d, BRF_OPT },	// d-board PLDs
+	{ "d8l1.8l",       0x000117, 0x539fc7da, BRF_OPT },
+	{ "d9k2.9k",       0x000117, 0xcd85a156, BRF_OPT },
+	{ "d10f1.10f",     0x000117, 0x6619c494, BRF_OPT },
+};
+
+STD_ROM_PICK(Mbomberjr1)
+STD_ROM_FN(Mbomberjr1)
+
 static struct BurnRomInfo SlampicRomDesc[] = {
 	{ "5.bin",				0x080000, 0x7dba63cd, BRF_ESS | BRF_PRG | CPS1_68K_PROGRAM_BYTESWAP },
 	{ "3.bin",				0x080000, 0xd86671f3, BRF_ESS | BRF_PRG | CPS1_68K_PROGRAM_BYTESWAP },
@@ -16669,6 +16747,7 @@ static const struct GameConfig ConfigTable[] =
 	{ "kodh"          , CPS_B_21_DEF, mapper_KD29B , 0, NULL                },
 	{ "kodda"         , CPS_B_21_DEF, mapper_KD29B , 0, NULL                },
 	{ "megaman"       , CPS_B_21_DEF, mapper_RCM63B, 0, NULL                },
+	{ "megamanj"      , CPS_B_21_DEF, mapper_RCM63B, 0, NULL                },
 	{ "megamana"      , CPS_B_21_DEF, mapper_RCM63B, 0, NULL                },
 	{ "rockmanj"      , CPS_B_21_DEF, mapper_RCM63B, 0, NULL                },
 	{ "mercs"         , CPS_B_12    , mapper_O224B , 0, NULL                },
@@ -16850,6 +16929,7 @@ static const struct GameConfig ConfigTable[] =
 	{ "slammast"      , CPS_B_21_QS4, mapper_MB63B , 0, slammast_decode     },
 	{ "slammastu"     , CPS_B_21_QS4, mapper_MB63B , 0, slammast_decode     },
 	{ "mbomberj"      , CPS_B_21_QS4, mapper_MB63B , 0, slammast_decode     },
+	{ "mbomberjr1"    , CPS_B_21_QS4, mapper_MB63B , 0, slammast_decode     },
 	{ "mbombrd"       , CPS_B_21_QS5, mapper_MB63B , 0, slammast_decode     },
 	{ "mbombrdj"      , CPS_B_21_QS5, mapper_MB63B , 0, slammast_decode     },
 	{ "slampic"       , CPS_B_21_QS4, mapper_MB63B , 0, slammast_patch		},
@@ -23001,6 +23081,16 @@ struct BurnDriver BurnDrvCpsMegaman = {
 	&CpsRecalcPal, 0x1000, 384, 224, 4, 3
 };
 
+struct BurnDriver BurnDrvCpsMegamanj = {
+	"megamanj", "megaman", NULL, NULL, "1995",
+	"Rockman: The Power Battle (CPS1, Japan 951006) Switch CAS2 Hack\0", NULL, "Capcom", "CPS1",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_HACK | BDF_HISCORE_SUPPORTED, 2, HARDWARE_CAPCOM_CPS1, GBF_VSFIGHT, 0,
+	NULL, MegamanjRomInfo, MegamanjRomName, NULL, NULL, NULL, NULL, MegamanInputInfo, RockmanjDIPInfo,
+	TwelveMhzInit, DrvExit, Cps1Frame, CpsRedraw, CpsAreaScan,
+	&CpsRecalcPal, 0x1000, 384, 224, 4, 3
+};
+
 struct BurnDriver BurnDrvCpsMegamana = {
 	"megamana", "megaman", NULL, NULL, "1995",
 	"Mega Man: The Power Battle (CPS1, Asia 951006)\0", NULL, "Capcom", "CPS1",
@@ -24787,6 +24877,16 @@ struct BurnDriver BurnDrvCpsMbomberj = {
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_HISCORE_SUPPORTED, 4, HARDWARE_CAPCOM_CPS1, GBF_VSFIGHT, 0,
 	NULL, MbomberjRomInfo, MbomberjRomName, NULL, NULL, NULL, NULL, SlammastInputInfo, SlammastDIPInfo,
+	TwelveMhzInit, DrvExit, Cps1Frame, CpsRedraw, CpsAreaScan,
+	&CpsRecalcPal, 0x1000, 384, 224, 4, 3
+};
+
+struct BurnDriver BurnDrvCpsMbomberjr1 = {
+	"mbomberjr1", "slammast", NULL, NULL, "1993",
+	"Muscle Bomber: The Body Explosion (Japan 930901) Switch CAS2 Hack \0", NULL, "Capcom", "CPS1",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_HACK | BDF_HISCORE_SUPPORTED, 4, HARDWARE_CAPCOM_CPS1, GBF_VSFIGHT, 0,
+	NULL, Mbomberjr1RomInfo, Mbomberjr1RomName, NULL, NULL, NULL, NULL, SlammastInputInfo, SlammastDIPInfo,
 	TwelveMhzInit, DrvExit, Cps1Frame, CpsRedraw, CpsAreaScan,
 	&CpsRecalcPal, 0x1000, 384, 224, 4, 3
 };
