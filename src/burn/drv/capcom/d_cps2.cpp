@@ -5545,6 +5545,29 @@ static struct BurnRomInfo SfaRomDesc[] = {
 STD_ROM_PICK(Sfa)
 STD_ROM_FN(Sfa)
 
+static struct BurnRomInfo Sfau1RomDesc[] = {
+	{ "sfzu.03d",      0x080000, 0xDE8A35F7, CPS2_PRG_68K | BRF_ESS | BRF_PRG }, // If there's a US 950605 then this should be sfzu.03b
+	{ "sfzu.04c",      0x080000, 0x8B73B0E5, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "sfz.05a",       0x080000, 0x0810544d, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "sfz.06",        0x080000, 0x806e8f38, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+
+	{ "sfz.14m",       0x200000, 0x90fefdb3, CPS2_GFX | BRF_GRA },
+	{ "sfz.16m",       0x200000, 0x5354c948, CPS2_GFX | BRF_GRA },
+	{ "sfz.18m",       0x200000, 0x41a1e790, CPS2_GFX | BRF_GRA },
+	{ "sfz.20m",       0x200000, 0xa549df98, CPS2_GFX | BRF_GRA },
+
+	{ "sfz.01",        0x020000, 0xffffec7d, CPS2_PRG_Z80 | BRF_ESS | BRF_PRG },
+	{ "sfz.02",        0x020000, 0x45f46a08, CPS2_PRG_Z80 | BRF_ESS | BRF_PRG },
+
+	{ "sfz.11m",       0x200000, 0xc4b093cd, CPS2_QSND | BRF_SND },
+	{ "sfz.12m",       0x200000, 0x8bdbc4b4, CPS2_QSND | BRF_SND },
+	
+	{ "sfzu.key",      0x000014, 0x0BEEBC12, CPS2_ENCRYPTION_KEY },
+};
+
+STD_ROM_PICK(Sfau1)
+STD_ROM_FN(Sfau1)
+
 static struct BurnRomInfo Sfar1RomDesc[] = {
 	{ "sfze.03c",      0x080000, 0xa1b69dd7, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
 	{ "sfze.04b",      0x080000, 0xbb90acd5, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
@@ -10502,6 +10525,16 @@ struct BurnDriver BurnDrvCpsMshvsfa = {
 	&CpsRecalcPal, 0x1000, 384, 224, 4, 3
 };
 
+struct BurnDriver BurnDrvCpsSfau1 = {
+	"sfau1", "sfa", NULL, NULL, "1995",
+	"Street Fighter Alpha - warriors' dreams (950727 USA) Switch CAS2 Hack\0", NULL, "Capcom", "CPS2",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_HACK | BDF_HISCORE_SUPPORTED, 2, HARDWARE_CAPCOM_CPS2, GBF_VSFIGHT, FBF_SF,
+	NULL, Sfau1RomInfo, Sfau1RomName, NULL, NULL, NULL, NULL, Cps2FightingInputInfo, NULL,
+	Cps2Init, DrvExit, Cps2Frame, CpsRedraw, CpsAreaScan,
+	&CpsRecalcPal, 0x1000, 384, 224, 4, 3
+};
+
 struct BurnDriver BurnDrvCpsMshvsfa1 = {
 	"mshvsfa1", "mshvsf", NULL, NULL, "1997",
 	"Marvel Super Heroes Vs. Street Fighter (Asia 970620)\0", NULL, "Capcom", "CPS2",
@@ -12365,6 +12398,29 @@ static struct BurnRomInfo Csclub1dRomDesc[] = {
 STD_ROM_PICK(Csclub1d)
 STD_ROM_FN(Csclub1d)
 
+static struct BurnRomInfo CsclubuRomDesc[] = {
+	{ "cscu.03",       0x080000, 0x8FF845DB, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "cscu.04",       0x080000, 0x0D62F8A1, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "cscu.05",       0x080000, 0xDB4DC492, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "cscu.06",       0x080000, 0x7A60BBAD, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "cscu.07",       0x080000, 0x003968FD, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+
+	{ "csc.14m",       0x200000, 0xe8904afa, CPS2_GFX | BRF_GRA },
+	{ "csc.16m",       0x200000, 0xc98c8079, CPS2_GFX | BRF_GRA },
+	{ "csc.18m",       0x200000, 0xc030df5a, CPS2_GFX | BRF_GRA },
+	{ "csc.20m",       0x200000, 0xb4e55863, CPS2_GFX | BRF_GRA },
+
+	{ "csc.01",        0x020000, 0xee162111, CPS2_PRG_Z80 | BRF_ESS | BRF_PRG },
+
+	{ "csc.11m",       0x200000, 0xa027b827, CPS2_QSND | BRF_SND },
+	{ "csc.12m",       0x200000, 0xcb7f6e55, CPS2_QSND | BRF_SND },
+	
+	{ "csclubu.key",   0x000014, 0xDC80A719, CPS2_ENCRYPTION_KEY },
+};
+
+STD_ROM_PICK(Csclubu)
+STD_ROM_FN(Csclubu)
+
 static struct BurnRomInfo CybotsudRomDesc[] = {
 	{ "cybu_d.03",     0x080000, 0xee7560fb, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
 	{ "cybu_d.04",     0x080000, 0x7e7425a0, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
@@ -14019,6 +14075,16 @@ struct BurnDriver BurnDrvCpsCsclub1d = {
 	BDF_GAME_WORKING | BDF_CLONE | BDF_BOOTLEG | BDF_HISCORE_SUPPORTED, 2, HARDWARE_CAPCOM_CPS2, GBF_SPORTSMISC, 0,
 	NULL, Csclub1dRomInfo, Csclub1dRomName, NULL, NULL, NULL, NULL, CsclubInputInfo, NULL,
 	PhoenixInit, DrvExit, Cps2Frame, CpsRedraw, CpsAreaScan,
+	&CpsRecalcPal, 0x1000, 384, 224, 4, 3
+};
+
+struct BurnDriver BurnDrvCpsCsclubu = {
+	"csclubu", "csclub", NULL, NULL, "1997",
+	"Capcom Sports Club (971017 USA) Switch CAS2 Hack\0", NULL, "Capcom", "CPS2",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_HACK | BDF_HISCORE_SUPPORTED, 2, HARDWARE_CAPCOM_CPS2, GBF_SPORTSMISC, 0,
+	NULL, CsclubuRomInfo, CsclubuRomName, NULL, NULL, NULL, NULL, CsclubInputInfo, NULL,
+	Cps2Init, DrvExit, Cps2Frame, CpsRedraw, CpsAreaScan,
 	&CpsRecalcPal, 0x1000, 384, 224, 4, 3
 };
 
