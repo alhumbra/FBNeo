@@ -2394,7 +2394,7 @@ struct BurnDriver BurnDrvMeikyuhbl = {
 	256, 240, 4, 3
 };
 
-// Meikyuu Hunter G (Japan, oldromset)
+// Meikyuu Hunter G (Japan, BOOTLEG,oldromset)
 
 static struct BurnRomInfo meikyuhaRomDesc[] = {
 	{ "27256.1d",	0x08000, 0xd5b5e8a2, 1 }, //  0 maincpu
@@ -2431,7 +2431,7 @@ STD_ROM_FN(meikyuha)
 
 struct BurnDriver BurnDrvMeikyuha = {
 	"meikyuha", "ghostb", NULL, NULL, "1987",
-	"Meikyuu Hunter G (Japan,oldromset)\0", NULL, "Data East Corporation", "DEC8",
+	"Meikyuu Hunter G (Japan BOOTLEG,oldromset)\0", NULL, "Data East Corporation", "DEC8",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_BOOTLEG | BDF_HISCORE_SUPPORTED, 2, HARDWARE_PREFIX_DATAEAST, GBF_SHOOT, 0,
 	NULL, meikyuhaRomInfo, meikyuhaRomName, NULL, NULL, NULL, NULL, GhostbInputInfo, MeikyuuDIPInfo,
