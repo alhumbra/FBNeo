@@ -1911,19 +1911,6 @@ struct BurnDriver BurnDrvGradius2xh = {
 	320, 224, 4, 3
 };
 
-STD_ROM_PICK(gradius2xh)
-STD_ROM_FN(gradius2xh)
-
-struct BurnDriver BurnDrvGradius2xh = {
-	"gradius2xh", "vulcan", NULL, NULL, "1988",
-	"Gradius II - GOFER no Yabou (Japan xh Ver. 2008.08.08)\0", NULL, "Konami", "GX785",
-	L"Gradius II - GOFER \u306E\u91CE\u671B (Japan xh Ver. 2008.08.08)\0", NULL, NULL, NULL,
-	BDF_GAME_WORKING | BDF_HACK | BDF_HISCORE_SUPPORTED, 2, HARDWARE_PREFIX_KONAMI, GBF_HORSHOOT, 0,
-	NULL, gradius2xhRomInfo, gradius2RomName, NULL, NULL, NULL, NULL, DrvInputInfo, Gradius2DIPInfo,
-	vulcanInit, DrvExit, DrvFrame, DrvDraw, DrvScan, &DrvRecalc, 0x400,
-	320, 224, 4, 3
-};
-
 // Gradius II - GOFER no Yabou (Japan Old Ver.)
 
 static struct BurnRomInfo gradius2aRomDesc[] = {
