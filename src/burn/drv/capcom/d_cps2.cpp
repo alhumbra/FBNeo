@@ -3112,6 +3112,37 @@ static struct BurnRomInfo Vampjr1RomDesc[] = {
 STD_ROM_PICK(Vampjr1)
 STD_ROM_FN(Vampjr1)
 
+static struct BurnRomInfo Vampjr2RomDesc[] = {
+	{ "vamj.03b",      0x080000, 0xac4fde80, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vamj.04c",      0x080000, 0x68486cba, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vamj.05b",      0x080000, 0xc1b72537, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vamj.06b",      0x080000, 0xe22e7496, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vamj.07b",      0x080000, 0x66064d41, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vamj.08b",      0x080000, 0x98cc51cb, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vamj.09b",      0x080000, 0xce58258d, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vamj.10b",      0x080000, 0x3fc51c7f, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+
+	{ "vam.13m",       0x400000, 0xc51baf99, CPS2_GFX | BRF_GRA },
+	{ "vam.15m",       0x400000, 0x3ce83c77, CPS2_GFX | BRF_GRA },
+	{ "vam.17m",       0x400000, 0x4f2408e0, CPS2_GFX | BRF_GRA },
+	{ "vam.19m",       0x400000, 0x9ff60250, CPS2_GFX | BRF_GRA },
+	{ "vam.14m",       0x100000, 0xbd87243c, CPS2_GFX | BRF_GRA },
+	{ "vam.16m",       0x100000, 0xafec855f, CPS2_GFX | BRF_GRA },
+	{ "vam.18m",       0x100000, 0x3a033625, CPS2_GFX | BRF_GRA },
+	{ "vam.20m",       0x100000, 0x2bff6a89, CPS2_GFX | BRF_GRA },
+
+	{ "vam.01",        0x020000, 0x64b685d5, CPS2_PRG_Z80 | BRF_ESS | BRF_PRG },
+	{ "vam.02",        0x020000, 0xcf7c97c7, CPS2_PRG_Z80 | BRF_ESS | BRF_PRG },
+
+	{ "vam.11m",       0x200000, 0x4a39deb2, CPS2_QSND | BRF_SND },
+	{ "vam.12m",       0x200000, 0x1a3e5c03, CPS2_QSND | BRF_SND },
+	
+	{ "vampj.key",     0x000014, 0x8418cc6f, CPS2_ENCRYPTION_KEY },
+};
+
+STD_ROM_PICK(Vampjr2)
+STD_ROM_FN(Vampjr2)
+
 static struct BurnRomInfo EcofghtrRomDesc[] = {
 	{ "uece.03",       0x080000, 0xec2c1137, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
 	{ "uece.04",       0x080000, 0xb35f99db, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
@@ -10133,6 +10164,16 @@ struct BurnDriver BurnDrvCpsVampjr1 = {
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_HISCORE_SUPPORTED, 2, HARDWARE_CAPCOM_CPS2, GBF_VSFIGHT, FBF_DSTLK,
 	NULL, Vampjr1RomInfo, Vampjr1RomName, NULL, NULL, NULL, NULL, Cps2FightingInputInfo, NULL,
+	Cps2Init, DrvExit, Cps2Frame, CpsRedraw, CpsAreaScan,
+	&CpsRecalcPal, 0x1000, 384, 224, 4, 3
+};
+
+struct BurnDriver BurnDrvCpsVampjr2 = {
+	"vampjr2", "dstlk", NULL, NULL, "1994",
+	"Vampire: The Night Warriors (Japan 940818) Switch CAS2 Hack\0", NULL, "Capcom", "CPS2",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK | BDF_HISCORE_SUPPORTED, 2, HARDWARE_CAPCOM_CPS2, GBF_VSFIGHT, FBF_DSTLK,
+	NULL, Vampjr2RomInfo, Vampjr2RomName, NULL, NULL, NULL, NULL, Cps2FightingInputInfo, NULL,
 	Cps2Init, DrvExit, Cps2Frame, CpsRedraw, CpsAreaScan,
 	&CpsRecalcPal, 0x1000, 384, 224, 4, 3
 };
