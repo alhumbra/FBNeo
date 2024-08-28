@@ -709,3 +709,46 @@ struct BurnDriver BurnDrvSonsonj = {
 	SonsonjInit, DrvExit, DrvFrame, DrvDraw, DrvScan, &DrvRecalc, 0x200,
 	240, 240, 4, 3
 };
+
+// Son Son (Japan) Switch CAS2 Hack
+
+static struct BurnRomInfo sonsonjr1RomDesc[] = {
+	{ "ss_0.l9",	0x2000, 0x705c168f, 1 | BRF_PRG | BRF_ESS }, //  0 Main m6809
+	{ "ss_1.j9",	0x2000, 0x0f03b57d, 1 | BRF_PRG | BRF_ESS }, //  1
+	{ "ss_2.l8",	0x2000, 0xa243a15d, 1 | BRF_PRG | BRF_ESS }, //  2
+	{ "ss_3.j8",	0x2000, 0xcb64681a, 1 | BRF_PRG | BRF_ESS }, //  3
+	{ "ss_4.l7",	0x2000, 0x4c3e9441, 1 | BRF_PRG | BRF_ESS }, //  4
+	{ "ss_5.j7c",	0x2000, 0x9C582121, 1 | BRF_PRG | BRF_ESS }, //  5 c is "C"AS2
+
+	{ "ss_6.c11",	0x2000, 0x1135c48a, 2 | BRF_PRG | BRF_ESS }, //  6 Sound m6809
+
+	{ "ss_7.b6",	0x2000, 0x990890b1, 3 | BRF_GRA },           //  7 Characters
+	{ "ss_8.b5",	0x2000, 0x9388ff82, 3 | BRF_GRA },           //  8
+
+	{ "ss_9.m5",	0x2000, 0x8cb1cacf, 4 | BRF_GRA },           //  9 Sprites
+	{ "ss_10.m6",	0x2000, 0xf802815e, 4 | BRF_GRA },           // 10
+	{ "ss_11.m3",	0x2000, 0x4dbad88a, 4 | BRF_GRA },           // 11
+	{ "ss_12.m4",	0x2000, 0xaa05e687, 4 | BRF_GRA },           // 12
+	{ "ss_13.m1",	0x2000, 0x66119bfa, 4 | BRF_GRA },           // 13
+	{ "ss_14.m2",	0x2000, 0xe14ef54e, 4 | BRF_GRA },           // 14
+
+	{ "ssb4.b2",	0x0020, 0xc8eaf234, 5 | BRF_GRA },           // 15 Color Proms
+	{ "ssb5.b1",	0x0020, 0x0e434add, 5 | BRF_GRA },           // 16
+	{ "ssb2.c4",	0x0100, 0xc53321c6, 5 | BRF_GRA },           // 17
+	{ "ssb3.h7",	0x0100, 0x7d2c324a, 5 | BRF_GRA },           // 18
+
+	{ "ssb1.k11",	0x0100, 0xa04b0cfe, 0 | BRF_OPT },           // 19 Timing Prom
+};
+
+STD_ROM_PICK(sonsonjr1)
+STD_ROM_FN(sonsonjr1)
+
+struct BurnDriver BurnDrvSonsonjr1 = {
+	"sonsonjr1", "sonson", NULL, NULL, "1984",
+	"Son Son (Japan) Switch CAS2 Hack\0", NULL, "Capcom", "Miscellaneous",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK | BDF_HISCORE_SUPPORTED, 2, HARWARE_CAPCOM_MISC, GBF_PLATFORM, 0,
+	NULL, sonsonjr1RomInfo, sonsonjr1RomName, NULL, NULL, NULL, NULL, SonsonInputInfo, SonsonDIPInfo,
+	SonsonjInit, DrvExit, DrvFrame, DrvDraw, DrvScan, &DrvRecalc, 0x200,
+	240, 240, 4, 3
+};
