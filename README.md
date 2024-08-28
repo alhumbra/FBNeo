@@ -1,7 +1,13 @@
-# FinalBurn Neo
-Official Forum: https://neo-source.com
+# FinalBurn Neo mod
+ROMs are extracted from re-released arcade games.
+ROMs can be modified, so drivers have been added to ensure proper playability.
 
-Discord: https://discord.gg/8EGVd9v
+Vampire Hunter: Darkstalkers' Revenge (Japan 950420) is an ultra-rare Romset and was one of the reasons we made this build.
+
+# FinalBurn Neo 
+Original FBNeo Official Forum: https://neo-source.com
+
+Original FBNeo Official Discord: https://discord.gg/8EGVd9v
 
 This is the official repository of FinalBurn Neo, an Emulator for Arcade Games & Select Consoles. It is based on the emulators FinalBurn and old versions of [MAME](https://www.mamedev.org)
 
