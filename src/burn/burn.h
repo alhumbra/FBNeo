@@ -138,19 +138,19 @@ inline static void SetCurrentFrame(const UINT32 n) {
 #define BRF_NODUMP			(1 << 28)
 
 struct BurnRomInfo {
-	char szName[100];
+	char *szName;
 	UINT32 nLen;
 	UINT32 nCrc;
 	UINT32 nType;
 };
 
 struct BurnSampleInfo {
-	char szName[100];
+	char *szName;
 	UINT32 nFlags;
 };
 
 struct BurnHDDInfo {
-	char szName[100];
+	char *szName;
 	UINT32 nLen;
 	UINT32 nCrc;
 };
@@ -465,6 +465,11 @@ extern bool bDoIpsPatch;
 void IpsApplyPatches(UINT8* base, char* rom_name, UINT32 rom_crc, bool readonly = false);
 
 // ---------------------------------------------------------------------------
+// MISC Helper / utility functions, etc
+int BurnComputeSHA1(const UINT8 *buffer, int buffer_size, char *hash_str);
+//int BurnComputeSHA1(const char *filename, char *hash_str);
+
+// ---------------------------------------------------------------------------
 // Flags used with the Burndriver structure
 
 // Flags for the flags member
@@ -526,6 +531,7 @@ void IpsApplyPatches(UINT8* base, char* rom_name, UINT32 rom_crc, bool readonly 
 #define HARDWARE_PREFIX_FDS                             (0x1F000000)
 #define HARDWARE_PREFIX_NGP                             (0x20000000)
 #define HARDWARE_PREFIX_CHANNELF                        (0x21000000)
+#define HARDWARE_PREFIX_SNES                            (0x22000000)
 
 #define HARDWARE_SNK_NGP								(HARDWARE_PREFIX_NGP | 0x00000000)
 #define HARDWARE_SNK_NGPC								(HARDWARE_PREFIX_NGP | 0x00000001) // must not be 0x10000
@@ -765,6 +771,8 @@ void IpsApplyPatches(UINT8* base, char* rom_name, UINT32 rom_crc, bool readonly 
 
 #define HARDWARE_NES									(HARDWARE_PREFIX_NES)
 #define HARDWARE_FDS									(HARDWARE_PREFIX_FDS)
+#define HARDWARE_SNES                                   (HARDWARE_PREFIX_SNES)
+#define HARDWARE_SNES_ZAPPER                            (HARDWARE_PREFIX_SNES | 0x0000001)
 
 #define HARDWARE_CHANNELF                               (HARDWARE_PREFIX_CHANNELF)
 

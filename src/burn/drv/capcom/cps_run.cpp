@@ -172,8 +172,8 @@ INT32 CpsRunInit()
 		if (QsndInit()) {
 			return 1;
 		}
-		QsndSetRoute(BURN_SND_QSND_OUTPUT_1, 1.00, BURN_SND_ROUTE_LEFT);
-		QsndSetRoute(BURN_SND_QSND_OUTPUT_2, 1.00, BURN_SND_ROUTE_RIGHT);
+		QsndSetRoute(BURN_SND_QSND_OUTPUT_1, 2.00, BURN_SND_ROUTE_LEFT);
+		QsndSetRoute(BURN_SND_QSND_OUTPUT_2, 2.00, BURN_SND_ROUTE_RIGHT);
 	}
 
 	if (Cps == 2 || PangEEP || Cps1Qs == 1 || CpsBootlegEEPROM) EEPROMReset();
@@ -436,8 +436,8 @@ INT32 Cps2Frame()
 		if (Cps2Volume > 39) Cps2Volume = 39;
 		if (Cps2Volume < 0) Cps2Volume = 0;
 		
-		QscSetRoute(BURN_SND_QSND_OUTPUT_1, Cps2Volume / 39.0, BURN_SND_ROUTE_LEFT);
-		QscSetRoute(BURN_SND_QSND_OUTPUT_2, Cps2Volume / 39.0, BURN_SND_ROUTE_RIGHT);
+		QscSetRoute(BURN_SND_QSND_OUTPUT_1, (Cps2Volume / 39.0)*2, BURN_SND_ROUTE_LEFT);
+		QscSetRoute(BURN_SND_QSND_OUTPUT_2, (Cps2Volume / 39.0)*2, BURN_SND_ROUTE_RIGHT);
 	}
 	
 	nDisplayEnd = nCpsCycles * (nFirstLine + 224) / nCpsNumScanlines;	// Account for VBlank
