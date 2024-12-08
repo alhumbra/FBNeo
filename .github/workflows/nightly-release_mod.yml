@@ -1,4 +1,4 @@
-name: "nightly-release"
+name: "nightly(mod)-release"
 
 on:
   push:
