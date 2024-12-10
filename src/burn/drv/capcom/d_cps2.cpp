@@ -6992,6 +6992,34 @@ static struct BurnRomInfo SgemfRomDesc[] = {
 STD_ROM_PICK(Sgemf)
 STD_ROM_FN(Sgemf)
 
+static struct BurnRomInfo SgemfuRomDesc[] = {
+	{ "pcfu.03a",      0x080000, 0x0d6f1cb2, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "pcf.04a",       0x080000, 0xb7bc3468, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "pcf.05a",       0x080000, 0xf574c601, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "pcf.06a",       0x080000, 0x015c30b3, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "pcf.07",        0x080000, 0x5ac6d5ea, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+
+	{ "pcf.13m",       0x400000, 0x22d72ab9, CPS2_GFX | BRF_GRA },
+	{ "pcf.15m",       0x400000, 0x16a4813c, CPS2_GFX | BRF_GRA },
+	{ "pcf.17m",       0x400000, 0x1097e035, CPS2_GFX | BRF_GRA },
+	{ "pcf.19m",       0x400000, 0xd362d874, CPS2_GFX | BRF_GRA },
+	{ "pcf.14m",       0x100000, 0x0383897c, CPS2_GFX | BRF_GRA },
+	{ "pcf.16m",       0x100000, 0x76f91084, CPS2_GFX | BRF_GRA },
+	{ "pcf.18m",       0x100000, 0x756c3754, CPS2_GFX | BRF_GRA },
+	{ "pcf.20m",       0x100000, 0x9ec9277d, CPS2_GFX | BRF_GRA },
+
+	{ "pcf.01",        0x020000, 0x254e5f33, CPS2_PRG_Z80 | BRF_ESS | BRF_PRG },
+	{ "pcf.02",        0x020000, 0x6902f4f9, CPS2_PRG_Z80 | BRF_ESS | BRF_PRG },
+
+	{ "pcf.11m",       0x400000, 0xa5dea005, CPS2_QSND | BRF_SND },
+	{ "pcf.12m",       0x400000, 0x4ce235fe, CPS2_QSND | BRF_SND },
+	
+	{ "sgemf.key",     0x000014, 0x3d604021, CPS2_ENCRYPTION_KEY },
+};
+
+STD_ROM_PICK(Sgemfu)
+STD_ROM_FN(Sgemfu)
+
 static struct BurnRomInfo PfghtjRomDesc[] = {
 	{ "pcfj.03",       0x080000, 0x681da43e, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
 	{ "pcf.04",        0x080000, 0xf4314c96, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
@@ -7019,6 +7047,34 @@ static struct BurnRomInfo PfghtjRomDesc[] = {
 
 STD_ROM_PICK(Pfghtj)
 STD_ROM_FN(Pfghtj)
+
+static struct BurnRomInfo Pfghtjr1RomDesc[] = {
+	{ "pcfj.03a",      0x080000, 0xc7a40d97, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "pcf.04a",       0x080000, 0xb7bc3468, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "pcf.05a",       0x080000, 0xf574c601, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "pcf.06a",       0x080000, 0x015c30b3, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "pcf.07",        0x080000, 0x5ac6d5ea, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+
+	{ "pcf.13m",       0x400000, 0x22d72ab9, CPS2_GFX | BRF_GRA },
+	{ "pcf.15m",       0x400000, 0x16a4813c, CPS2_GFX | BRF_GRA },
+	{ "pcf.17m",       0x400000, 0x1097e035, CPS2_GFX | BRF_GRA },
+	{ "pcf.19m",       0x400000, 0xd362d874, CPS2_GFX | BRF_GRA },
+	{ "pcf.14m",       0x100000, 0x0383897c, CPS2_GFX | BRF_GRA },
+	{ "pcf.16m",       0x100000, 0x76f91084, CPS2_GFX | BRF_GRA },
+	{ "pcf.18m",       0x100000, 0x756c3754, CPS2_GFX | BRF_GRA },
+	{ "pcf.20m",       0x100000, 0x9ec9277d, CPS2_GFX | BRF_GRA },
+
+	{ "pcf.01",        0x020000, 0x254e5f33, CPS2_PRG_Z80 | BRF_ESS | BRF_PRG },
+	{ "pcf.02",        0x020000, 0x6902f4f9, CPS2_PRG_Z80 | BRF_ESS | BRF_PRG },
+
+	{ "pcf.11m",       0x400000, 0xa5dea005, CPS2_QSND | BRF_SND },
+	{ "pcf.12m",       0x400000, 0x4ce235fe, CPS2_QSND | BRF_SND },
+	
+	{ "pfghtj.key",    0x000014, 0x62297638, CPS2_ENCRYPTION_KEY },
+};
+
+STD_ROM_PICK(Pfghtjr1)
+STD_ROM_FN(Pfghtjr1)
 
 static struct BurnRomInfo SgemfaRomDesc[] = {
 	{ "pcfa.03",       0x080000, 0xe17c089a, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
@@ -10226,7 +10282,7 @@ struct BurnDriver BurnDrvCpsVampjr1 = {
 
 struct BurnDriver BurnDrvCpsVampjr2 = {
 	"vampjr2", "dstlk", NULL, NULL, "1994",
-	"Vampire: The Night Warriors (Japan 940818) Switch CAS2 Hack\0", NULL, "Capcom", "CPS2",
+	"Vampire: The Night Warriors (Japan 940818) CAS2 Hack\0", NULL, "Capcom", "CPS2",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK | BDF_HISCORE_SUPPORTED, 2, HARDWARE_CAPCOM_CPS2, GBF_VSFIGHT, FBF_DSTLK,
 	NULL, Vampjr2RomInfo, Vampjr2RomName, NULL, NULL, NULL, NULL, Cps2FightingInputInfo, NULL,
@@ -10666,7 +10722,7 @@ struct BurnDriver BurnDrvCpsMshvsfa = {
 
 struct BurnDriver BurnDrvCpsSfau1 = {
 	"sfau1", "sfa", NULL, NULL, "1995",
-	"Street Fighter Alpha - warriors' dreams (950727 USA) Switch CAS2 Hack\0", NULL, "Capcom", "CPS2",
+	"Street Fighter Alpha - warriors' dreams (950727 USA) CAS2 Hack\0", NULL, "Capcom", "CPS2",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_HACK | BDF_HISCORE_SUPPORTED, 2, HARDWARE_CAPCOM_CPS2, GBF_VSFIGHT, FBF_SF,
 	NULL, Sfau1RomInfo, Sfau1RomName, NULL, NULL, NULL, NULL, Cps2FightingInputInfo, NULL,
@@ -10906,7 +10962,7 @@ struct BurnDriver BurnDrvCpsNwarrb = {
 
 struct BurnDriver BurnDrvCpsNwarre = {
 	"nwarre", "nwarr", NULL, NULL, "1995",
-	"Night Warriors: Darkstalkers' Revenge (Euro 950420) Switch CAS2 Hack\0", NULL, "Capcom", "CPS2",
+	"Night Warriors: Darkstalkers' Revenge (Euro 950420) CAS2 Hack\0", NULL, "Capcom", "CPS2",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_HACK | BDF_CLONE | BDF_HISCORE_SUPPORTED, 2, HARDWARE_CAPCOM_CPS2, GBF_VSFIGHT, FBF_DSTLK,
 	NULL, NwarreRomInfo, NwarreRomName, NULL, NULL, NULL, NULL, Cps2FightingInputInfo, NULL,
@@ -10976,7 +11032,7 @@ struct BurnDriver BurnDrvCpsVhuntjr2 = {
 
 struct BurnDriver BurnDrvCpsVhuntjr3 = {
 	"vhuntjr3", "nwarr", NULL, NULL, "1995",
-	"Vampire Hunter: Darkstalkers' Revenge (Japan 950420) Switch CAS2 Hack\0", NULL, "Capcom", "CPS2",
+	"Vampire Hunter: Darkstalkers' Revenge (Japan 950420) CAS2 Hack\0", NULL, "Capcom", "CPS2",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_HACK | BDF_CLONE | BDF_HISCORE_SUPPORTED, 2, HARDWARE_CAPCOM_CPS2, GBF_VSFIGHT, FBF_DSTLK,
 	NULL, Vhuntjr3RomInfo, Vhuntjr3RomName, NULL, NULL, NULL, NULL, Cps2FightingInputInfo, NULL,
@@ -11584,12 +11640,32 @@ struct BurnDriver BurnDrvCpsSgemf = {
 	&CpsRecalcPal, 0x1000, 384, 224, 4, 3
 };
 
+struct BurnDriver BurnDrvCpsSgemfu = {
+	"sgemfu", "sgemf", NULL, NULL, "1997",
+	"Super Gem Fighter: Mini Mix (USA 970922) CAS2 Hack\0", NULL, "Capcom", "CPS2",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK | BDF_HISCORE_SUPPORTED, 2, HARDWARE_CAPCOM_CPS2, GBF_VSFIGHT, FBF_SF,
+	NULL, SgemfuRomInfo, SgemfuRomName, NULL, NULL, NULL, NULL, SgemfInputInfo, NULL,
+	Cps2Init, DrvExit, Cps2Frame, CpsRedraw, CpsAreaScan,
+	&CpsRecalcPal, 0x1000, 384, 224, 4, 3
+};
+
 struct BurnDriver BurnDrvCpsPfghtj = {
 	"pfghtj", "sgemf", NULL, NULL, "1997",
 	"Pocket Fighter (Japan 970904)\0", NULL, "Capcom", "CPS2",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_HISCORE_SUPPORTED, 2, HARDWARE_CAPCOM_CPS2, GBF_VSFIGHT, FBF_SF,
 	NULL, PfghtjRomInfo, PfghtjRomName, NULL, NULL, NULL, NULL, SgemfInputInfo, NULL,
+	Cps2Init, DrvExit, Cps2Frame, CpsRedraw, CpsAreaScan,
+	&CpsRecalcPal, 0x1000, 384, 224, 4, 3
+};
+
+struct BurnDriver BurnDrvCpsPfghtjr1 = {
+	"pfghtjr1", "sgemf", NULL, NULL, "1997",
+	"Pocket Fighter (Japan 970922) CAS2 Hack\0", NULL, "Capcom", "CPS2",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK | BDF_HISCORE_SUPPORTED, 2, HARDWARE_CAPCOM_CPS2, GBF_VSFIGHT, FBF_SF,
+	NULL, Pfghtjr1RomInfo, Pfghtjr1RomName, NULL, NULL, NULL, NULL, SgemfInputInfo, NULL,
 	Cps2Init, DrvExit, Cps2Frame, CpsRedraw, CpsAreaScan,
 	&CpsRecalcPal, 0x1000, 384, 224, 4, 3
 };
@@ -14239,7 +14315,7 @@ struct BurnDriver BurnDrvCpsCsclub1d = {
 
 struct BurnDriver BurnDrvCpsCsclubu = {
 	"csclubu", "csclub", NULL, NULL, "1997",
-	"Capcom Sports Club (971017 USA) Switch CAS2 Hack\0", NULL, "Capcom", "CPS2",
+	"Capcom Sports Club (971017 USA) CAS2 Hack\0", NULL, "Capcom", "CPS2",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_HACK | BDF_HISCORE_SUPPORTED, 2, HARDWARE_CAPCOM_CPS2, GBF_SPORTSMISC, 0,
 	NULL, CsclubuRomInfo, CsclubuRomName, NULL, NULL, NULL, NULL, CsclubInputInfo, NULL,
