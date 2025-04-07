@@ -52,7 +52,7 @@ INT32 CpsLoadTilesSf2mdt(INT32 nStart);
 INT32 CpsLoadTilesSf2mdta(INT32 nStart);
 INT32 CpsLoadTilesSf2m8(INT32 nStart);
 INT32 CpsLoadTilesSf2ceeabl(INT32 nStart);
-INT32 CpsLoadTilesSf2ceuab7(INT32 nStart);
+INT32 CpsLoadTilesSf2ceblp(INT32 nStart);
 INT32 CpsLoadTilesSf2ebbl3(INT32 nStart);
 INT32 CpsLoadTilesSf2amf10(INT32 nStart);
 INT32 CpsLoadTilesFcrash(INT32 nStart);
@@ -287,6 +287,7 @@ extern INT32 Wofhfh;
 extern INT32 Wofsgzb;
 extern INT32 Wof3js;
 extern INT32 Knightsh;
+extern INT32 Ecofght;
 
 extern ClearOpposite<4, UINT8> clear_opposite;
 

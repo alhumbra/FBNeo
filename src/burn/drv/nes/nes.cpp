@@ -484,14 +484,18 @@ static INT32 cartridge_load(UINT8* ROMData, UINT32 ROMSize, UINT32 ROMCRC)
 
 	// Game-specific stuff:
 	// Mapper 7 or 4-way mirroring usually gets no workram (6000-7fff)
-	if (Cart.Mapper == 7 || (Cart.Mirroring == 4 && !(PPUType > RP2C02)))
+	if (Cart.Mapper == 7 || (Cart.Mirroring == 4 && ((PPUType == RP2C02) && !Cart.BatteryBackedSRAM ) )) {
 		NESMode |= NO_WORKRAM; // VS. is exempt from this limitation.
+	}
 
 	NESMode |= (ROMCRC == 0xab29ab28) ? BUS_CONFLICTS : 0; // Dropzone
 	NESMode |= (ROMCRC == 0xe3a6d7f6) ? BUS_CONFLICTS : 0; // Cybernoid
 	NESMode |= (ROMCRC == 0x552a903a) ? BUS_CONFLICTS : 0; // Huge Insect
 	NESMode |= (ROMCRC == 0xb90a1ca1) ? NO_WORKRAM : 0; // Low G Man
 	NESMode |= (ROMCRC == 0xa905cc12) ? NO_WORKRAM : 0; // Bill & Ted
+	NESMode |= (ROMCRC == 0x45b1869a) ? APU_HACKERY : 0; // rgbleek
+	NESMode |= (ROMCRC == 0x708fbee4) ? APU_HACKERY : 0; // famidash
+	NESMode |= (ROMCRC == 0x2f19e44b) ? APU_HACKERY : 0; // famidashb
 	NESMode |= (ROMCRC == 0xc00c4ea5) ? APU_HACKERY : 0; // Sam's Journey
 	NESMode |= (ROMCRC == 0x585f3500) ? ALT_MMC3 : 0; // Darkwing Duck (T-Chi)
 	NESMode |= (ROMCRC == 0x38f65b2d) ? BAD_HOMEBREW : 0; // Battler (HB)
@@ -543,8 +547,10 @@ static INT32 cartridge_load(UINT8* ROMData, UINT32 ROMSize, UINT32 ROMCRC)
 	NESMode |= (ROMCRC == 0xab21ab5f) ? IS_PAL : 0; // Noah's Ark
 	NESMode |= (ROMCRC == 0xab29ab28) ? IS_PAL : 0; // Dropzone
 	NESMode |= (ROMCRC == 0xde7e6767) ? IS_PAL : 0; // Asterix
+	NESMode |= (ROMCRC == 0x9b4877e5) ? IS_PAL : 0; // Asterixec
 	NESMode |= (ROMCRC == 0xdc7a16e6) ? IS_PAL : 0; // Parasol Stars
 	NESMode |= (ROMCRC == 0xfac97247) ? IS_PAL : 0; // Rainbow Islands (Ocean)
+	NESMode |= (ROMCRC == 0x391be891) ? IS_PAL : 0; // Sensible Soccer
 	NESMode |= (ROMCRC == 0x732b1a7a) ? IS_PAL : 0; // Smurfs, The
 
 	if (NESMode) {
@@ -9687,14 +9693,6 @@ static void UpdatePalettePointer()
 	}
 }
 
-static UINT8 GetAvgBrightness(INT32 x, INT32 y)
-{
-	// Zapper Detection
-	const UINT32 rgbcolor = our_palette[pTransDraw[(y) * 256 + x] & 0x3f];
-
-	return ((rgbcolor & 0xff) + ((rgbcolor >> 8) & 0xff) + ((rgbcolor >> 16) & 0xff)) / 3;
-}
-
 static INT32 nes_frame_cycles;
 static UINT32 nes_ppu_cyc_mult;
 static UINT32 prerender_line; // ntsc 261, pal 311
@@ -10527,6 +10525,14 @@ static void ppu_init(INT32 is_pal)
 	screen = (UINT16*)BurnMalloc((256+8) * (256+8) * sizeof(UINT16));
 
 	ppu_reset();
+}
+
+static UINT8 GetAvgBrightness(INT32 x, INT32 y)
+{
+	// Zapper Detection
+	const UINT32 rgbcolor = our_palette[screen[(y) * 256 + x] & 0x3f];
+
+	return ((rgbcolor & 0xff) + ((rgbcolor >> 8) & 0xff) + ((rgbcolor >> 16) & 0xff)) / 3;
 }
 
 enum {

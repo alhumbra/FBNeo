@@ -72,7 +72,7 @@ typedef struct tagIMAGE {
 
 // burn/burn.cpp
 extern INT32 bRewindEnabled;
-extern INT32 nRewindMemory;
+extern INT64 nRewindMemory;
 
 
 // image.cpp
@@ -283,6 +283,7 @@ extern TCHAR szAppPreviewsPath[MAX_PATH];
 extern TCHAR szAppTitlesPath[MAX_PATH];
 extern TCHAR szAppCheatsPath[MAX_PATH];
 extern TCHAR szAppIpsPath[MAX_PATH];
+extern TCHAR szAppRomdataPath[MAX_PATH];
 extern TCHAR szAppIconsPath[MAX_PATH];
 extern TCHAR szAppSelectPath[MAX_PATH];
 extern TCHAR szAppVersusPath[MAX_PATH];
