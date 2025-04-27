@@ -8,7 +8,7 @@
 
 #define IS_STRING_EMPTY(s) (NULL == (s) || (s)[0] == _T('\0'))
 
-HANDLE hMutex;
+static HANDLE hMutex;
 ThreadParams _ThreadParams[DIRS_MAX];
 
 int nIniVersion = 0;
@@ -427,6 +427,7 @@ int ConfigAppLoad()
 		VAR(bEnableIcons);
 		VAR(bIconsOnlyParents);
 		VAR(nIconsSize);
+		VAR(bIconsByHardwares);
 
 		STR(szPrevGames[0]);
 		STR(szPrevGames[1]);
@@ -902,6 +903,9 @@ int ConfigAppSave()
 
 	_ftprintf(h, _T("\n// Specify icons display size, 0 = 16x16 , 1 = 24x24, 2 = 32x32.\n"));
 	VAR(nIconsSize);
+
+	_ftprintf(h, _T("\n// If non-zero, display icons by hardwares.\n"));
+	VAR(bIconsByHardwares);
 
 	_ftprintf(h, _T("\n// Previous games list.\n"));
 	STR(szPrevGames[0]);

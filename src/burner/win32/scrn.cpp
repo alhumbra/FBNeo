@@ -2466,83 +2466,51 @@ static void OnCommand(HWND /*hDlg*/, int id, HWND /*hwndCtl*/, UINT codeNotify)
 
 		case MENU_ENABLEICONS: {
 			bEnableIcons = !bEnableIcons;
-			if(!bEnableIcons && bIconsLoaded) {
-				// unload icons
-				UnloadDrvIcons();
-				bIconsLoaded = 0;
-			}
-			if(bEnableIcons && !bIconsLoaded) {
-				// load icons
-				LoadDrvIcons();
-				bIconsLoaded = 1;
-			}
+			if (bEnableIcons) CreateIconsCache();
 			break;
 		}
 
 		case MENU_ICONS_PARENTSONLY: {
 			bIconsOnlyParents = !bIconsOnlyParents;
-			if(bEnableIcons && bIconsLoaded) {
-				// unload icons
-				UnloadDrvIcons();
-				bIconsLoaded = 0;
-				// load icons
-				LoadDrvIcons();
-				bIconsLoaded = 1;
-			}
+			LoadDrvIcons();
 			break;
 		}
 
 		case MENU_ICONS_SIZE_16: {
 			nIconsSize = ICON_16x16;
-			if(bEnableIcons && bIconsLoaded) {
-				// unload icons
-				UnloadDrvIcons();
-				bIconsLoaded = 0;
-				// load icons
-				LoadDrvIcons();
-				bIconsLoaded = 1;
-			}
-			if(bEnableIcons && !bIconsLoaded) {
-				// load icons
-				LoadDrvIcons();
-				bIconsLoaded = 1;
-			}
+			DestroyIconsCache();
+			CreateIconsCache();
 			break;
 		}
 
 		case MENU_ICONS_SIZE_24: {
 			nIconsSize = ICON_24x24;
-			if(bEnableIcons && bIconsLoaded) {
-				// unload icons
-				UnloadDrvIcons();
-				bIconsLoaded = 0;
-				// load icons
-				LoadDrvIcons();
-				bIconsLoaded = 1;
-			}
-			if(bEnableIcons && !bIconsLoaded) {
-				// load icons
-				LoadDrvIcons();
-				bIconsLoaded = 1;
-			}
+			DestroyIconsCache();
+			CreateIconsCache();
 			break;
 		}
 
 		case MENU_ICONS_SIZE_32: {
 			nIconsSize = ICON_32x32;
-			if(bEnableIcons && bIconsLoaded) {
-				// unload icons
-				UnloadDrvIcons();
-				bIconsLoaded = 0;
-				// load icons
-				LoadDrvIcons();
-				bIconsLoaded = 1;
-			}
-			if(bEnableIcons && !bIconsLoaded) {
-				// load icons
-				LoadDrvIcons();
-				bIconsLoaded = 1;
-			}
+			DestroyIconsCache();
+			CreateIconsCache();
+			break;
+		}
+
+		case MENU_ICONS_BY_GAME: {
+			bIconsByHardwares = 0;
+			LoadDrvIcons();
+			break;
+		}
+
+		case MENU_ICONS_BY_HARDWARE: {
+			bIconsByHardwares = 1;
+			LoadDrvIcons();
+			break;
+		}
+
+		case MENU_ICONS_REFRESH: {
+			LoadDrvIcons();
 			break;
 		}
 
@@ -2572,11 +2540,11 @@ static void OnCommand(HWND /*hDlg*/, int id, HWND /*hwndCtl*/, UINT codeNotify)
 			bRewindEnabled = !bRewindEnabled;
 			StateRewindReInit();
 			break;
-		case MENU_INPUT_REWIND_128MB: nRewindMemory = 128; StateRewindReInit(); break;
-		case MENU_INPUT_REWIND_256MB: nRewindMemory = 256; StateRewindReInit(); break;
-		case MENU_INPUT_REWIND_512MB: nRewindMemory = 512; StateRewindReInit(); break;
-		case MENU_INPUT_REWIND_768MB: nRewindMemory = 768; StateRewindReInit(); break;
-		case MENU_INPUT_REWIND_1GB: nRewindMemory = 1024; StateRewindReInit(); break;
+		case MENU_INPUT_REWIND_128MB: nRewindMemory =  128; StateRewindReInit(); break;
+		case MENU_INPUT_REWIND_256MB: nRewindMemory =  256; StateRewindReInit(); break;
+		case MENU_INPUT_REWIND_512MB: nRewindMemory =  512; StateRewindReInit(); break;
+		case MENU_INPUT_REWIND_768MB: nRewindMemory =  768; StateRewindReInit(); break;
+		case MENU_INPUT_REWIND_1GB:   nRewindMemory = 1024; StateRewindReInit(); break;
 
 		case MENU_PRIORITY_REALTIME: // bad idea, this will freeze the entire system.
 			break;
@@ -2765,11 +2733,11 @@ static void OnCommand(HWND /*hDlg*/, int id, HWND /*hwndCtl*/, UINT codeNotify)
 				VidSAddChatMsg(NULL, 0xFFFFFF, szText, 0xFFBFBF);
 
 				EnableMenuItem(hMenu, MENU_CHEATSEARCH_NOCHANGE, MF_ENABLED | MF_BYCOMMAND);
-				EnableMenuItem(hMenu, MENU_CHEATSEARCH_CHANGE, MF_ENABLED | MF_BYCOMMAND);
+				EnableMenuItem(hMenu, MENU_CHEATSEARCH_CHANGE,   MF_ENABLED | MF_BYCOMMAND);
 				EnableMenuItem(hMenu, MENU_CHEATSEARCH_DECREASE, MF_ENABLED | MF_BYCOMMAND);
 				EnableMenuItem(hMenu, MENU_CHEATSEARCH_INCREASE, MF_ENABLED | MF_BYCOMMAND);
 				EnableMenuItem(hMenu, MENU_CHEATSEARCH_DUMPFILE, MF_ENABLED | MF_BYCOMMAND);
-				EnableMenuItem(hMenu, MENU_CHEATSEARCH_EXIT, MF_ENABLED | MF_BYCOMMAND);
+				EnableMenuItem(hMenu, MENU_CHEATSEARCH_EXIT,     MF_ENABLED | MF_BYCOMMAND);
 			}
 			break;
 		}
@@ -2852,11 +2820,11 @@ static void OnCommand(HWND /*hDlg*/, int id, HWND /*hwndCtl*/, UINT codeNotify)
 			VidSAddChatMsg(NULL, 0xFFFFFF, szText, 0xFFBFBF);
 
 			EnableMenuItem(hMenu, MENU_CHEATSEARCH_NOCHANGE, MF_GRAYED | MF_BYCOMMAND);
-			EnableMenuItem(hMenu, MENU_CHEATSEARCH_CHANGE, MF_GRAYED | MF_BYCOMMAND);
+			EnableMenuItem(hMenu, MENU_CHEATSEARCH_CHANGE,   MF_GRAYED | MF_BYCOMMAND);
 			EnableMenuItem(hMenu, MENU_CHEATSEARCH_DECREASE, MF_GRAYED | MF_BYCOMMAND);
 			EnableMenuItem(hMenu, MENU_CHEATSEARCH_INCREASE, MF_GRAYED | MF_BYCOMMAND);
 			EnableMenuItem(hMenu, MENU_CHEATSEARCH_DUMPFILE, MF_GRAYED | MF_BYCOMMAND);
-			EnableMenuItem(hMenu, MENU_CHEATSEARCH_EXIT, MF_GRAYED | MF_BYCOMMAND);
+			EnableMenuItem(hMenu, MENU_CHEATSEARCH_EXIT,     MF_GRAYED | MF_BYCOMMAND);
 			break;
 		}
 

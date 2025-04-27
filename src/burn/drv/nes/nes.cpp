@@ -494,8 +494,8 @@ static INT32 cartridge_load(UINT8* ROMData, UINT32 ROMSize, UINT32 ROMCRC)
 	NESMode |= (ROMCRC == 0xb90a1ca1) ? NO_WORKRAM : 0; // Low G Man
 	NESMode |= (ROMCRC == 0xa905cc12) ? NO_WORKRAM : 0; // Bill & Ted
 	NESMode |= (ROMCRC == 0x45b1869a) ? APU_HACKERY : 0; // rgbleek
-	NESMode |= (ROMCRC == 0x708fbee4) ? APU_HACKERY : 0; // famidash
-	NESMode |= (ROMCRC == 0x2f19e44b) ? APU_HACKERY : 0; // famidashb
+	NESMode |= (ROMCRC == 0xa94b4cbb) ? APU_HACKERY : 0; // famidash
+	NESMode |= (ROMCRC == 0x6a90da54) ? APU_HACKERY : 0; // famidashb
 	NESMode |= (ROMCRC == 0xc00c4ea5) ? APU_HACKERY : 0; // Sam's Journey
 	NESMode |= (ROMCRC == 0x585f3500) ? ALT_MMC3 : 0; // Darkwing Duck (T-Chi)
 	NESMode |= (ROMCRC == 0x38f65b2d) ? BAD_HOMEBREW : 0; // Battler (HB)
@@ -519,6 +519,7 @@ static INT32 cartridge_load(UINT8* ROMData, UINT32 ROMSize, UINT32 ROMCRC)
 	NESMode |= (ROMCRC == 0xab862073) ? ALT_TIMING : 0; // ultimate frogger champ.
 	NESMode |= (ROMCRC == 0x2a798367) ? ALT_TIMING : 0; // jy 45-in-1
 	NESMode |= (ROMCRC == 0xb9fd4de8) ? ALT_TIMING : 0; // over obj (glitch as boss materializes w/o this)
+	NESMode |= (ROMCRC == 0x516843ef) ? (SHOW_OVERSCAN) : 0; // Cobol (HB)
 	NESMode |= (ROMCRC == 0xb4255e99) ? (IS_PAL | SHOW_OVERSCAN) : 0; // Moonglow (HB)
 	NESMode |= (ROMCRC == 0x78716f4f) ? RAM_RANDOM : 0; // Go! Dizzy Go!
 	NESMode |= (ROMCRC == 0x8c4f37e2) ? RAM_RANDOM : 0; // Minna no Taabou no Nakayoshi Daisakusen (Japan)
