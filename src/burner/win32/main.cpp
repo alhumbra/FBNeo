@@ -737,6 +737,15 @@ static int AppInit()
 	OpenDebugLog();
 #endif
 
+#if defined BUILD_X64_EXE
+	if (nVidSelect == 1) {
+		// if "d3d7 / enhanced blitter" is set & running 64bit build,
+		// fall back to "basic blitter".  (d3d7 has no 64bit mode!)
+		nVidSelect = 0;
+		bprintf(0, _T("*** D3D7 / Enhanced Blitter set w/64bit build - falling back to basic blitter.\n"));
+	}
+#endif
+
 	FBALocaliseInit(szLocalisationTemplate);
 	BurnerDoGameListLocalisation();
 
@@ -795,7 +804,7 @@ static int AppInit()
 
 	bNumlockStatus = SetNumLock(false);
 
-	CreateIconsCache();
+	CreateDrvIconsCache();
 
 	return 0;
 }
@@ -803,13 +812,13 @@ static int AppInit()
 static int AppExit()
 {
 	UnloadDrvIcons();
-	DestroyIconsCache();
+	DestroyDrvIconsCache();
 
 	SetNumLock(bNumlockStatus);
 
 	DrvExit();						// Make sure any game driver is exitted
 	FreeROMInfo();
-	FreeSubDirsInfo();
+	DestroySubDir();
 	MediaExit();
 	BurnLibExit();					// Exit the Burn library
 

@@ -38977,6 +38977,24 @@ struct BurnDriver BurnDrvmd_eyra = {
 	&bMegadriveRecalcPalette, 0x100, 320, 224, 4, 3
 };
 
+// Farming Simulator - 16-Bit Edition (Unl) (HB, v1.2)
+static struct BurnRomInfo md_farmingsimRomDesc[] = {
+	{ "Farming Simulator - 16-Bit Edition v1.2 (2025)(GIANTS Software).bin", 1835008, 0xef5736a0, BRF_PRG | SEGA_MD_ROM_LOAD16_WORD_SWAP | SEGA_MD_ROM_OFFS_000000  },
+};
+
+STD_ROM_PICK(md_farmingsim)
+STD_ROM_FN(md_farmingsim)
+
+struct BurnDriver BurnDrvmd_farmingsim = {
+	"md_farmingsim", NULL, NULL, NULL, "2025",
+	"Farming Simulator - 16-Bit Edition (Unl) (HB, v1.2)\0", NULL, "GIANTS Software", "Genesis / Mega Drive",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_16BIT_ONLY | BDF_HOMEBREW, 1, HARDWARE_SEGA_MEGADRIVE, GBF_SIM, 0,
+	MegadriveGetZipName, md_farmingsimRomInfo, md_farmingsimRomName, NULL, NULL, NULL, NULL, MegadriveInputInfo, MegadriveDIPInfo,
+	MegadriveInit, MegadriveExit, MegadriveFrame, MegadriveDraw, MegadriveScan,
+	&bMegadriveRecalcPalette, 0x100, 320, 224, 4, 3
+};
+
 // Fatal Fury One (Brazil) (Unl) (HB, v1.5)
 static struct BurnRomInfo md_fatfuryoneRomDesc[] = {
 	{ "Fatal Fury One v.1.5 (Brazil, Unl)(2022)(Master Linkuei, GameDevBoss).bin", 4194304, 0x004a99e1, BRF_PRG | SEGA_MD_ROM_LOAD16_WORD_SWAP | SEGA_MD_ROM_OFFS_000000  },
@@ -40834,13 +40852,20 @@ static struct BurnRomInfo md_teenqueenRomDesc[] = {
 STD_ROM_PICK(md_teenqueen)
 STD_ROM_FN(md_teenqueen)
 
+static INT32 teenqueenInit()
+{
+	MegadriveUnmappedRom = 0x00;
+
+	return MegadriveInit();
+}
+
 struct BurnDriver BurnDrvmd_teenqueen = {
 	"md_teenqueen", NULL, NULL, NULL, "2006",
 	"Teenage Queen The Demo (HB)\0", NULL, "Spoutnick Team", "Genesis / Mega Drive",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_16BIT_ONLY | BDF_HOMEBREW, 1, HARDWARE_SEGA_MEGADRIVE, GBF_CARD, 0,
 	MegadriveGetZipName, md_teenqueenRomInfo, md_teenqueenRomName, NULL, NULL, NULL, NULL, MegadriveInputInfo, MegadriveDIPInfo,
-	MegadriveInit, MegadriveExit, MegadriveFrame, MegadriveDraw, MegadriveScan,
+	teenqueenInit, MegadriveExit, MegadriveFrame, MegadriveDraw, MegadriveScan,
 	&bMegadriveRecalcPalette, 0x100, 320, 224, 4, 3
 };
 
