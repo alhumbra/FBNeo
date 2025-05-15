@@ -1079,6 +1079,32 @@ static struct BurnInputInfo ProgearInputList[] = {
 
 STDINPUTINFO(Progear)
 
+static struct BurnInputInfo Punishercps2InputList[] = {
+	{"P1 Coin"          , BIT_DIGITAL  , CpsInp020+4, "p1 coin"   },
+	{"P1 Start"         , BIT_DIGITAL  , CpsInp020+0, "p1 start"  },
+	{"P1 Up"            , BIT_DIGITAL  , CpsInp001+3, "p1 up"     },
+	{"P1 Down"          , BIT_DIGITAL  , CpsInp001+2, "p1 down"   },
+	{"P1 Left"          , BIT_DIGITAL  , CpsInp001+1, "p1 left"   },
+	{"P1 Right"         , BIT_DIGITAL  , CpsInp001+0, "p1 right"  },
+	{"P1 Attack"        , BIT_DIGITAL  , CpsInp001+4, "p1 fire 1" },
+	{"P1 Jump"          , BIT_DIGITAL  , CpsInp001+5, "p1 fire 2" },
+
+	{"P2 Coin"          , BIT_DIGITAL  , CpsInp020+5, "p2 coin"   },
+	{"P2 Start"         , BIT_DIGITAL  , CpsInp020+1, "p2 start"  },
+	{"P2 Up"            , BIT_DIGITAL  , CpsInp000+3, "p2 up"     },
+	{"P2 Down"          , BIT_DIGITAL  , CpsInp000+2, "p2 down"   },
+	{"P2 Left"          , BIT_DIGITAL  , CpsInp000+1, "p2 left"   },
+	{"P2 Right"         , BIT_DIGITAL  , CpsInp000+0, "p2 right"  },
+	{"P2 Attack"        , BIT_DIGITAL  , CpsInp000+4, "p2 fire 1" },
+	{"P2 Jump"          , BIT_DIGITAL  , CpsInp000+5, "p2 fire 2" },
+
+	{"Reset"            , BIT_DIGITAL  , &CpsReset  , "reset"     },
+	{"Diagnostic"       , BIT_DIGITAL  , CpsInp021+1, "diag"      },
+	{"Service"          , BIT_DIGITAL  , CpsInp021+2, "service"   },
+	{"Volume Up"        , BIT_DIGITAL  , &Cps2VolUp , "p1 fire 4" },
+	{"Volume Down"      , BIT_DIGITAL  , &Cps2VolDwn, "p1 fire 5" },
+};
+
 #define A(a, b, c, d) {a, b, (UINT8*)(c), d}
 
 static struct BurnInputInfo Pzloop2InputList[] = {
@@ -15515,6 +15541,40 @@ struct BurnDriver BurnDrvCpsFfightaec2ds = {
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_BOOTLEG | BDF_HACK | BDF_HISCORE_SUPPORTED, 3, HARDWARE_CAPCOM_CPS2, GBF_SCRFIGHT, 0,
 	NULL, Ffightaec2dsRomInfo, Ffightaec2dsRomName, NULL, NULL, NULL, NULL, Ffightaec2InputInfo, NULL,
+	PhoenixInit, DrvExit, Cps2Frame, CpsRedraw, CpsAreaScan,
+	&CpsRecalcPal, 0x1000, 384, 224, 4, 3
+};
+
+// Punisher CPS2 Port
+// https://www.aussiearcade.com/topic/81804-punisher-conversion-from-15-on-cps-2/
+STDINPUTINFO(Punishercps2)
+
+static struct BurnRomInfo Punishercps2RomDesc[] = {
+	{ "psu.03",    0x080000, 0x0e333125, CPS2_PRG_68K | BRF_ESS | BRF_PRG }, 
+	{ "psu.04",    0x080000, 0x64a5ff42, CPS2_PRG_68K | BRF_ESS | BRF_PRG }, 
+	{ "psu.05",    0x080000, 0x8affa5a9, CPS2_PRG_68K | BRF_ESS | BRF_PRG }, 
+	{ "psu.06",    0x080000, 0x5b1a0e3a, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+
+	{ "psu.13m",       0x400000, 0x589995d3,  CPS2_GFX | BRF_GRA },
+	{ "psu.15m",       0x400000, 0xca311c10,  CPS2_GFX | BRF_GRA },
+	{ "psu.17m",       0x400000, 0x3064894a,  CPS2_GFX | BRF_GRA },
+	{ "psu.19m",       0x400000, 0xb9e34eda,  CPS2_GFX | BRF_GRA },
+
+	{ "psu.01",        0x020000, 0xf81ee7f7, CPS2_PRG_Z80 | BRF_ESS | BRF_PRG },
+
+	{ "psu.11m",       0x200000, 0x7a76216b, CPS2_QSND | BRF_SND },
+	
+	{ "phoenix.key",   0x000014, 0x2cf772b0, CPS2_ENCRYPTION_KEY },
+};
+STD_ROM_PICK(Punishercps2)
+STD_ROM_FN(Punishercps2)
+
+struct BurnDriver BurnDrvCpsPunishercps2 = {
+	"Punishercps2", NULL, NULL, NULL, "2022",
+	"Punisher USA Ver.930422 CPS2Hardware Hack by cal2\0", NULL, "bootleg", "CPS2",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_BOOTLEG | BDF_HACK | BDF_HISCORE_SUPPORTED, 2, HARDWARE_CAPCOM_CPS2, GBF_SCRFIGHT, 0,
+	NULL, Punishercps2RomInfo, Punishercps2RomName, NULL, NULL, NULL, NULL, Punishercps2InputInfo, NULL,
 	PhoenixInit, DrvExit, Cps2Frame, CpsRedraw, CpsAreaScan,
 	&CpsRecalcPal, 0x1000, 384, 224, 4, 3
 };
