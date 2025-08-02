@@ -119,6 +119,10 @@
 #define TAITO_CCHIP_BIOS									34
 #define TAITO_CCHIP_EEPROM									35
 
+#ifndef ERANGE
+  #define ERANGE 34
+#endif
+
 struct DatListInfo {
 	TCHAR szRomSet[100];
 	TCHAR szFullName[1024];
@@ -156,7 +160,6 @@ enum {
 struct BurnRomInfo* pDataRomDesc = NULL;
 
 TCHAR szRomdataName[MAX_PATH] = _T("");
-TCHAR szUtf16leFile[21]       = { 0 };
 bool  bRDListScanSub          = false;
 
 static struct BurnRomInfo* pDRD = NULL;
@@ -168,8 +171,8 @@ static HIMAGELIST hHardwareIconList = NULL;
 RomDataInfo*  pRDI = &RDI;
 
 static HBRUSH hWhiteBGBrush;
-static INT32  sort_direction = 0;
-static INT32 nSelItem = -1;
+static INT32 sort_direction = 0;
+static INT32 nSelItem       = -1;
 
 static HWND hRDMgrWnd   = NULL;
 static HWND hRDListView = NULL;
@@ -850,9 +853,11 @@ TCHAR* _strqtoken(TCHAR* s, const TCHAR* delims)
 	return token;
 }
 
-static INT32 FileExists(const TCHAR* szName)
+static INT32 FileExists(const TCHAR* pszName)
 {
-	return GetFileAttributes(szName) != INVALID_FILE_ATTRIBUTES;
+	DWORD dwAttrib = GetFileAttributes(pszName);
+	return (dwAttrib != INVALID_FILE_ATTRIBUTES &&
+		!(dwAttrib & FILE_ATTRIBUTE_DIRECTORY));
 }
 
 static HIMAGELIST HardwareIconListInit()
@@ -932,132 +937,132 @@ typedef enum {
 	ENCODING_ERROR
 } EncodingType;
 
-// Verify that the byte stream conforms to UTF-8 encoding rules
-static bool IsUtf8Encoding(const UINT8* data, UINT32 len)
-{
-	INT32 nBytes = 0;
-
-	for (UINT32 i = 0; i < len; i++) {
-		UINT8 c = data[i];
-		if (0 == nBytes) {
-			if (0x00 == (c & 0x80)) continue;		// ASCII
-			else
-			if (0xc0 == (c & 0xe0)) nBytes = 1;		// 2-byte
-			else
-			if (0xe0 == (c & 0xf0)) nBytes = 2;		// 3-byte
-			else
-			if (0xf0 == (c & 0xf8)) nBytes = 3;		// 4-byte
-			else                    return false;	// Invalid UTF-8 start byte
-		} else {
-			if (0x80 != (c & 0xc0)) return false;	// Subsequent byte format error
-			nBytes--;
-		}
-	}
-
-	return (0 == nBytes);							// Checking the completeness of a multibyte sequence
-}
-
 static EncodingType DetectEncoding(const TCHAR* pszDatFile)
 {
 	FILE* fp = _tfopen(pszDatFile, _T("rb"));
-	if (NULL == fp) return ENCODING_ERROR;
+	if (NULL == fp)
+		return ENCODING_ERROR;
 
 	EncodingType encType = ENCODING_UTF8;
 
 	// Read BOM
-	char cBom[3] = { 0 };
+	UINT8 cBom[3] = { 0 };
 	const UINT32 nBomSize = fread(cBom, 1, 3, fp);
 
 	if (0 == nBomSize) {	// Empty file or read error
 		fclose(fp);
 		return ENCODING_ERROR;
 	}
-	if ((nBomSize >= 3) && ('\xEF' == cBom[0]) && ('\xBB' == cBom[1]) && ('\xBF' == cBom[2])) {
+	if ((nBomSize >= 3) && (0xef == cBom[0]) && (0xbb == cBom[1]) && (0xbf == cBom[2])) {
 		fclose(fp);
 		return ENCODING_UTF8_BOM;
 	}
 	if (nBomSize >= 2) {
-		if (('\xFF' == cBom[0]) && ('\xFE' == cBom[1])) {
+		if ((0xff == cBom[0]) && (0xfe == cBom[1])) {
 			fclose(fp);
 			return ENCODING_UTF16_LE;
 		}
-		if (('\xFE' == cBom[0]) && ('\xFF' == cBom[1])) {
+		if ((0xfe == cBom[0]) && (0xff == cBom[1])) {
 			fclose(fp);
 			return ENCODING_UTF16_BE;
 		}
 	}
+
+	fseek(fp, 0, SEEK_END);
+	long nLen = ftell(fp);
 	rewind(fp);
 
-	UINT8 szBuf[4096];
-	UINT32 nLen;
-
-	while ((nLen = fread(szBuf, 1, sizeof(szBuf), fp)) > 0) {
-		if (!IsUtf8Encoding(szBuf, nLen)) {
-			fclose(fp); fp = NULL;
-			return ENCODING_ANSI;
-		}
+	UINT8* pBuf = (UINT8*)malloc(nLen);
+	if (!pBuf) {
+		fclose(fp);
+		return ENCODING_ERROR;
 	}
 
-	fclose(fp); fp = NULL;
-	return encType;
+	UINT32 nRead = fread(pBuf, 1, nLen, fp);
+	fclose(fp);
+
+	if (nRead != (UINT32)nLen) {
+		free(pBuf);
+		return ENCODING_ERROR;
+	}
+
+	UINT32 p = 0;
+	while (p < nRead) {
+		if (pBuf[p] < 0x80) {
+			p++;
+			continue;
+		}
+
+		if (!((pBuf[p] >= 0xc2) && (pBuf[p] <= 0xf4))) {
+			free(pBuf);
+			return ENCODING_ANSI;
+		}
+
+		INT32 nBytes = 0;
+		if ((pBuf[p] >= 0xc2) && (pBuf[p] <= 0xdf))
+			nBytes = 1;
+		if ((pBuf[p] >= 0xe0) && (pBuf[p] <= 0xef))
+			nBytes = 2;
+		if ((pBuf[p] >= 0xf0) && (pBuf[p] <= 0xf4))
+			nBytes = 3;
+
+		if ((p + nBytes) >= nRead) {
+			free(pBuf);
+			return ENCODING_ANSI;
+		}
+
+		for (int i = 1; i <= nBytes; i++) {
+			if (!(0x80 == (pBuf[p + i] & 0xc0))) {
+				free(pBuf);
+				return ENCODING_ANSI;
+			}
+		}
+
+		p += (nBytes + 1);
+	}
+	free(pBuf);
+
+	return ENCODING_UTF8;
 }
 
 static TCHAR* Utf16beToUtf16le(const TCHAR* pszDatFile)
 {
-	FILE* fpInFile = _tfopen(pszDatFile, _T("rb"));
-	if (NULL == fpInFile) return NULL;
+	FILE* fp = _tfopen(pszDatFile, _T("rb"));
+	if (NULL == fp) return NULL;
 
-	fseek(fpInFile, 2, SEEK_SET);
+	fseek(fp, 0, SEEK_END);
+	long nLen = ftell(fp);
+	rewind(fp);
 
-	// Generate date file name (UTF16LE%Y%m%d.tmp)
-	time_t now = time(NULL);
-	struct tm* local = localtime(&now);
-	_tcsftime(szUtf16leFile, sizeof(szUtf16leFile), _T("UTF16LE%Y%m%d.tmp"), local);
-
-
-	// Create target file (UTF-16LE)
-	FILE* fpOutFile = _tfopen(szUtf16leFile, _T("wb"));
-	if (NULL == fpOutFile) {
-		fclose(fpInFile); fpInFile = NULL;
+	UINT8* pBuffer = (UINT8*)malloc(nLen);
+	if (NULL == pBuffer) {
+		fclose(fp);  fp = NULL;
 		return NULL;
 	}
+	memset(pBuffer, 0, nLen);
 
-	// Write to UTF-16LE BOM (0xfffe)
-	UINT8 cLeBom[2] = { 0xff, 0xfe };
-	if (2 != fwrite(cLeBom, 1, 2, fpOutFile)) {
-		fclose(fpInFile);  fpInFile  = NULL;
-		fclose(fpOutFile); fpOutFile = NULL;
-		return NULL;
+	UINT32 nRead = fread(pBuffer, 1, nLen, fp);
+	fclose(fp);
+
+	// Ensure that even bytes are handled
+	if (0 != (nRead % 2)) {
+		nRead--; // Discard last byte
 	}
 
-	// Buffer
-	UINT8 szBuf[4096];
-	UINT32 nRead;
-
-	while ((nRead = fread(szBuf, 1, sizeof(szBuf), fpInFile)) > 0) {
-		// Ensure that even bytes are handled
-		if (0 != (nRead % 2)) {
-			nRead--; // Discard last byte
-		}
-
-		// Swap the order of each double byte (BE -> LE)
-		for (UINT32 i = 0; i < nRead; i += 2) {
-			UINT8 cTemp  = szBuf[i];
-			szBuf[i + 0] = szBuf[i + 1];
-			szBuf[i + 1] = cTemp;
-		}
-
-		// Write converted data
-		if (nRead != fwrite(szBuf, 1, nRead, fpOutFile)){
-			fclose(fpInFile);  fpInFile  = NULL;
-			fclose(fpOutFile); fpOutFile = NULL;
-			return NULL;
-		}
+	// Swap the order of each double byte (BE -> LE)
+	for (UINT32 i = 0; i < nRead; i += 2) {
+		UINT8 cTemp = pBuffer[i];
+		pBuffer[i + 0] = pBuffer[i + 1];
+		pBuffer[i + 1] = cTemp;
 	}
-	fclose(fpInFile);  fpInFile  = NULL;
-	fclose(fpOutFile); fpOutFile = NULL;
 
-	MoveFileEx(szUtf16leFile, pszDatFile, MOVEFILE_REPLACE_EXISTING);
+	if (NULL == (fp = _tfopen(pszDatFile, _T("wb")))) {
+		free(pBuffer); pBuffer = NULL;
+	}
+
+	fwrite(pBuffer, 1, nRead, fp);
+	fclose(fp);    fp      = NULL;
+	free(pBuffer); pBuffer = NULL;
 
 	return (TCHAR*)pszDatFile;
 }
@@ -1081,12 +1086,10 @@ static bool StrToUint(const TCHAR* str, UINT32* result) {
 	return true;
 }
 
-#define DELIM_TOKENS_NAME	_T(" \t\r\n,%:|{}")
-
-static INT32 LoadRomdata()
+TCHAR* AdaptiveEncodingReads(const TCHAR* pszFileName)
 {
-	EncodingType nType = DetectEncoding(szRomdataName);
-	const TCHAR* pszReadMode = NULL;
+	EncodingType nType = DetectEncoding(pszFileName);
+	TCHAR* pszReadMode = NULL;
 
 	switch (nType) {
 		case ENCODING_ANSI: {
@@ -1103,14 +1106,25 @@ static INT32 LoadRomdata()
 			break;
 		}
 		case ENCODING_UTF16_BE: {
-			const TCHAR* pszConvert = Utf16beToUtf16le(szRomdataName);
-			if (NULL == pszConvert) return -1;
+			if (NULL == Utf16beToUtf16le(pszFileName)) return NULL;
 			pszReadMode = _T("rt, ccs=UTF-16LE");
 			break;
 		}
 		default:
-			return -1;
+			return NULL;
 	}
+
+	static TCHAR szRet[MAX_PATH] = { 0 };
+
+	return _tcscpy(szRet, pszReadMode);
+}
+
+#define DELIM_TOKENS_NAME	_T(" \t\r\n,%:|{}")
+
+static INT32 LoadRomdata()
+{
+	const TCHAR* pszReadMode = AdaptiveEncodingReads(szRomdataName);
+	if (NULL == pszReadMode) return -1;
 
 	RDI.nDescCount = -1;					// Failed
 
@@ -1268,34 +1282,52 @@ static INT32 LoadRomdata()
 	return RDI.nDescCount;
 }
 
+bool RomDataSetQuickPath(const TCHAR* pszSelDat)
+{
+	if ((NULL == pszSelDat) || !FileExists(pszSelDat)) {
+		FBAPopupAddText(PUF_TEXT_DEFAULT, _T("RomData:\n\n"));
+		FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_FILE_EXIST), pszSelDat);
+		FBAPopupDisplay(PUF_TYPE_ERROR);
+		return false;
+	}
+
+	const TCHAR* pszExt = _tcsrchr(pszSelDat, _T('.'));
+	if (NULL == pszExt || (0 != _tcsicmp(_T(".dat"), pszExt))) {
+		FBAPopupAddText(PUF_TEXT_DEFAULT, _T("RomData:\n\n"));
+		FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_FILE_EXTENSION), pszSelDat, _T(".dat"));
+		FBAPopupDisplay(PUF_TYPE_ERROR);
+		return false;
+	}
+
+	const TCHAR* p = pszSelDat + _tcslen(pszSelDat), * dir_end = NULL;
+	INT32 nCount = 0;
+	while (p > pszSelDat) {
+		if ((_T('/') == *p) || (_T('\\') == *p)) {
+			TCHAR c = *(p - 1);
+			if ((_T('/') == c) ||
+				(_T('\\') == c)) {		// xxxx//ssss\\...
+				FBAPopupAddText(PUF_TEXT_DEFAULT, _T("RomData:\n\n"));
+				FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_FILE_EXIST), pszSelDat);
+				FBAPopupDisplay(PUF_TYPE_ERROR);
+				return false;
+			}
+			if (1 == ++nCount) {
+				dir_end = p + 1;		// Intentionally add 1
+			}
+		}
+		p--;
+	}
+
+	memset(szAppQuickPath, 0, sizeof(szAppQuickPath));
+	_tcsncpy(szAppQuickPath, pszSelDat, dir_end - pszSelDat);
+
+	return true;
+}
+
 char* RomdataGetDrvName()
 {
-	EncodingType nType = DetectEncoding(szRomdataName);
-	const TCHAR* pszReadMode = NULL;
-
-	switch (nType) {
-		case ENCODING_ANSI: {
-			pszReadMode = _T("rt");
-			break;
-		}
-		case ENCODING_UTF8:
-		case ENCODING_UTF8_BOM: {
-			pszReadMode = _T("rt, ccs=UTF-8");
-			break;
-		}
-		case ENCODING_UTF16_LE: {
-			pszReadMode = _T("rt, ccs=UTF-16LE");
-			break;
-		}
-		case ENCODING_UTF16_BE: {
-			const TCHAR* pszConvert = Utf16beToUtf16le(szRomdataName);
-			if (NULL == pszConvert) return NULL;
-			pszReadMode = _T("rt, ccs=UTF-16LE");
-			break;
-		}
-		default:
-			return NULL;
-	}
+	const TCHAR* pszReadMode = AdaptiveEncodingReads(szRomdataName);
+	if (NULL == pszReadMode) return NULL;
 
 	FILE* fp = _tfopen(szRomdataName, pszReadMode);
 	if (NULL == fp) return NULL;
@@ -1326,32 +1358,8 @@ char* RomdataGetDrvName()
 
 TCHAR* RomdataGetZipName(const TCHAR* pszFileName)
 {
-	EncodingType nType = DetectEncoding(pszFileName);
-	const TCHAR* pszReadMode = NULL;
-
-	switch (nType) {
-	case ENCODING_ANSI: {
-		pszReadMode = _T("rt");
-		break;
-	}
-	case ENCODING_UTF8:
-	case ENCODING_UTF8_BOM: {
-		pszReadMode = _T("rt, ccs=UTF-8");
-		break;
-	}
-	case ENCODING_UTF16_LE: {
-		pszReadMode = _T("rt, ccs=UTF-16LE");
-		break;
-	}
-	case ENCODING_UTF16_BE: {
-		const TCHAR* pszConvert = Utf16beToUtf16le(pszFileName);
-		if (NULL == pszConvert) return NULL;
-		pszReadMode = _T("rt, ccs=UTF-16LE");
-		break;
-	}
-	default:
-		return NULL;
-	}
+	const TCHAR* pszReadMode = AdaptiveEncodingReads(pszFileName);
+	if (NULL == pszReadMode) return NULL;
 
 	FILE* fp = _tfopen(pszFileName, pszReadMode);
 	if (NULL == fp) return NULL;
@@ -1384,32 +1392,8 @@ TCHAR* RomdataGetZipName(const TCHAR* pszFileName)
 
 TCHAR* RomdataGetDrvName(const TCHAR* pszFileName)
 {
-	EncodingType nType = DetectEncoding(pszFileName);
-	const TCHAR* pszReadMode = NULL;
-
-	switch (nType) {
-	case ENCODING_ANSI: {
-		pszReadMode = _T("rt");
-		break;
-	}
-	case ENCODING_UTF8:
-	case ENCODING_UTF8_BOM: {
-		pszReadMode = _T("rt, ccs=UTF-8");
-		break;
-	}
-	case ENCODING_UTF16_LE: {
-		pszReadMode = _T("rt, ccs=UTF-16LE");
-		break;
-	}
-	case ENCODING_UTF16_BE: {
-		const TCHAR* pszConvert = Utf16beToUtf16le(pszFileName);
-		if (NULL == pszConvert) return NULL;
-		pszReadMode = _T("rt, ccs=UTF-16LE");
-		break;
-	}
-	default:
-		return NULL;
-	}
+	const TCHAR* pszReadMode = AdaptiveEncodingReads(pszFileName);
+	if (NULL == pszReadMode) return NULL;
 
 	FILE* fp = _tfopen(pszFileName, pszReadMode);
 	if (NULL == fp) return NULL;
@@ -1443,43 +1427,25 @@ TCHAR* RomdataGetDrvName(const TCHAR* pszFileName)
 // It is recommended to save and restore the state of nBurnDrvActive before and after the call
 INT32 RomdataGetDrvIndex(const TCHAR* pszDrvName)
 {
+	// nBurnDrvActive must be saved and restored, as BurnAreaScan() depends on it
+	const UINT32 nOldDrvActive = nBurnDrvActive;
+
 	for (INT32 nDrvIndex = 0; nDrvIndex < nBurnDrvCount; nDrvIndex++) {
 		nBurnDrvActive = nDrvIndex;
 		if ((0 == _tcscmp(pszDrvName, BurnDrvGetText(DRV_NAME))) && (!(BurnDrvGetFlags() & BDF_BOARDROM))) {
+			nBurnDrvActive = nOldDrvActive;
 			return nDrvIndex;
 		}
 	}
+
+	nBurnDrvActive = nOldDrvActive;
 	return -1;
 }
 
 TCHAR* RomdataGetFullName(const TCHAR* pszFileName)
 {
-	EncodingType nType = DetectEncoding(pszFileName);
-	const TCHAR* pszReadMode = NULL;
-
-	switch (nType) {
-	case ENCODING_ANSI: {
-		pszReadMode = _T("rt");
-		break;
-	}
-	case ENCODING_UTF8:
-	case ENCODING_UTF8_BOM: {
-		pszReadMode = _T("rt, ccs=UTF-8");
-		break;
-	}
-	case ENCODING_UTF16_LE: {
-		pszReadMode = _T("rt, ccs=UTF-16LE");
-		break;
-	}
-	case ENCODING_UTF16_BE: {
-		const TCHAR* pszConvert = Utf16beToUtf16le(pszFileName);
-		if (NULL == pszConvert) return NULL;
-		pszReadMode = _T("rt, ccs=UTF-16LE");
-		break;
-	}
-	default:
-		return NULL;
-	}
+	const TCHAR* pszReadMode = AdaptiveEncodingReads(pszFileName);
+	if (NULL == pszReadMode) return NULL;
 
 	FILE* fp = _tfopen(pszFileName, pszReadMode);
 	if (NULL == fp) return NULL;
@@ -1515,11 +1481,10 @@ TCHAR* RomdataGetFullName(const TCHAR* pszFileName)
 
 static INT32 RomsetDuplicateName(const TCHAR* pszFileName)
 {
-	bool RDMode = (NULL != pDataRomDesc);
-	if (RDMode) return -2;
+	if (NULL != pDataRomDesc) return -2;
 
 	TCHAR* pszZipName = RomdataGetZipName(pszFileName);
-	if (NULL == pszZipName) return -3;
+	if (NULL == pszZipName)   return -3;
 /*
 	return:	-1 is success
 	0 ~ N	The name is duplicated
@@ -1527,50 +1492,39 @@ static INT32 RomsetDuplicateName(const TCHAR* pszFileName)
 	-2		RomData mode
 	-3		No results were found in the Dat file
 */
-	return BurnDrvGetIndex(TCHARToANSI(pszZipName, NULL, 0));
+	return BurnDrvGetIndex(_TtoA(pszZipName));
 }
 
 // Checking in RomData mode is strictly prohibited
 INT32 RomDataCheck(const TCHAR* pszDatFile)
 {
-	if (NULL == pszDatFile) {
-		FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_NODATA));
+	if (NULL == pszDatFile || !FileExists(pszDatFile)) {
+		FBAPopupAddText(PUF_TEXT_DEFAULT, _T("RomData:\n\n"));
+		FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_FILE_EXIST), pszDatFile);
 		FBAPopupDisplay(PUF_TYPE_ERROR);
 		return -1;
 	}
 
-	TCHAR szDatFile[MAX_PATH] = { 0 };
-	_tcscpy(szDatFile, pszDatFile);
-
-	if (!FileExists(szDatFile)) {
-		FBAPopupAddText(PUF_TEXT_DEFAULT, _T("%s: %s\n\n"), FBALoadStringEx(hAppInst, IDS_ROMDATA_DATPATH, true), szDatFile);
-		FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_NODATA));
-		FBAPopupDisplay(PUF_TYPE_ERROR);
-		return -2;
-	}
-
 	INT32 nRet = 0;
-	const TCHAR* pszDrvName = RomdataGetDrvName(szDatFile);
-	if (NULL == pszDrvName) nRet -3;
-
-	TCHAR szDrvName[100] = { 0 };
-	_tcscpy(szDrvName, pszDrvName);
-
-	const INT32 nDrvIdx = BurnDrvGetIndex(TCHARToANSI(szDrvName, NULL, 0));
-	if (-1 == nDrvIdx)      nRet -4;
-
-
-	if (nRet < 0) {
-		FBAPopupAddText(PUF_TEXT_DEFAULT, _T("%s: %s\n\n"), FBALoadStringEx(hAppInst, IDS_ROMDATA_DATPATH, true), szDatFile);
-		UINT32 nStrId = (-3 == nRet) ? IDS_ERR_NO_DRIVER_SELECTED : IDS_ERR_DRIVER_NOT_EXIST;
-		FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(nStrId));
+	const TCHAR* pszDrvName = RomdataGetDrvName(pszDatFile);
+	if (NULL == pszDrvName) {
+		FBAPopupAddText(PUF_TEXT_DEFAULT, _T("RomData: %s\n\n"), pszDatFile);
+		FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_DRIVER_NOT_EXIST));
 		FBAPopupDisplay(PUF_TYPE_ERROR);
-		return nRet;
+		return -3;
 	}
 
-	nRet = RomsetDuplicateName(szDatFile);
+	const INT32 nDrvIdx = BurnDrvGetIndex(_TtoA(pszDrvName));
+	if (-1 == nDrvIdx) {
+		FBAPopupAddText(PUF_TEXT_DEFAULT, _T("RomData: %s\n\n"), pszDatFile);
+		FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_DRIVER_NOT_EXIST));
+		FBAPopupDisplay(PUF_TYPE_ERROR);
+		return -4;
+	}
+
+	nRet = RomsetDuplicateName(pszDatFile);
 	if (nRet >= 0) {
-		FBAPopupAddText(PUF_TEXT_DEFAULT, _T("%s: %s\n\n"), FBALoadStringEx(hAppInst, IDS_ROMDATA_DATPATH, true), szDatFile);
+		FBAPopupAddText(PUF_TEXT_DEFAULT, _T("RomData: %s\n\n"), pszDatFile);
 		FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_ROMSET_DUPLICATE));
 		FBAPopupDisplay(PUF_TYPE_ERROR);
 		return -5;
@@ -1591,15 +1545,17 @@ INT32 RomDataCheck(const TCHAR* pszDatFile)
 */
 	TCHAR szBackup[MAX_PATH] = { 0 };
 	_tcscpy(szBackup, szRomdataName);			// Backup szRomdataName
-	_tcscpy(szRomdataName, szDatFile);
+	_tcscpy(szRomdataName, pszDatFile);
 	RomDataInit();								// Replace DrvName##RomDesc
 	const UINT32 nOldDrvSel = nBurnDrvActive;	// Backup nBurnDrvActive
 	nBurnDrvActive = nDrvIdx;					// Required nBurnDrvActive
 	nRet = BzipOpen(1);
 	if (1 == nRet) {							// ROMs error report
 		BzipClose();
+		FBAPopupAddText(PUF_TEXT_DEFAULT, _T("RomData: %s\n\n"), pszDatFile);
 		BzipOpen(0);
 		FBAPopupDisplay(PUF_TYPE_ERROR);
+		nRet = -1;
 	}
 	BzipClose();
 	nBurnDrvActive = nOldDrvSel;				// Restore nBurnDrvActive
@@ -1611,35 +1567,10 @@ INT32 RomDataCheck(const TCHAR* pszDatFile)
 
 static DatListInfo* RomdataGetListInfo(const TCHAR* pszDatFile)
 {
-	EncodingType nType = DetectEncoding(pszDatFile);
-	if (NULL == pszDatFile) return NULL;
+	const TCHAR* pszReadMode = AdaptiveEncodingReads(pszDatFile);
+	if (NULL == pszReadMode) return NULL;
+
 	_tcscpy(szRomdataName, pszDatFile);
-
-	const TCHAR* pszReadMode = NULL;
-
-	switch (nType) {
-		case ENCODING_ANSI: {
-			pszReadMode = _T("rt");
-			break;
-		}
-		case ENCODING_UTF8:
-		case ENCODING_UTF8_BOM: {
-			pszReadMode = _T("rt, ccs=UTF-8");
-			break;
-		}
-		case ENCODING_UTF16_LE: {
-			pszReadMode = _T("rt, ccs=UTF-16LE");
-			break;
-		}
-		case ENCODING_UTF16_BE: {
-			const TCHAR* pszConvert = Utf16beToUtf16le(szRomdataName);
-			if (NULL == pszConvert) return NULL;
-			pszReadMode = _T("rt, ccs=UTF-16LE");
-			break;
-		}
-		default:
-			return NULL;
-	}
 
 	FILE* fp = _tfopen(szRomdataName, pszReadMode);
 	if (NULL == fp) return NULL;
@@ -1665,7 +1596,7 @@ static DatListInfo* RomdataGetListInfo(const TCHAR* pszDatFile)
 			if (0 == _tcsicmp(_T("ZipName"), pszLabel) || 0 == _tcsicmp(_T("RomName"), pszLabel)) {	// Romset
 				pszInfo = _strqtoken(NULL, DELIM_TOKENS_NAME);
 				if (NULL == pszInfo) {						// No romset specified
-					FBAPopupAddText(PUF_TEXT_DEFAULT, _T("%s: %s\n\n"), FBALoadStringEx(hAppInst, IDS_ROMDATA_DATPATH, true), pszDatFile);
+					FBAPopupAddText(PUF_TEXT_DEFAULT, _T("RomData:\n\n"));
 					FBAPopupAddText(PUF_TEXT_DEFAULT, _T("%s:?\n\n"),   FBALoadStringEx(hAppInst, IDS_ROMDATA_ROMSET,  true));
 					FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_NOTFOUND), _T("ROM"));
 					FBAPopupDisplay(PUF_TYPE_ERROR);
@@ -1679,7 +1610,7 @@ static DatListInfo* RomdataGetListInfo(const TCHAR* pszDatFile)
 			if (0 == _tcsicmp(_T("DrvName"), pszLabel) || 0 == _tcsicmp(_T("Parent"), pszLabel)) {	// Driver
 				pszInfo = _strqtoken(NULL, DELIM_TOKENS_NAME);
 				if (NULL == pszInfo) {						// No driver specified
-					FBAPopupAddText(PUF_TEXT_DEFAULT, _T("%s: %s\n\n"), FBALoadStringEx(hAppInst, IDS_ROMDATA_DATPATH, true), pszDatFile);
+					FBAPopupAddText(PUF_TEXT_DEFAULT, _T("RomData:\n\n"));
 					FBAPopupAddText(PUF_TEXT_DEFAULT, _T("%s:?\n\n"),   FBALoadStringEx(hAppInst, IDS_ROMDATA_DRIVER,  true));
 					FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_NO_DRIVER_SELECTED));
 					FBAPopupDisplay(PUF_TYPE_ERROR);
@@ -1694,7 +1625,7 @@ static DatListInfo* RomdataGetListInfo(const TCHAR* pszDatFile)
 					UINT32 nOldDrvSel = nBurnDrvActive;		// Backup
 					nBurnDrvActive = BurnDrvGetIndex(TCHARToANSI(pDatListInfo->szDrvName, NULL, 0));
 					if (-1 == nBurnDrvActive) {
-						FBAPopupAddText(PUF_TEXT_DEFAULT, _T("%s: %s\n\n"), FBALoadStringEx(hAppInst, IDS_ROMDATA_DATPATH, true), pszDatFile);
+						FBAPopupAddText(PUF_TEXT_DEFAULT, _T("RomData:\n\n"));
 						FBAPopupAddText(PUF_TEXT_DEFAULT, _T("%s: %s\n\n"), FBALoadStringEx(hAppInst, IDS_ROMDATA_DRIVER,  true), pDatListInfo->szDrvName);
 						FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_DRIVER_NOT_EXIST));
 						FBAPopupDisplay(PUF_TYPE_ERROR);
@@ -1964,7 +1895,7 @@ bool RomDataExportTemplate(HWND hWnd, const INT32 nDrvSelect)
 	TCHAR szFilter[150] = { 0 };
 	_stprintf(szFilter, FBALoadStringEx(hAppInst, IDS_DISK_FILE_ROMDATA, true), _T(APP_TITLE));
 	memcpy(szFilter + _tcslen(szFilter), _T(" (*.dat)\0*.dat\0\0"), 16 * sizeof(TCHAR));
-	_stprintf(szChoice, _T("%s.dat"), BurnDrvGetText(DRV_NAME));
+	_stprintf(szChoice, _T("template_%s.dat"), BurnDrvGetText(DRV_NAME));
 
 	memset(&ofn, 0, sizeof(OPENFILENAME));
 	ofn.lStructSize = sizeof(OPENFILENAME);
@@ -2002,9 +1933,14 @@ bool RomDataExportTemplate(HWND hWnd, const INT32 nDrvSelect)
 		struct BurnRomInfo ri = { 0 };
 
 		BurnDrvGetRomInfo(&ri, i);	// Get info about the rom
+		if ((NULL == pszRomName) || ('\0' == *pszRomName))
+			continue;
+		if ((ri.nType & BRF_BIOS) && (i >= 0x80))
+			continue;
+
 		_ftprintf(fp, _T("\"%hs\",\t0x%08x,\t0x%08x,\t0x%08x\n"), pszRomName, ri.nLen, ri.nCrc, ri.nType);
 	}
-	pszRomName = NULL;
+	pszRomName     = NULL;
 	fclose(fp); fp = NULL;
 	nBurnDrvActive = nOldDrvSel;
 
@@ -2250,14 +2186,8 @@ static void RomDataManagerExit()
 static INT_PTR CALLBACK RomDataManagerProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
 	if (Msg == WM_INITDIALOG) {
-		hRDMgrWnd = hDlg;
-
-		INITCOMMONCONTROLSEX icc;
-		icc.dwSize = sizeof(INITCOMMONCONTROLSEX);
-		icc.dwICC  = ICC_LISTVIEW_CLASSES;
-		InitCommonControlsEx(&icc);
-
-		hRDListView   = GetDlgItem(hDlg, IDC_ROMDATA_LIST);
+		hRDMgrWnd   = hDlg;
+		hRDListView = GetDlgItem(hDlg, IDC_ROMDATA_LIST);
 		ListView_SetExtendedListViewStyle(hRDListView, LVS_EX_FULLROWSELECT);
 
 		RomDataInitListView();
@@ -2482,7 +2412,7 @@ static INT_PTR CALLBACK RomDataManagerProc(HWND hDlg, UINT Msg, WPARAM wParam, L
 
 				case IDC_ROMDATA_SELDIR_BUTTON: {
 					RomDataClearList();
-					SupportDirCreateTab(IDC_SUPPORTDIR_EDIT25, hRDMgrWnd);
+					SupportDirCreate(hRDMgrWnd);
 					RomdataListFindDats(szAppRomdataPath);
 					SetFocus(hRDListView);
 					break;

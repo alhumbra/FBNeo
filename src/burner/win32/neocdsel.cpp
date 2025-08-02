@@ -568,11 +568,7 @@ static INT_PTR CALLBACK NeoCDList_WndProc(HWND hDlg, UINT Msg, WPARAM wParam, LP
 	if(Msg == WM_INITDIALOG)
 	{
 		hNeoCDWnd = hDlg;
-
-		InitCommonControls();
-
 		hListView = GetDlgItem(hDlg, IDC_NCD_LIST);
-
 		NeoCDList_InitListView();
 
 		HICON hIcon = LoadIcon(hAppInst, MAKEINTRESOURCE(IDI_APP));
@@ -816,7 +812,7 @@ static INT_PTR CALLBACK NeoCDList_WndProc(HWND hDlg, UINT Msg, WPARAM wParam, LP
 
 					NeoCDList_Clean();
 
-					SupportDirCreateTab(IDC_SUPPORTDIR_EDIT8, hNeoCDWnd);
+					SupportDirCreate(hNeoCDWnd);
 					hProcessThread = (HANDLE)_beginthreadex(NULL, 0, NeoCDList_DoProc, NULL, 0, &ProcessThreadID);
 					SetFocus(hListView);
 					break;

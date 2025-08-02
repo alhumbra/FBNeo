@@ -1429,6 +1429,11 @@ INT32 SekShouldInterrupt()
 	return m68k_check_shouldinterrupt();
 }
 
+INT32 SekGetIRQLevel()
+{
+	return m68k_get_irq();
+}
+
 void SekBurnUntilInt()
 {
 	m68k_burn_until_irq(1);
@@ -2278,6 +2283,20 @@ UINT32 SekGetPPC(INT32)
 
 #ifdef EMU_M68K
 		return m68k_get_reg(NULL, M68K_REG_PPC);
+#else
+		return 0;
+#endif
+}
+
+UINT32 SekGetDAR(INT32 n)
+{
+#if defined FBNEO_DEBUG
+	if (!DebugCPU_SekInitted) bprintf(PRINT_ERROR, _T("SekGetDAR called without init\n"));
+	if (nSekActive == -1) bprintf(PRINT_ERROR, _T("SekGetDAR called when no CPU open\n"));
+#endif
+
+#ifdef EMU_M68K
+		return m68k_get_dar(n);
 #else
 		return 0;
 #endif

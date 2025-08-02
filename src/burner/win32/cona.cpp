@@ -390,6 +390,12 @@ int ConfigAppLoad()
 		VAR(nCDEmuSelect);
 		PAT(CDEmuImage);
 
+		VAR(nRomsDlgWidth);
+		VAR(nRomsDlgHeight);
+
+		VAR(nSupportDlgWidth);
+		VAR(nSupportDlgHeight);
+
 		VAR(nSelDlgWidth);
 		VAR(nSelDlgHeight);
 		VARI64(nLoadMenuShowX);
@@ -436,6 +442,7 @@ int ConfigAppLoad()
 		STR(szAppBlendPath);
 		STR(szAppSelectPath);
 		STR(szAppVersusPath);
+		STR(szAppHowtoPath);
 		STR(szAppScoresPath);
 		STR(szAppBossesPath);
 		STR(szAppGameoverPath);
@@ -511,6 +518,14 @@ int ConfigAppLoad()
 		VAR(nPlayerDefaultControls[3]);
 		STR(szPlayerDefaultIni[3]);
 
+		// SOCD
+		VAR(nSocd[0]);
+		VAR(nSocd[1]);
+		VAR(nSocd[2]);
+		VAR(nSocd[3]);
+		VAR(nSocd[4]);
+		VAR(nSocd[5]);
+
 #undef DRV
 #undef PAT
 #undef STR
@@ -521,7 +536,6 @@ int ConfigAppLoad()
 	}
 
 	fclose(h);
-	LookupSubDirThreads();
 
 	return 0;
 }
@@ -807,6 +821,18 @@ int ConfigAppSave()
 	STR(CDEmuImage);
 
 	_ftprintf(h, _T("\n\n\n"));
+	_ftprintf(h, _T("// --- Edit ROMs Paths Dialogs ------------------------------------------------\n"));
+	_ftprintf(h, _T("\n// Edit roms path dialog dimensions (in win32 client co-ordinates)\n"));
+	VAR(nRomsDlgWidth);
+	VAR(nRomsDlgHeight);
+
+	_ftprintf(h, _T("\n\n\n"));
+	_ftprintf(h, _T("// --- Edit support file paths Dialogs ----------------------------------------\n"));
+	_ftprintf(h, _T("\n// Edit support file paths dialog dimensions (in win32 client co-ordinates)\n"));
+	VAR(nSupportDlgWidth);
+	VAR(nSupportDlgHeight);
+
+	_ftprintf(h, _T("\n\n\n"));
 	_ftprintf(h, _T("// --- Load Game Dialogs ------------------------------------------------------\n"));
 	_ftprintf(h, _T("\n// Load game dialog dimensions (in win32 client co-ordinates)\n"));
 	VAR(nSelDlgWidth);
@@ -868,6 +894,7 @@ int ConfigAppSave()
 	STR(szAppBlendPath);
 	STR(szAppSelectPath);
 	STR(szAppVersusPath);
+	STR(szAppHowtoPath);
 	STR(szAppScoresPath);
 	STR(szAppBossesPath);
 	STR(szAppGameoverPath);
@@ -980,6 +1007,14 @@ int ConfigAppSave()
 	STR(szPlayerDefaultIni[2]);
 	VAR(nPlayerDefaultControls[3]);
 	STR(szPlayerDefaultIni[3]);
+
+	_ftprintf(h, _T("\n// Index of SOCD settings for each player.\n"));
+	VAR(nSocd[0]);
+	VAR(nSocd[1]);
+	VAR(nSocd[2]);
+	VAR(nSocd[3]);
+	VAR(nSocd[4]);
+	VAR(nSocd[5]);
 
 	_ftprintf(h, _T("\n\n\n"));
 

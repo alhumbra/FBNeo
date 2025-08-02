@@ -787,6 +787,7 @@ static int AppInit()
 
 	// Load config for the application
 	ConfigAppLoad();
+	LookupSubDirThreads();
 
 #if defined (FBNEO_DEBUG)
 	OpenDebugLog();
@@ -1310,14 +1311,14 @@ int ProcessCmdLine()
 
 					if (bDoIpsPatch) {
 						LoadIpsActivePatches();
-						IpsPatchInit();	// Entry point: cmdline launch
+						IpsPatchInit();		// Entry point: cmdline launch
 					}
 
 					if (DrvInit(i, true)) { // failed (bad romset, etc.)
 						nVidFullscreen = 0; // Don't get stuck in fullscreen mode
 					}
 
-					IpsPatchExit();	// 
+					IpsPatchExit();
 					break;
 				}
 			}
@@ -1451,7 +1452,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR lpCmdLine, int nShowCmd
 	{                                           // Init Win* Common Controls lib
 		INITCOMMONCONTROLSEX initCC = {
 			sizeof(INITCOMMONCONTROLSEX),
-			ICC_BAR_CLASSES | ICC_COOL_CLASSES | ICC_LISTVIEW_CLASSES | ICC_PROGRESS_CLASS | ICC_TREEVIEW_CLASSES,
+			ICC_WIN95_CLASSES,
 		};
 		InitCommonControlsEx(&initCC);
 	}

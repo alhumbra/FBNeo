@@ -25,6 +25,7 @@
 
 #include "title.h"
 #include "burn.h"
+#include "joyprocess.h"
 
 // ---------------------------------------------------------------------------
 // OS dependent functionality
@@ -261,6 +262,7 @@ INT32 __cdecl ZipLoadOneFile(char* arcName, const char* fileName, void** Dest, I
 
 // romdata.cpp
 extern TCHAR szRomdataName[MAX_PATH];
+TCHAR* AdaptiveEncodingReads(const TCHAR* pszFileName);
 
 // ips_manager.cpp 
 void IpsPatchInit();

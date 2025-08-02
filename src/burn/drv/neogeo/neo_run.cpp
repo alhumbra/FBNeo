@@ -135,7 +135,7 @@ UINT8 NeoReset = 0, NeoSystem = 0;
 UINT8 NeoCDBios = 0;
 UINT8 NeoUniHW = 0;
 UINT8 NeoOverscan = 0;
-static ClearOpposite<2, UINT8> clear_opposite;
+static ClearOpposite<4, UINT8> clear_opposite;
 
 static UINT8 OldDebugDip[2] = { 0, 0 };
 
@@ -455,7 +455,7 @@ static INT32 NeoLoad68KBIOS(INT32 nNewBIOS)
 
 		if (pszFn) bprintf(0, _T("NeoGeo CD: Loading BIOS  \"%S\".\n"), pszFn);
 
-		BurnLoadRom(Neo68KBIOS,	rom_pos, 1);
+		if (BurnLoadRom(Neo68KBIOS, rom_pos, 1)) return 1;
 		return 0;
 	}
 
@@ -487,12 +487,12 @@ static INT32 NeoLoad68KBIOS(INT32 nNewBIOS)
 	// Load the BIOS ROMs
 	if ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_SNK_MVS) {
 			// Load the BIOS ROMs
-			BurnLoadRom(Neo68KBIOS, 0x00000 + nBIOS, 1);
+			if (BurnLoadRom(Neo68KBIOS, 0x00000 + nBIOS, 1)) return 1;
 	} else {
 		if (nBIOS >= 0) {
-			BurnLoadRom(Neo68KBIOS, 0x00080 + nBIOS, 1);
+			if (BurnLoadRom(Neo68KBIOS, 0x00080 + nBIOS, 1)) return 1;
 		} else {
-			BurnLoadRom(Neo68KBIOS, 0x00080 +     0, 1);
+			if (BurnLoadRom(Neo68KBIOS, 0x00080 +     0, 1)) return 1;
 		}
 	}
 
@@ -3958,7 +3958,7 @@ static INT32 NeoInitCommon()
 		// Map 68000 memory:
 
 		if (nNeoSystemType & NEO_SYS_CART) {
-			if (nNeo68KRAMHack > 0) {
+			if (0x100000 == nNeo68KRAMLen) {
 				SekMapMemory(Neo68KRAM, 0x100000, 0x1FFFFF, MAP_RAM);		// 68K RAM
 			} else {
 				for (INT32 a = 0x100000; a < 0x200000; a += 0x010000) {
@@ -4506,6 +4506,7 @@ INT32 NeoExit()
 	nNeoProtectionXor = -1;
 	nNeoSystemType    = 0;
 	nNeo68KRAMLen     = 0;
+	nNeo68KRAMHack    = 0;
 
 	return 0;
 }
@@ -4535,8 +4536,8 @@ INT32 NeoRender()
 static void NeoStandardInputs(INT32 nBank)
 {
 	if (nBank) {
-		NeoInput[ 8] = 0x00;					   					// Player 1
-		NeoInput[ 9] = 0x00;				   						// Player 2
+		NeoInput[ 8] = 0x00;					   					// Player 3
+		NeoInput[ 9] = 0x00;				   						// Player 4
 		NeoInput[10] = 0x00;				   						// Buttons
 		NeoInput[11] = 0x00;				   						//
 		for (INT32 i = 0; i < 8; i++) {
@@ -4545,8 +4546,8 @@ static void NeoStandardInputs(INT32 nBank)
 			NeoInput[10] |= (NeoButton3[i] & 1) << i;
 			NeoInput[11] |= (NeoButton4[i] & 1) << i;
 		}
-		clear_opposite.check(0, NeoInput[ 8], 0x0c, 0x03);
-		clear_opposite.check(1, NeoInput[ 9], 0x0c, 0x03);
+		clear_opposite.check(2, NeoInput[8], 0x01, 0x02, 0x04, 0x08, nSocd[2]);
+		clear_opposite.check(3, NeoInput[9], 0x01, 0x02, 0x04, 0x08, nSocd[3]);
 
 		if (NeoDiag[1]) {
 			NeoInput[13] |= 0x80;
@@ -4562,8 +4563,8 @@ static void NeoStandardInputs(INT32 nBank)
 			NeoInput[ 2] |= (NeoButton1[i] & 1) << i;
 			NeoInput[ 3] |= (NeoButton2[i] & 1) << i;
 		}
-		clear_opposite.check(2, NeoInput[ 0], 0x0c, 0x03);
-		clear_opposite.check(3, NeoInput[ 1], 0x0c, 0x03);
+		clear_opposite.check(0, NeoInput[0], 0x01, 0x02, 0x04, 0x08, nSocd[0]);
+		clear_opposite.check(1, NeoInput[1], 0x01, 0x02, 0x04, 0x08, nSocd[1]);
 		if (NeoDiag[0]) {
 			NeoInput[ 5] |= 0x80;
 		}

@@ -938,9 +938,9 @@ static void MyEndDialog()
 
 	RECT rect;
 
-	GetClientRect(hSelDlg, &rect);
-	nSelDlgWidth = rect.right;
-	nSelDlgHeight = rect.bottom;
+	GetWindowRect(hSelDlg, &rect);
+	nSelDlgWidth  = rect.right - rect.left;
+	nSelDlgHeight = rect.bottom - rect.top;
 
 	if (!bSelOkay) {
 		RomDataStateRestore();
@@ -1012,9 +1012,11 @@ static void RefreshPanel()
 
 	SendDlgItemMessage(hSelDlg, IDC_SCREENSHOT_H, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hPrevBmp);
 	SendDlgItemMessage(hSelDlg, IDC_SCREENSHOT_V, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)NULL);
+	ShowWindow(GetDlgItem(hSelDlg, IDC_SCREENSHOT_H), SW_SHOW);
 
 	SendDlgItemMessage(hSelDlg, IDC_SCREENSHOT2_H, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)hTitleBmp);
 	SendDlgItemMessage(hSelDlg, IDC_SCREENSHOT2_V, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)NULL);
+	ShowWindow(GetDlgItem(hSelDlg, IDC_SCREENSHOT2_H), SW_SHOW);
 
 	// Clear the things in our Info-box
 	for (int i = 0; i < 6; i++) {
@@ -1082,16 +1084,16 @@ static VOID CALLBACK InitPreviewTimerProc(HWND, UINT, UINT_PTR, DWORD)
 	if (GetIpsNumPatches()) {
 		if (!nShowMVSCartsOnly) {
 			EnableWindow(GetDlgItem(hSelDlg, IDC_SEL_IPSMANAGER), TRUE);
-			LoadIpsActivePatches();
+			INT32 nActivePatches = LoadIpsActivePatches();
 
 			// Whether IDC_SEL_APPLYIPS is enabled must be subordinate to IDC_SEL_IPSMANAGER
 			// to verify that xxx.dat is not removed after saving config.
 			// Reduce useless array lookups.
-			EnableWindow(GetDlgItem(hSelDlg, IDC_SEL_APPLYIPS), GetIpsNumActivePatches());
+			EnableWindow(GetDlgItem(hSelDlg, IDC_SEL_APPLYIPS), nActivePatches);
 		}
 	} else {
 		EnableWindow(GetDlgItem(hSelDlg, IDC_SEL_IPSMANAGER), FALSE);
-		EnableWindow(GetDlgItem(hSelDlg, IDC_SEL_APPLYIPS), FALSE);	// xxx.dat path not found, must be disabled.
+		EnableWindow(GetDlgItem(hSelDlg, IDC_SEL_APPLYIPS),   FALSE);	// xxx.dat path not found, must be disabled.
 	}
 
 	KillTimer(hSelDlg, nInitPreviewTimer);
@@ -1558,9 +1560,9 @@ static UINT32 __stdcall CacheDrvIconsProc(void* lpParam)
 	TCHAR szIcon[MAX_PATH] = { 0 };
 
 	switch (nIconsSize) {
-		case ICON_16x16: nIconsSizeXY = 16;	nIconsYDiff =  4;	break;
-		case ICON_24x24: nIconsSizeXY = 24;	nIconsYDiff =  8;	break;
-		case ICON_32x32: nIconsSizeXY = 32;	nIconsYDiff = 12;	break;
+		case ICON_16x16: nIconsSizeXY = 16;	nIconsYDiff =  2;	break;
+		case ICON_24x24: nIconsSizeXY = 24;	nIconsYDiff =  6;	break;
+		case ICON_32x32: nIconsSizeXY = 32;	nIconsYDiff = 10;	break;
 	}
 
 	const UINT32 nDrvCount = nBurnDrvCount;
@@ -1731,12 +1733,17 @@ void DestroyDrvIconsCache()
 		DestroyIcon(pIconsCache[i]);
 	}
 	free(pIconsCache); pIconsCache = NULL;
-	nIconsSizeXY = 16; nIconsYDiff = 4;
+	nIconsSizeXY = 16; nIconsYDiff = 2;
 }
 
 void CreateDrvIconsCache()
 {
-	if (!bEnableIcons) return;
+	if (!bEnableIcons) {
+//		nIconsSize   = ICON_16x16;
+		nIconsSizeXY = 16;
+		nIconsYDiff  = 2;
+		return;
+	}
 
 	if (NULL != pIconsCache) DestroyDrvIconsCache();
 	pIconsCache = (HICON*)malloc((nBurnDrvCount + ICON_ENUMEND + 1) * sizeof(HICON));
@@ -1883,8 +1890,6 @@ void UnloadDrvIcons()
 static INT_PTR CALLBACK DialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
 	if (Msg == WM_INITDIALOG) {
-		InitCommonControls();
-
 		hSelDlg = hDlg;
 
 		// add WS_MAXIMIZEBOX button;
@@ -1950,7 +1955,6 @@ static INT_PTR CALLBACK DialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lP
 		TreeView_SetItemHeight(hSelList, cyItem);
 
 		SetFocus(hSelList);
-
 		RebuildEverything();
 
 		TreeView_SetItemHeight(hSelList, cyItem);
@@ -1997,8 +2001,7 @@ static INT_PTR CALLBACK DialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lP
 	}
 
 	if(Msg == UM_CHECKSTATECHANGE) {
-
-		HTREEITEM   hItemChanged = (HTREEITEM)lParam;
+		HTREEITEM hItemChanged = (HTREEITEM)lParam;
 
 		if (hItemChanged == hHardware) {
 			if ((nLoadMenuShowX & MASKALL) == 0) {
@@ -2436,6 +2439,7 @@ static INT_PTR CALLBACK DialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lP
 					break;
 				case IDC_SEL_SUBDIRS:
 					nLoadMenuShowY ^= SEARCHSUBDIRS;
+					LookupSubDirThreads();
 					break;
 				case IDGAMEINFO:
 					if (bDrvSelected) {
@@ -2447,15 +2451,11 @@ static INT_PTR CALLBACK DialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lP
 					break;
 				case IDC_SEL_IPSMANAGER:
 					if (bDrvSelected) {
-						int nOldnBurnDrvActive = nBurnDrvActive;
+						UINT32 nOldnBurnDrvActive = nBurnDrvActive;
 						IpsManagerCreate(hSelDlg);
 						nBurnDrvActive = nOldnBurnDrvActive; // due to some weird bug in sel.cpp, nBurnDrvActive can sometimes change when clicking in new dialogs.
-						LoadIpsActivePatches();
-						if (GetIpsNumActivePatches()) {
-							EnableWindow(GetDlgItem(hDlg, IDC_SEL_APPLYIPS), TRUE);
-						} else {
-							EnableWindow(GetDlgItem(hDlg, IDC_SEL_APPLYIPS), FALSE);
-						}
+						INT32 nActivePatches = LoadIpsActivePatches();
+						EnableWindow(GetDlgItem(hDlg, IDC_SEL_APPLYIPS), nActivePatches);
 						SetFocus(hSelList);
 					} else {
 						MessageBox(hSelDlg, FBALoadStringEx(hAppInst, IDS_ERR_NO_DRIVER_SELECTED, true), FBALoadStringEx(hAppInst, IDS_ERR_ERROR, true), MB_OK);
@@ -2554,7 +2554,11 @@ static INT_PTR CALLBACK DialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lP
 		return 0;
 	}
 
-	if (Msg == WM_WINDOWPOSCHANGED) {
+#if 0
+	if (Msg == WM_WINDOWPOSCHANGED) {	// All controls blink when dragging the window
+#endif // 0
+
+	if (Msg == WM_SIZE) {
 		RECT rc;
 		int xDelta;
 		int yDelta;
@@ -2689,7 +2693,7 @@ static INT_PTR CALLBACK DialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lP
 			TreeView_HitTest(pNmHdr->hwndFrom, &thi);
 
 			HTREEITEM hSelectHandle = thi.hItem;
-				if(hSelectHandle == NULL) return 1;
+			if(hSelectHandle == NULL) return 1;
 
 			TreeView_SelectItem(hSelList, hSelectHandle);
 
@@ -2713,20 +2717,30 @@ static INT_PTR CALLBACK DialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lP
 		}
 
 		if (pNmHdr->code == NM_CUSTOMDRAW && LOWORD(wParam) == IDC_TREE1) {
-			LPNMLVCUSTOMDRAW lplvcd = (LPNMLVCUSTOMDRAW)lParam;
+			LPNMTVCUSTOMDRAW lptvcd = (LPNMTVCUSTOMDRAW)lParam;
 			int nGetTextFlags = nLoadMenuShowY & ASCIIONLY ? DRV_ASCIIONLY : 0;
 			HTREEITEM hSelectHandle;
 
-			switch (lplvcd->nmcd.dwDrawStage) {
+			switch (lptvcd->nmcd.dwDrawStage) {
 				case CDDS_PREPAINT: {
 					SetWindowLongPtr(hSelDlg, DWLP_MSGRESULT, CDRF_NOTIFYITEMDRAW);
 					return 1;
 				}
 
 				case CDDS_ITEMPREPAINT:	{
-					hSelectHandle = (HTREEITEM)(lplvcd->nmcd.dwItemSpec);
-					HBRUSH hBackBrush;
+					hSelectHandle = (HTREEITEM)(lptvcd->nmcd.dwItemSpec);
 					RECT rect;
+
+					{
+						RECT rcClip;
+						TreeView_GetItemRect(lptvcd->nmcd.hdr.hwndFrom, hSelectHandle, &rect, TRUE);
+
+						// Check if the current item is in the area to be redrawn(only the visible part is drawn)
+						if (!IntersectRect(&rcClip, &lptvcd->nmcd.rc, &rect)) {
+//							SetWindowLongPtr(hSelDlg, DWLP_MSGRESULT, CDRF_SKIPDEFAULT);
+							return 1;
+						}
+					}
 
 					// TVITEM (msdn.microsoft.com) This structure is identical to the TV_ITEM structure, but it has been renamed to
 					// follow current naming conventions. New applications should use this structure.
@@ -2734,76 +2748,104 @@ static INT_PTR CALLBACK DialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lP
 					//TV_ITEM TvItem;
 					TVITEM TvItem;
 					TvItem.hItem = hSelectHandle;
-					TvItem.mask = TVIF_PARAM | TVIF_STATE | TVIF_CHILDREN;
+					TvItem.mask  = TVIF_PARAM | TVIF_STATE | TVIF_CHILDREN;
 					SendMessage(hSelList, TVM_GETITEM, 0, (LPARAM)&TvItem);
 
-//					dprintf(_T("  - Item (%i?i) - (%i?i) %hs\n"), lplvcd->nmcd.rc.left, lplvcd->nmcd.rc.top, lplvcd->nmcd.rc.right, lplvcd->nmcd.rc.bottom, ((NODEINFO*)TvItem.lParam)->pszROMName);
+//					dprintf(_T("  - Item (%i?i) - (%i?i) %hs\n"), lptvcd->nmcd.rc.left, lptvcd->nmcd.rc.top, lptvcd->nmcd.rc.right, lptvcd->nmcd.rc.bottom, ((NODEINFO*)TvItem.lParam)->pszROMName);
 
 					// Set the foreground and background colours unless the item is highlighted
 					if (!(TvItem.state & (TVIS_SELECTED | TVIS_DROPHILITED))) {
 
 						// Set less contrasting colours for clones
 						if (!((NODEINFO*)TvItem.lParam)->bIsParent) {
-							lplvcd->clrTextBk = RGB(0xD7, 0xD7, 0xD7);
-							lplvcd->clrText = RGB(0x3F, 0x3F, 0x3F);
+							lptvcd->clrTextBk = RGB(0xD7, 0xD7, 0xD7);
+							lptvcd->clrText   = RGB(0x3F, 0x3F, 0x3F);
 						}
 
 						// For parents, change the colour of the background, for clones, change only the text colour
 						if (!CheckWorkingStatus(((NODEINFO*)TvItem.lParam)->nBurnDrvNo)) {
-							lplvcd->clrText = RGB(0x7F, 0x7F, 0x7F);
+							lptvcd->clrText = RGB(0x7F, 0x7F, 0x7F);
 						}
 
 						// Slightly different color for favorites (key lime pie anyone?)
-						nBurnDrvActive = ((NODEINFO*)TvItem.lParam)->nBurnDrvNo;
-						if (CheckFavorites(BurnDrvGetTextA(DRV_NAME)) != -1) {
+						if (CheckFavorites(((NODEINFO*)TvItem.lParam)->pszROMName) != -1) {
 							if (!((NODEINFO*)TvItem.lParam)->bIsParent) {
-								lplvcd->clrTextBk = RGB(0xd7, 0xe7, 0xd7);
+								lptvcd->clrTextBk = RGB(0xd7, 0xe7, 0xd7);
 							} else {
-								lplvcd->clrTextBk = RGB(0xe6, 0xff, 0xe6);
+								lptvcd->clrTextBk = RGB(0xe6, 0xff, 0xe6);
+
+								// Both parent and clone are in favorites
+								if (!(TvItem.state & TVIS_EXPANDED) && TvItem.cChildren) {
+									HTREEITEM hChild = TreeView_GetChild(hSelList, TvItem.hItem);
+									while (NULL != hChild) {
+										TVITEM tvi = { 0 };
+										tvi.mask   = TVIF_PARAM | TVIF_HANDLE;
+										tvi.hItem  = hChild;
+										if (TreeView_GetItem(hSelList, &tvi)) {
+											if (-1 != CheckFavorites(((NODEINFO*)tvi.lParam)->pszROMName)) {
+												lptvcd->clrTextBk = RGB(0xe6, 0xe6, 0xfa);		// Lavender
+												break;
+											}
+										}
+										hChild = TreeView_GetNextSibling(hSelList, hChild);
+									}
+								}
+							}
+						} else {
+							// Only clones are favorites
+							if (((NODEINFO*)TvItem.lParam)->bIsParent) {
+								if (!(TvItem.state & TVIS_EXPANDED) && TvItem.cChildren) {
+									HTREEITEM hChild = TreeView_GetChild(hSelList, TvItem.hItem);
+									while (NULL != hChild) {
+										TVITEM tvi = { 0 };
+										tvi.mask   = TVIF_PARAM | TVIF_HANDLE;
+										tvi.hItem  = hChild;
+										if (TreeView_GetItem(hSelList, &tvi)) {
+											if (-1 != CheckFavorites(((NODEINFO*)tvi.lParam)->pszROMName)) {
+												lptvcd->clrTextBk = RGB(0xff, 0xf0, 0xf5);		// Lavender blush
+												break;
+											}
+										}
+										hChild = TreeView_GetNextSibling(hSelList, hChild);
+									}
+								}
 							}
 						}
 					}
 
-					rect.left	= lplvcd->nmcd.rc.left;
-					rect.right	= lplvcd->nmcd.rc.right;
-					rect.top	= lplvcd->nmcd.rc.top;
-					rect.bottom = lplvcd->nmcd.rc.bottom;
-
-					hBackBrush = CreateSolidBrush(lplvcd->clrTextBk);
+					rect.left   = lptvcd->nmcd.rc.left;
+					rect.right  = lptvcd->nmcd.rc.right;
+					rect.top    = lptvcd->nmcd.rc.top;
+					rect.bottom = lptvcd->nmcd.rc.bottom;
 
 					nBurnDrvActive = ((NODEINFO*)TvItem.lParam)->nBurnDrvNo;
 
 					{
 						// Fill background
-						FillRect(lplvcd->nmcd.hdc, &lplvcd->nmcd.rc, hBackBrush);
+						HBRUSH hBackBrush = CreateSolidBrush(lptvcd->clrTextBk);
+						FillRect(lptvcd->nmcd.hdc, &lptvcd->nmcd.rc, hBackBrush);
+						DeleteObject(hBackBrush);
 					}
 
 					{
 						// Draw plus and minus buttons
-						if (((NODEINFO*)TvItem.lParam)->bIsParent) {
-							if (TvItem.state & TVIS_EXPANDED) {
-								DrawIconEx(lplvcd->nmcd.hdc, rect.left + 4, rect.top + nIconsYDiff, hCollapse, 16, 16, 0, NULL, DI_NORMAL);
-							} else {
-								if (TvItem.cChildren) {
-									DrawIconEx(lplvcd->nmcd.hdc, rect.left + 4, rect.top + nIconsYDiff, hExpand, 16, 16, 0, NULL, DI_NORMAL);
-								}
-							}
+						if (((NODEINFO*)TvItem.lParam)->bIsParent && TvItem.cChildren) {
+							HICON hIcon = (TvItem.state & TVIS_EXPANDED) ? hCollapse : hExpand;
+							DrawIconEx(lptvcd->nmcd.hdc, rect.left + 4, rect.top + nIconsYDiff, hIcon, 16, 16, 0, NULL, DI_NORMAL);
 						}
 						rect.left += 16 + 8;
 					}
 
-					rect.top += 2;
-
 					{
 						// Draw text
 
-						TCHAR szText[1024];
+						TCHAR  szText[1024];
 						TCHAR* pszPosition = szText;
 						TCHAR* pszName;
-						SIZE size = { 0, 0 };
+						SIZE   size = { 0, 0 };
 
-						SetTextColor(lplvcd->nmcd.hdc, lplvcd->clrText);
-						SetBkMode(lplvcd->nmcd.hdc, TRANSPARENT);
+						SetTextColor(lptvcd->nmcd.hdc, lptvcd->clrText);
+						SetBkMode(lptvcd->nmcd.hdc, TRANSPARENT);
 
 						// Display the short name if needed
 						if (nLoadMenuShowY & SHOWSHORT) {
@@ -2816,51 +2858,62 @@ static INT_PTR CALLBACK DialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lP
 							const int temp_right = rect.right;
 							rect.right = EXPAND_ICON_SIZE + FIELD_SIZE - 2;
 
-							DrawText(lplvcd->nmcd.hdc, BurnDrvGetText(DRV_NAME), -1, &rect, DT_NOPREFIX | DT_SINGLELINE | DT_LEFT | DT_VCENTER | DT_END_ELLIPSIS);
+							DrawText(lptvcd->nmcd.hdc, BurnDrvGetText(DRV_NAME), -1, &rect, DT_NOPREFIX | DT_SINGLELINE | DT_LEFT | DT_VCENTER | DT_END_ELLIPSIS);
 							rect.right = temp_right;
-
 							rect.left += FIELD_SIZE;
+						}
+
+						rect.top += 2;
+
+						bool bParentExp = false;	// If true, Item is clone and parent is expanded
+						if (!((NODEINFO*)TvItem.lParam)->bIsParent) {
+							HTREEITEM hParent = TreeView_GetParent(hSelList, TvItem.hItem);
+							if (NULL != hParent) {
+								bParentExp = (TreeView_GetItemState(hSelList, hParent, TVIS_EXPANDED) & TVIS_EXPANDED);
+							}
 						}
 
 						{
 							// Draw icons if needed
-							if (!CheckWorkingStatus(((NODEINFO*)TvItem.lParam)->nBurnDrvNo)) {
-								DrawIconEx(lplvcd->nmcd.hdc, rect.left, rect.top, hNotWorking, nIconsSizeXY, nIconsSizeXY, 0, NULL, DI_NORMAL);
-								rect.left += nIconsSizeXY + 4;
-							} else {
-								if (!(gameAv[((NODEINFO*)TvItem.lParam)->nBurnDrvNo]) && !bSkipStartupCheck) {
-									DrawIconEx(lplvcd->nmcd.hdc, rect.left, rect.top, hNotFoundEss, nIconsSizeXY, nIconsSizeXY, 0, NULL, DI_NORMAL);
+							if (((NODEINFO*)TvItem.lParam)->bIsParent || bParentExp) {
+								if (!CheckWorkingStatus(nBurnDrvActive)) {
+									DrawIconEx(lptvcd->nmcd.hdc, rect.left, rect.top, hNotWorking, nIconsSizeXY, nIconsSizeXY, 0, NULL, DI_NORMAL);
 									rect.left += nIconsSizeXY + 4;
 								} else {
-									if (!(nLoadMenuShowY & AVAILABLE) && !(gameAv[((NODEINFO*)TvItem.lParam)->nBurnDrvNo] & 2)) {
-										DrawIconEx(lplvcd->nmcd.hdc, rect.left, rect.top, hNotFoundNonEss, nIconsSizeXY, nIconsSizeXY, 0, NULL, DI_NORMAL);
+									if (!(gameAv[nBurnDrvActive]) && !bSkipStartupCheck) {
+										DrawIconEx(lptvcd->nmcd.hdc, rect.left, rect.top, hNotFoundEss, nIconsSizeXY, nIconsSizeXY, 0, NULL, DI_NORMAL);
 										rect.left += nIconsSizeXY + 4;
+									} else {
+										if (!(nLoadMenuShowY & AVAILABLE) && !(gameAv[nBurnDrvActive] & 2)) {
+											DrawIconEx(lptvcd->nmcd.hdc, rect.left, rect.top, hNotFoundNonEss, nIconsSizeXY, nIconsSizeXY, 0, NULL, DI_NORMAL);
+											rect.left += nIconsSizeXY + 4;
+										}
 									}
 								}
 							}
 						}
 
 						// Driver Icon drawing code...
-						if (bEnableIcons && bIconsLoaded) {
+						if (bEnableIcons && bIconsLoaded && (((NODEINFO*)TvItem.lParam)->bIsParent || bParentExp)) {
 							// Windows GDI limitation, can not cache all icons, can only cache the following icons
 							// All hardware icon exist (By hardware)
 							// All non-Clone icon exist (By game)
 							// When the Clone icon option is turned on, the parent item has an icon and Clone does not (By game, They do not take up GDI resources)
 							if (hDrvIcon[nBurnDrvActive]) {
-								DrawIconEx(lplvcd->nmcd.hdc, rect.left, rect.top, hDrvIcon[nBurnDrvActive], nIconsSizeXY, nIconsSizeXY, 0, NULL, DI_NORMAL);
+								DrawIconEx(lptvcd->nmcd.hdc, rect.left, rect.top, hDrvIcon[nBurnDrvActive], nIconsSizeXY, nIconsSizeXY, 0, NULL, DI_NORMAL);
 							}
 
 							if (!hDrvIcon[nBurnDrvActive]) {
 								// Non-Clone
 								if ((NULL == BurnDrvGetText(DRV_PARENT)) && !(BurnDrvGetFlags() & BDF_CLONE)) {
-									DrawIconEx(lplvcd->nmcd.hdc, rect.left, rect.top, hDrvIconMiss, nIconsSizeXY, nIconsSizeXY, 0, NULL, DI_NORMAL);
+									DrawIconEx(lptvcd->nmcd.hdc, rect.left, rect.top, hDrvIconMiss, nIconsSizeXY, nIconsSizeXY, 0, NULL, DI_NORMAL);
 								}
 								// Clone
 								else {
 									if (!bIconsOnlyParents) {
 										// By hardware
 										if (bIconsByHardwares) {
-											DrawIconEx(lplvcd->nmcd.hdc, rect.left, rect.top, hDrvIconMiss, nIconsSizeXY, nIconsSizeXY, 0, NULL, DI_NORMAL);
+											DrawIconEx(lptvcd->nmcd.hdc, rect.left, rect.top, hDrvIconMiss, nIconsSizeXY, nIconsSizeXY, 0, NULL, DI_NORMAL);
 										}
 										// By game
 										else {
@@ -2872,13 +2925,12 @@ static INT_PTR CALLBACK DialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lP
 											// Exclude all hardware icons
 											// All the Clones where you can find icons
 											// Creates a temporary HICON object, which is destroyed immediately upon completion of the redraw.
-											HICON hTempIcon = (HICON)LoadImage(NULL, szIcon, IMAGE_ICON, nIconsSizeXY, nIconsSizeXY, LR_LOADFROMFILE | LR_SHARED);
+											HICON hTempIcon = (HICON)LoadImage(NULL, szIcon, IMAGE_ICON, nIconsSizeXY, nIconsSizeXY, LR_LOADFROMFILE);
+											HICON hGameIcon = (NULL != hTempIcon) ? hTempIcon : hDrvIconMiss;
+											DrawIconEx(lptvcd->nmcd.hdc, rect.left, rect.top, hGameIcon, nIconsSizeXY, nIconsSizeXY, 0, NULL, DI_NORMAL);
+
 											if (NULL != hTempIcon) {	// Clone icon exist (By game)
-												DrawIconEx(lplvcd->nmcd.hdc, rect.left, rect.top, hTempIcon, nIconsSizeXY, nIconsSizeXY, 0, NULL, DI_NORMAL);
 												DestroyIcon(hTempIcon); hTempIcon = NULL;
-											}
-											else {
-												DrawIconEx(lplvcd->nmcd.hdc, rect.left, rect.top, hDrvIconMiss, nIconsSizeXY, nIconsSizeXY, 0, NULL, DI_NORMAL);
 											}
 										}
 									}
@@ -2890,9 +2942,9 @@ static INT_PTR CALLBACK DialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lP
 						_tcsncpy(szText, MangleGamename(BurnDrvGetText(nGetTextFlags | DRV_FULLNAME), false), 1024);
 						szText[1023] = _T('\0');
 
-						GetTextExtentPoint32(lplvcd->nmcd.hdc, szText, _tcslen(szText), &size);
+						GetTextExtentPoint32(lptvcd->nmcd.hdc, szText, _tcslen(szText), &size);
 
-						DrawText(lplvcd->nmcd.hdc, szText, -1, &rect, DT_NOPREFIX | DT_SINGLELINE | DT_LEFT | DT_VCENTER);
+						DrawText(lptvcd->nmcd.hdc, szText, -1, &rect, DT_NOPREFIX | DT_SINGLELINE | DT_LEFT | DT_VCENTER);
 
 						// Display extra info if needed
 						szText[0] = _T('\0');
@@ -2907,17 +2959,15 @@ static INT_PTR CALLBACK DialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lP
 						if (szText[0]) {
 							szText[255] = _T('\0');
 
-							unsigned int r = ((lplvcd->clrText >> 16 & 255) * 2 + (lplvcd->clrTextBk >> 16 & 255)) / 3;
-							unsigned int g = ((lplvcd->clrText >>  8 & 255) * 2 + (lplvcd->clrTextBk >>  8 & 255)) / 3;
-							unsigned int b = ((lplvcd->clrText >>  0 & 255) * 2 + (lplvcd->clrTextBk >>  0 & 255)) / 3;
+							unsigned int r = ((lptvcd->clrText >> 16 & 255) * 2 + (lptvcd->clrTextBk >> 16 & 255)) / 3;
+							unsigned int g = ((lptvcd->clrText >>  8 & 255) * 2 + (lptvcd->clrTextBk >>  8 & 255)) / 3;
+							unsigned int b = ((lptvcd->clrText >>  0 & 255) * 2 + (lptvcd->clrTextBk >>  0 & 255)) / 3;
 
 							rect.left += size.cx;
-							SetTextColor(lplvcd->nmcd.hdc, (r << 16) | (g <<  8) | (b <<  0));
-							DrawText(lplvcd->nmcd.hdc, szText, -1, &rect, DT_NOPREFIX | DT_SINGLELINE | DT_LEFT | DT_VCENTER);
+							SetTextColor(lptvcd->nmcd.hdc, (r << 16) | (g <<  8) | (b <<  0));
+							DrawText(lptvcd->nmcd.hdc, szText, -1, &rect, DT_NOPREFIX | DT_SINGLELINE | DT_LEFT | DT_VCENTER);
 						}
 					}
-
-					DeleteObject(hBackBrush);
 
 					SetWindowLongPtr(hSelDlg, DWLP_MSGRESULT, CDRF_SKIPDEFAULT);
 					return 1;
@@ -2956,16 +3006,16 @@ static INT_PTR CALLBACK DialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lP
 			if (GetIpsNumPatches()) {
 				if (!nShowMVSCartsOnly) {
 					EnableWindow(GetDlgItem(hDlg, IDC_SEL_IPSMANAGER), TRUE);
-					LoadIpsActivePatches();
+					INT32 nActivePatches = LoadIpsActivePatches();
 
 					// Whether IDC_SEL_APPLYIPS is enabled must be subordinate to IDC_SEL_IPSMANAGER
 					// to verify that xxx.dat is not removed after saving config.
 					// Reduce useless array lookups.
-					EnableWindow(GetDlgItem(hDlg, IDC_SEL_APPLYIPS), GetIpsNumActivePatches());
+					EnableWindow(GetDlgItem(hDlg, IDC_SEL_APPLYIPS), nActivePatches);
 				}
 			} else {
 				EnableWindow(GetDlgItem(hDlg, IDC_SEL_IPSMANAGER), FALSE);
-				EnableWindow(GetDlgItem(hDlg, IDC_SEL_APPLYIPS), FALSE);	// xxx.dat path not found, must be disabled.
+				EnableWindow(GetDlgItem(hDlg, IDC_SEL_APPLYIPS),   FALSE);	// xxx.dat path not found, must be disabled.
 			}
 
 			// Get the text from the drivers via BurnDrvGetText()
@@ -3161,9 +3211,6 @@ int SelDialog(int nMVSCartsOnly, HWND hParentWND)
 
 	hParent = hParentWND;
 	nShowMVSCartsOnly = nMVSCartsOnly;
-/*
-	InitCommonControls();	// Already available in WM_INITDIALOG.
-*/
 	RomDataStateBackup();
 
 	FBADialogBox(hAppInst, MAKEINTRESOURCE(IDD_SELNEW), hParent, (DLGPROC)DialogProc);
