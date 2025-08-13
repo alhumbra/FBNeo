@@ -4016,7 +4016,7 @@ struct BurnDriver BurnDrvNemesisp = {
 	"Nemesis (North America Prototype Version) GRADIUS ORIGINS Hack\0", NULL, "Konami", "GX400",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK  | BDF_HISCORE_SUPPORTED, 2, HARDWARE_KONAMI_68K_Z80, GBF_HORSHOOT, 0,
-	NULL, nemesisRompInfo, nemesispRomName, NULL, NULL, NULL, NULL, NemesisInputInfo, NemesisDIPInfo,
+	NULL, nemesispRomInfo, nemesispRomName, NULL, NULL, NULL, NULL, NemesisInputInfo, NemesisDIPInfo,
 	NemesisInit, DrvExit, NemesisFrame, DrvDraw, DrvScan, &DrvRecalc, 0x800,
 	256, 224, 4, 3
 };
@@ -4635,5 +4635,6 @@ struct BurnDriver BurnDrvTwinbeeb = {
 	TwinbeebInit, DrvExit, Gx400Frame, DrvDraw, DrvScan, &DrvRecalc, 0x800,
 	224, 256, 3, 4
 };
+
 
 
