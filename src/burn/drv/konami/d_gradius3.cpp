@@ -1215,8 +1215,8 @@ struct BurnDriver BurnDrvGrdius3a = {
 // Gradius III (Asia) GRADIUS ORIGINS Hack
 
 static struct BurnRomInfo grdius3aoRomDesc[] = {
-	{ "945_13o.f15",		0x20000, 0x066da640, 1 | BRF_PRG | BRF_ESS }, //  0 68k #0 Code
-	{ "945_12o.e15",		0x20000, 0x58daefba, 1 | BRF_PRG | BRF_ESS }, //  1
+	{ "945_13o.f15",		0x20000, 0x58daefba, 1 | BRF_PRG | BRF_ESS }, //  0 68k #0 Code
+	{ "945_12o.e15",		0x20000, 0x066da640, 1 | BRF_PRG | BRF_ESS }, //  1
 
 	{ "945_m09.r17",	0x20000, 0xb4a6df25, 2 | BRF_PRG | BRF_ESS }, //  2 68k #1 Code
 	{ "945_m08.n17",	0x20000, 0x74e981d2, 2 | BRF_PRG | BRF_ESS }, //  3
@@ -1259,3 +1259,4 @@ struct BurnDriver BurnDrvGrdius3ao = {
 	DrvInit, DrvExit, DrvFrame, DrvDraw, DrvScan, &DrvRecalc, 0x800,
 	320, 224, 4, 3
 };
+
