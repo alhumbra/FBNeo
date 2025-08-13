@@ -3990,6 +3990,36 @@ struct BurnDriver BurnDrvNemesis = {
 	256, 224, 4, 3
 };
 
+// Nemesis (North America Prototype Version) GRADIUS ORIGINS Hack
+
+static struct BurnRomInfo nemesispRomDesc[] = {
+	{ "456-p01.12a",	0x08000, 0x08658e98, 1 | BRF_PRG | BRF_ESS }, //  0 m68000 Code
+	{ "456-p05.12c",	0x08000, 0xfc1fb312, 1 | BRF_PRG | BRF_ESS }, //  1
+	{ "456-p02.13a",	0x08000, 0xcce0d72e, 1 | BRF_PRG | BRF_ESS }, //  2
+	{ "456-p06.13c",	0x08000, 0x68a66c94, 1 | BRF_PRG | BRF_ESS }, //  3
+	{ "456-p03.14a",	0x08000, 0x8cefb25f, 1 | BRF_PRG | BRF_ESS }, //  4
+	{ "456-p07.14c",	0x08000, 0xd50b82cb, 1 | BRF_PRG | BRF_ESS }, //  5
+	{ "456-p04.15a",	0x08000, 0x112f4a28, 1 | BRF_PRG | BRF_ESS }, //  6
+	{ "456-p08.15c",	0x08000, 0x29481497, 1 | BRF_PRG | BRF_ESS }, //  7
+
+	{ "456-p09.9c",		0x04000, 0x26bf9636, 2 | BRF_PRG | BRF_ESS }, //  8 Z80 Code
+
+	{ "400-a01.fse",	0x00100, 0x5827b1e8, 3 | BRF_SND },           //  9 K005289 Samples
+	{ "400-a02.fse",	0x00100, 0x2f44f970, 3 | BRF_SND },           // 10
+};
+
+STD_ROM_PICK(nemesisp)
+STD_ROM_FN(nemesisp)
+
+struct BurnDriver BurnDrvNemesis = {
+	"nemesisp", NULL, NULL, NULL, "1985",
+	"Nemesis (North America Prototype Version) GRADIUS ORIGINS Hack\0", NULL, "Konami", "GX400",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK  | BDF_HISCORE_SUPPORTED, 2, HARDWARE_KONAMI_68K_Z80, GBF_HORSHOOT, 0,
+	NULL, nemesisRomInfo, nemesisRomName, NULL, NULL, NULL, NULL, NemesisInputInfo, NemesisDIPInfo,
+	NemesisInit, DrvExit, NemesisFrame, DrvDraw, DrvScan, &DrvRecalc, 0x800,
+	256, 224, 4, 3
+};
 
 // Nemesis (World?, ROM version)
 
