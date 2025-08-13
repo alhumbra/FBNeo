@@ -4011,7 +4011,7 @@ static struct BurnRomInfo nemesispRomDesc[] = {
 STD_ROM_PICK(nemesisp)
 STD_ROM_FN(nemesisp)
 
-struct BurnDriver BurnDrvNemesis = {
+struct BurnDriver BurnDrvNemesisp = {
 	"nemesisp", NULL, NULL, NULL, "1985",
 	"Nemesis (North America Prototype Version) GRADIUS ORIGINS Hack\0", NULL, "Konami", "GX400",
 	NULL, NULL, NULL, NULL,
@@ -4635,4 +4635,5 @@ struct BurnDriver BurnDrvTwinbeeb = {
 	TwinbeebInit, DrvExit, Gx400Frame, DrvDraw, DrvScan, &DrvRecalc, 0x800,
 	224, 256, 3, 4
 };
+
 
