@@ -1258,5 +1258,4 @@ struct BurnDriver BurnDrvGrdius3ao = {
 	NULL, grdius3aoRomInfo, grdius3aoRomName, NULL, NULL, NULL, NULL, Gradius3InputInfo, Gradius3DIPInfo,
 	DrvInit, DrvExit, DrvFrame, DrvDraw, DrvScan, &DrvRecalc, 0x800,
 	320, 224, 4, 3
-
-
+};
