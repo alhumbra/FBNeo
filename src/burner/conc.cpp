@@ -62,6 +62,21 @@ static void CheatError(TCHAR* pszFilename, INT32 nLineNumber, CheatInfo* pCheat,
 #endif
 }
 
+static TCHAR* getFilenameFromPath(TCHAR* path) {
+	if (!path) {
+		return NULL;
+	}
+
+    TCHAR* filename = path;
+
+    for (TCHAR* p = path; *p != '\0'; p++) {
+        if (*p == '/' || *p == '\\') {
+            filename = p + 1;
+        }
+    }
+    return filename;
+}
+
 static void CheatLinkNewNode(TCHAR *szDerp)
 {
 	// Link new node into the list
@@ -104,6 +119,7 @@ static INT32 ConfigParseFile(TCHAR* pszFilename)
 	if (NULL == pszReadMode) pszReadMode = _T("rt");
 
 	FILE* h = _tfopen(pszFilename, pszReadMode);
+	TCHAR* pszFileHeading = getFilenameFromPath(pszFilename);
 	if (h == NULL) {
 		if ((BurnDrvGetFlags() & BDF_CLONE) && BurnDrvGetText(DRV_PARENT)) {
 			TCHAR szAlternative[MAX_PATH] = { 0 };
@@ -114,6 +130,7 @@ static INT32 ConfigParseFile(TCHAR* pszFilename)
 
 			if (NULL == (h = _tfopen(szAlternative, pszReadMode)))
 				return 1;
+			pszFileHeading = getFilenameFromPath(szAlternative);
 		} else {
 			return 1;	// Parent driver
 		}
@@ -190,15 +207,23 @@ static INT32 ConfigParseFile(TCHAR* pszFilename)
 #endif
 			nInside = *s;
 
+#ifndef __LIBRETRO__
 			if (bFirst) {
-				CheatLinkNewNode(_T("-- .ini cheat file --"));
+				TCHAR szHeading[256];
+				_stprintf(szHeading, _T("[ Cheats \"%s\" ]"), pszFileHeading);
+				CheatLinkNewNode(szHeading);
 				bFirst = false;
 			}
+#endif
 
 			CheatLinkNewNode(szQuote);
 
 			continue;
 		}
+
+#ifdef __LIBRETRO__
+		_tcsncpy (pCurrentCheat->szCheatFilename, pszFileHeading, QUOTE_MAX);
+#endif
 
 		if ((t = LabelCheck(s, _T("type"))) != 0) {					// Cheat type
 			if (nInside == INSIDE_NOTHING || pCurrentCheat == NULL) {
@@ -362,6 +387,7 @@ static INT32 ConfigParseNebulaFile(TCHAR* pszFilename)
 	if (NULL == pszReadMode) pszReadMode = _T("rt");
 
 	FILE *fp = _tfopen(pszFilename, pszReadMode);
+	TCHAR* pszFileHeading = getFilenameFromPath(pszFilename);
 	if (fp == NULL) {
 		if ((BurnDrvGetFlags() & BDF_CLONE) && BurnDrvGetText(DRV_PARENT)) {
 			TCHAR szAlternative[MAX_PATH] = { 0 };
@@ -372,6 +398,7 @@ static INT32 ConfigParseNebulaFile(TCHAR* pszFilename)
 
 			if (NULL == (fp = _tfopen(szAlternative, pszReadMode)))
 				return 1;
+			pszFileHeading = getFilenameFromPath(szAlternative);
 		} else {
 			return 1;	// Parent driver
 		}
@@ -396,10 +423,14 @@ static INT32 ConfigParseNebulaFile(TCHAR* pszFilename)
 		{
 			n = 0;
 
+#ifndef __LIBRETRO__
 			if (bFirst) {
-				CheatLinkNewNode(_T("-- Nebula .dat cheat file --"));
+				TCHAR szHeading[256];
+				_stprintf(szHeading, _T("[ Cheats \"%s\" (Nebula) ]"), pszFileHeading);
+				CheatLinkNewNode(szHeading);
 				bFirst = false;
 			}
+#endif
 
 			CheatLinkNewNode(szLine + 5);
 
@@ -407,6 +438,10 @@ static INT32 ConfigParseNebulaFile(TCHAR* pszFilename)
 
 			continue;
 		}
+
+#ifdef __LIBRETRO__
+		_tcsncpy (pCurrentCheat->szCheatFilename, pszFileHeading, QUOTE_MAX);
+#endif
 
 		if (!_tcsncmp (_T("Default="), szLine, 8) && n >= 0)
 		{
@@ -486,7 +521,7 @@ static INT32 ConfigParseNebulaFile(TCHAR* pszFilename)
 
 #define IS_MIDWAY ((BurnDrvGetHardwareCode() & HARDWARE_PREFIX_MIDWAY) == HARDWARE_PREFIX_MIDWAY)
 
-static INT32 ConfigParseMAMEFile_internal(FILE *fz, const TCHAR *name)
+static INT32 ConfigParseMAMEFile_internal(FILE *fz, const TCHAR *pszFileHeading, const TCHAR *name)
 {
 #define AddressInfo()	\
 	INT32 k = (flags >> 20) & 3;	\
@@ -645,12 +680,20 @@ static INT32 ConfigParseMAMEFile_internal(FILE *fz, const TCHAR *name)
 			menu = 0;
 			nCurrentAddress = 0;
 
+#ifndef __LIBRETRO__
 			if (bFirst) {
-				CheatLinkNewNode(_T("-- .dat cheat file --"));
+				TCHAR szHeading[256];
+				_stprintf(szHeading, _T("[ Cheats \"%s\" ]"), pszFileHeading);
+				CheatLinkNewNode(szHeading);
 				bFirst = false;
 			}
+#endif
 
 			CheatLinkNewNode(tmp);
+
+#ifdef __LIBRETRO__
+			_tcsncpy (pCurrentCheat->szCheatFilename, pszFileHeading, QUOTE_MAX);
+#endif
 
 #if defined(BUILD_WIN32)
 			if (lstrlen(tmp) <= 0 || flags == 0x60000000) {
@@ -766,30 +809,37 @@ static INT32 ConfigParseMAMEFile_internal(FILE *fz, const TCHAR *name)
 	return 0;
 }
 
-static INT32 ConfigParseMAMEFile()
+static INT32 ConfigParseMAMEFile(int is_wayder)
 {
 	TCHAR szFileName[MAX_PATH] = _T("");
-	if (HW_NES) {
-		_stprintf(szFileName, _T("%scheatnes.dat"), szAppCheatsPath);
-	} else if (HW_SNES) {
-		_stprintf(szFileName, _T("%scheatsnes.dat"), szAppCheatsPath);
+
+	if (is_wayder) {
+		if (HW_NES || HW_SNES) return 1;
+		_stprintf(szFileName, _T("%swayder_cheat.dat"), szAppCheatsPath);
 	} else {
-		_stprintf(szFileName, _T("%scheat.dat"), szAppCheatsPath);
+		if (HW_NES) {
+			_stprintf(szFileName, _T("%scheatnes.dat"), szAppCheatsPath);
+		} else if (HW_SNES) {
+			_stprintf(szFileName, _T("%scheatsnes.dat"), szAppCheatsPath);
+		} else {
+			_stprintf(szFileName, _T("%scheat.dat"), szAppCheatsPath);
+		}
 	}
 
 	TCHAR* pszReadMode = AdaptiveEncodingReads(szFileName);
 	if (NULL == pszReadMode) pszReadMode = _T("rt");
 
 	FILE *fz = _tfopen(szFileName, pszReadMode);
+	TCHAR* pszFileHeading = getFilenameFromPath(szFileName);
 
 	INT32 ret = 1;
 
 	if (fz) {
-		ret = ConfigParseMAMEFile_internal(fz, BurnDrvGetText(DRV_NAME));
+		ret = ConfigParseMAMEFile_internal(fz, pszFileHeading, BurnDrvGetText(DRV_NAME));
 		// let's try using parent entry as a fallback if no cheat was found for this romset
 		if (ret && (BurnDrvGetFlags() & BDF_CLONE) && BurnDrvGetText(DRV_PARENT)) {
 			fseek(fz, 0, SEEK_SET);
-			ret = ConfigParseMAMEFile_internal(fz, BurnDrvGetText(DRV_PARENT));
+			ret = ConfigParseMAMEFile_internal(fz, pszFileHeading, BurnDrvGetText(DRV_PARENT));
 		}
 
 		fclose(fz);
@@ -892,6 +942,7 @@ static INT32 ConfigParseVCT(TCHAR* pszFilename)
 	if (NULL == pszReadMode) pszReadMode = _T("rt");
 
 	FILE* h = _tfopen(pszFilename, pszReadMode);
+	TCHAR* pszFileHeading = getFilenameFromPath(pszFilename);
 	if (h == NULL) {
 		if ((BurnDrvGetFlags() & BDF_CLONE) && BurnDrvGetText(DRV_PARENT)) {
 			TCHAR szAlternative[MAX_PATH] = { 0 };
@@ -902,6 +953,7 @@ static INT32 ConfigParseVCT(TCHAR* pszFilename)
 
 			if (NULL == (h = _tfopen(szAlternative, pszReadMode)))
 				return 1;
+			pszFileHeading = getFilenameFromPath(szAlternative);
 		} else {
 			return 1;	// Parent driver
 		}
@@ -959,16 +1011,24 @@ static INT32 ConfigParseVCT(TCHAR* pszFilename)
 
 			//bprintf(0, _T(".vct: addr[%x] count[%x] bytes[%x]\n"), fAddr, fCount, fBytes);
 
+#ifndef __LIBRETRO__
 			if (bFirst) {
-				CheatLinkNewNode(_T("-- .vct cheat file --"));
+				TCHAR szHeading[256];
+				_stprintf(szHeading, _T("[ Cheats \"%s\" ]"), pszFileHeading);
+				CheatLinkNewNode(szHeading);
 				bFirst = false;
 			}
+#endif
 
 			// -- add to cheat engine --
 			n = 0;
 			nCurrentAddress = 0;
 
 			CheatLinkNewNode(tmp);
+
+#ifdef __LIBRETRO__
+			_tcsncpy (pCurrentCheat->szCheatFilename, pszFileHeading, QUOTE_MAX);
+#endif
 
 			OptionName(_T("Disabled"));
 			n++;
@@ -1009,8 +1069,9 @@ INT32 ConfigCheatLoad()
 		ConfigParseVCT(szFilename);
 	} // keep loading & adding stuff even if .vct file loads.
 
-	// cheat.dat, cheatnes.dat, cheatsnes.dat
-	ConfigParseMAMEFile();
+	// cheat.dat, cheatnes.dat, cheatsnes.dat, wayder_cheat.dat
+	ConfigParseMAMEFile(0 /* cheat.dat, cheatnes.dat, cheatsnes.dat */);
+	ConfigParseMAMEFile(1 /* wayder */);
 
 	// ini-style file
 	_stprintf(szFilename, _T("%s%s.ini"), szAppCheatsPath, BurnDrvGetText(DRV_NAME));
