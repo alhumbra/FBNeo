@@ -437,7 +437,8 @@ INT32 BurnDrvGetHDDInfo(struct BurnHDDInfo *pri, UINT32 i);
 INT32 BurnDrvGetHDDName(char** pszName, UINT32 i, INT32 nAka);
 char* BurnDrvGetSourcefile();
 
-void Reinitialise();
+void Reinitialise(); // re-inits everything, including UI window
+void ReinitialiseVideo(); // re-init's video w/ new resolution/aspect ratio (see drv/megadrive.cpp)
 
 // ---------------------------------------------------------------------------
 // IPS Control
@@ -653,9 +654,11 @@ int BurnComputeSHA1(const UINT8 *buffer, int buffer_size, char *hash_str);
 #define HARDWARE_SMS_MAPPER_KOREA16K 					(0x06)
 #define HARDWARE_SMS_MAPPER_4PAK     					(0x07)
 #define HARDWARE_SMS_MAPPER_XIN1     					(0x08)
+#define HARDWARE_SMS_MAPPER_WONDERKID					(0x09)
 #define HARDWARE_SMS_MAPPER_NONE     					(0x0F)
 
 #define HARDWARE_SMS_CONTROL_PADDLE						(0x00010)
+#define HARDWARE_SMS_CONTROL_PHASER						(0x00020)
 
 #define HARDWARE_SMS_NO_CART_HEADER						(0x01000)
 #define HARDWARE_SMS_GG_SMS_MODE						(0x02000)
@@ -729,17 +732,16 @@ int BurnComputeSHA1(const UINT8 *buffer, int buffer_size, char *hash_str);
 #define HARDWARE_SEGA_MEGADRIVE_PCB_POKEMON2			(41)
 #define HARDWARE_SEGA_MEGADRIVE_PCB_MULAN				(42)
 #define HARDWARE_SEGA_MEGADRIVE_PCB_16ZHANG             (43)
-#define HARDWARE_SEGA_MEGADRIVE_PCB_CHAOJIMJ            (44)
-#define HARDWARE_SEGA_MEGADRIVE_TEAMPLAYER              (0x40)
-#define HARDWARE_SEGA_MEGADRIVE_TEAMPLAYER_PORT2        (0x80)
-#define HARDWARE_SEGA_MEGADRIVE_FOURWAYPLAY             (0xc0)
+#define HARDWARE_SEGA_MEGADRIVE_PCB_CHAOJIMJ            (44) // we can have 64 (0-63) of these
 
-#define HARDWARE_SEGA_MEGADRIVE_SRAM_00400				(0x0100)
-#define HARDWARE_SEGA_MEGADRIVE_SRAM_00800				(0x0200)
-#define HARDWARE_SEGA_MEGADRIVE_SRAM_01000				(0x0400)
-#define HARDWARE_SEGA_MEGADRIVE_SRAM_04000				(0x0800)
-#define HARDWARE_SEGA_MEGADRIVE_SRAM_10000				(0x1000)
-#define HARDWARE_SEGA_MEGADRIVE_FRAM_00400				(0x2000)
+#define HARDWARE_SEGA_MEGADRIVE_LIGHTGUN_MENACER        (0x0100)
+#define HARDWARE_SEGA_MEGADRIVE_LIGHTGUN_JUSTIFIER      (0x0200)
+#define HARDWARE_SEGA_MEGADRIVE_TEAMPLAYER              (0x0400)
+#define HARDWARE_SEGA_MEGADRIVE_TEAMPLAYER_PORT2        (0x0800)
+#define HARDWARE_SEGA_MEGADRIVE_FOURWAYPLAY             (0x0c00)
+
+#define HARDWARE_SEGA_MEGADRIVE_SRAM_04000				(0x1000)
+#define HARDWARE_SEGA_MEGADRIVE_SRAM_10000				(0x2000)
 
 #define HARDWARE_PSIKYO									(HARDWARE_PREFIX_PSIKYO)
 
