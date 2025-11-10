@@ -9140,7 +9140,7 @@ struct BurnDriver BurnDrvpce_bughunt = {
 // Daimakaimura - Improvement Hack (Hack, SGX)
 // https://romhackplaza.org/romhacks/daimakaimura-improvement-hack-pc-engine-supergrafx/
 static struct BurnRomInfo sgx_daimakaiiRomDesc[] = {
-	{ "Daimakaimura Improvement Hack (2024)(Upsilandre).pce", 0x100000, 0x460d8892, BRF_PRG | BRF_ESS },
+	{ "Daimakaimura Improvement Hack (2024)(Upsilandre).pce", 0x100000, 0x86c295a0, BRF_PRG | BRF_ESS },
 };
 
 STD_ROM_PICK(sgx_daimakaii)
@@ -9228,6 +9228,25 @@ struct BurnDriver BurnDrvpce_huzero = {
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_HOMEBREW, 1, HARDWARE_PCENGINE_PCENGINE, GBF_RACING, 0,
 	PceGetZipName, pce_huzeroRomInfo, pce_huzeroRomName, NULL, NULL, NULL, NULL, pceInputInfo, pceDIPInfo,
+	PCEInit, PCEExit, PCEFrame, PCEDraw, PCEScan,
+	&PCEPaletteRecalc, 0x400, 1024, 240, 4, 3
+};
+
+// Jurl (HB, v0.9b)
+
+static struct BurnRomInfo pce_jurlRomDesc[] = {
+	{ "Jurl v0.9b (2024)(Tonsomo Entertainment).pce", 0x040000, 0xc28d92a1, BRF_PRG | BRF_ESS },
+};
+
+STD_ROM_PICK(pce_jurl)
+STD_ROM_FN(pce_jurl)
+
+struct BurnDriver BurnDrvpce_jurl = {
+	"pce_jurl", NULL, NULL, NULL, "2024",
+	"Jurl (HB, v0.9b)\0", NULL, "Tonsomo Entertainment", "PC Engine",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_HOMEBREW, 1, HARDWARE_PCENGINE_PCENGINE, GBF_ACTION, 0,
+	PceGetZipName, pce_jurlRomInfo, pce_jurlRomName, NULL, NULL, NULL, NULL, pceInputInfo, pceDIPInfo,
 	PCEInit, PCEExit, PCEFrame, PCEDraw, PCEScan,
 	&PCEPaletteRecalc, 0x400, 1024, 240, 4, 3
 };

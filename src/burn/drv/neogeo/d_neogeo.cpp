@@ -16967,6 +16967,42 @@ struct BurnDriver BurnDrvKarnovre = {
 };
 
 
+// Magician Lord - AGAIN CHANGES FROM HELL (Hack, v1.0.0)
+// https://github.com/Boomchil/maglord-acfh/
+
+static struct BurnRomInfo maglordacfhRomDesc[] = {
+	{ "005-p1acfh.p1",	0x080000, 0x9486bcf4, 1 | BRF_ESS | BRF_PRG }, //  0 68K code 		/ MB834200
+
+	{ "005-s1acfh.s1",	0x020000, 0x0e1839b2, 2 | BRF_GRA },           //  1 Text layer tiles / MB831000
+
+	{ "005-c1.c1",		0x080000, 0x806aee34, 3 | BRF_GRA },           //  2 Sprite data 		/ MB834200
+	{ "005-c2.c2",		0x080000, 0x34aa9a86, 3 | BRF_GRA },           //  3 					/ MB834200
+	{ "005-c3.c3",		0x080000, 0xc4c2b926, 3 | BRF_GRA },           //  4 					/ MB834200
+	{ "005-c4.c4",		0x080000, 0x9c46dcf4, 3 | BRF_GRA },           //  5 					/ MB834200
+	{ "005-c5.c5",		0x080000, 0x69086dec, 3 | BRF_GRA },           //  6 					/ MB834200
+	{ "005-c6.c6",		0x080000, 0xab7ac142, 3 | BRF_GRA },           //  7 					/ MB834200
+
+	{ "005-m1.m1",		0x040000, 0x26259f0f, 4 | BRF_ESS | BRF_PRG }, //  8 Z80 code 		/ MB832000
+
+	{ "005-v11.v11",	0x080000, 0xcc0455fd, 5 | BRF_SND },           //  9 Sound data 		/ MB834000
+	{ "005-v21.v21",	0x080000, 0xf94ab5b7, 6 | BRF_SND },           // 10 					/ MB834000
+	{ "005-v22.v22",	0x080000, 0x232cfd04, 6 | BRF_SND },           // 11 					/ MB834000
+};
+
+STDROMPICKEXT(maglordacfh, maglordacfh, neogeo)
+STD_ROM_FN(maglordacfh)
+
+struct BurnDriver BurnDrvMaglordacfh = {
+	"maglordacfh", "maglord", "neogeo", NULL, "2025",
+	"Magician Lord - AGAIN CHANGES FROM HELL (Hack, v1.0.0)\0", NULL, "Boomchil", "Neo Geo MVS",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK, 2, HARDWARE_PREFIX_CARTRIDGE | HARDWARE_SNK_NEOGEO, GBF_PLATFORM | GBF_RUNGUN, 0,
+	NULL, maglordacfhRomInfo, maglordacfhRomName, NULL, NULL, NULL, NULL, neogeoInputInfo, neogeoDIPInfo,
+	NeoInit, NeoExit, NeoFrame, NeoRender, NeoScan, &NeoRecalcPalette,
+	0x1000,	320, 224, 4, 3
+};
+
+
 // Matrimelee ~ Shin Gouketsuji Ichizoku Toukon (Hack, Enable Hidden Characters V2)
 
 static struct BurnRomInfo matrimbhRomDesc[] = {
@@ -27265,6 +27301,34 @@ struct BurnDriver BurnDrvNeodemo = {
 	0x1000,	304, 224, 4, 3
 };
 
+// Bang Bang Busters 2 (HB, Demo)
+
+static struct BurnRomInfo b2b2RomDesc[] = {
+	{ "b2b2-p1.p1",    	   0x100000, 0x3659f253, 1 | BRF_ESS | BRF_PRG }, //  0 68K code
+
+	{ "b2b2-s1.s1",    	   0x020000, 0xe53ef3d0, 2 | BRF_GRA },           //  1 Text layer tiles
+
+	{ "b2b2-c1.c1",    	   0x800000, 0x739173e2, 3 | BRF_GRA },           //  2 Sprite data
+	{ "b2b2-c2.c2",    	   0x800000, 0x9a439c98, 3 | BRF_GRA },           //  3
+
+	{ "b2b2-m1.m1",    	   0x010000, 0xbff0ad49, 4 | BRF_ESS | BRF_PRG }, //  6 Z80 code
+
+	{ "b2b2-v1.v1",    	   0x400000, 0xf1dda8dd, 5 | BRF_SND },           //  7 Sound data
+
+};
+
+STDROMPICKEXT(b2b2, b2b2, neogeo)
+STD_ROM_FN(b2b2)
+
+struct BurnDriver BurnDrvB2b2 = {
+	"b2b2", NULL, "neogeo", NULL, "2025",
+	"Bang Bang Busters 2 (HB, Demo)\0", NULL, "PixelHeart", "Neo Geo MVS",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_HOMEBREW | BDF_DEMO, 1, HARDWARE_PREFIX_CARTRIDGE | HARDWARE_SNK_NEOGEO, GBF_PLATFORM, 0,
+	NULL, b2b2RomInfo, b2b2RomName, NULL, NULL, NULL, NULL, neogeoInputInfo, neogeoDIPInfo,
+	NeoInit, NeoExit, NeoFrame, NeoRender, NeoScan, &NeoRecalcPalette,
+	0x1000, 304, 224, 4, 3
+};
 
 // Chip n Dale (FMV Demo)
 
@@ -27301,11 +27365,11 @@ struct BurnDriver BurnDrvCndi = {
 };
 
 
-// Double Dragon One (Beta2 Version)
+// Double Dragon One (Beta 3.2 Version)
 // https://ozzyouzo.itch.io/double-dragon
 
 static struct BurnRomInfo doubled1RomDesc[] = {
-	{ "doubled-p1.bin",		0x0100000, 0xe7923280, 1 | BRF_ESS | BRF_PRG }, //  0 68K code
+	{ "doubled-p1.bin",		0x0100000, 0x5991da92, 1 | BRF_ESS | BRF_PRG }, //  0 68K code
 	{ "doubled-p2.bin",		0x0400000, 0x7e5ed6b8, 1 | BRF_ESS | BRF_PRG }, //  1
 
 	{ "doubled-s1.bin",		0x0020000, 0x714afb4b, 2 | BRF_GRA },           //  2 Text layer tiles
@@ -27324,9 +27388,9 @@ STD_ROM_FN(doubled1)
 
 struct BurnDriver BurnDrvDoubled1 = {
 	"doubled1", NULL, "neogeo", NULL, "2025",
-	"Double Dragon One (Beta2 Version)\0", NULL, "OzzyOuzo", "Neo Geo MVS",
+	"Double Dragon One (Beta 3.2 Version)\0", NULL, "OzzyOuzo", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
-	BDF_GAME_WORKING | BDF_HOMEBREW, 1, HARDWARE_SNK_NEOGEO, GBF_SCRFIGHT, 0,
+	BDF_GAME_WORKING | BDF_HOMEBREW, 2, HARDWARE_SNK_NEOGEO, GBF_SCRFIGHT, 0,
 	NULL, doubled1RomInfo, doubled1RomName, NULL, NULL, NULL, NULL, neogeoInputInfo, neogeoDIPInfo,
 	NeoInit, NeoExit, NeoFrame, NeoRender, NeoScan, &NeoRecalcPalette,
 	0x1000,	304, 224, 4, 3
@@ -28649,6 +28713,36 @@ struct BurnDriver BurnDrvFlapchck = {
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_HOMEBREW, 1, HARDWARE_PREFIX_CARTRIDGE | HARDWARE_SNK_NEOGEO, GBF_PLATFORM, 0,
 	NULL, flapchckRomInfo, flapchckRomName, NULL, NULL, NULL, NULL, neogeoInputInfo, neogeoDIPInfo,
+	NeoInit, NeoExit, NeoFrame, NeoRender, NeoScan, &NeoRecalcPalette,
+	0x1000,	304, 224, 4, 3
+};
+
+
+// Jurl (HB, v0.3c)
+// https://tonsomo.itch.io/jurl-neo-geo-edition
+
+static struct BurnRomInfo jurlRomDesc[] = {
+	{ "jurl-p1.p1",		0x080000, 0x601b540e, 1 | BRF_ESS | BRF_PRG }, //  0 68K code
+
+	{ "jurl-s1.s1",		0x020000, 0xd6c058c9, 2 | BRF_GRA },           //  1 Text layer tiles
+
+	{ "jurl-c1.c1",		0x100000, 0x02811fe9, 3 | BRF_GRA },           //  2 Sprite data
+	{ "jurl-c2.c2",		0x100000, 0x953bb9a9, 3 | BRF_GRA },           //  3
+
+	{ "jurl-m1.m1",		0x020000, 0xb758c5d2, 4 | BRF_ESS | BRF_PRG }, //  4 Z80 code
+
+	{ "jurl-v1.v1",		0x400000, 0x16db022e, 5 | BRF_SND },           //  5 Sound data
+};
+
+STDROMPICKEXT(jurl, jurl, neogeo)
+STD_ROM_FN(jurl)
+
+struct BurnDriver BurnDrvjurl = {
+	"jurl", NULL, "neogeo", NULL, "2025",
+	"Jurl (HB, v0.3c)\0", NULL, "Tonsomo Entertainment", "Neo Geo MVS",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_HOMEBREW, 1, HARDWARE_PREFIX_CARTRIDGE | HARDWARE_SNK_NEOGEO, GBF_ACTION, 0,
+	NULL, jurlRomInfo, jurlRomName, NULL, NULL, NULL, NULL, neogeoInputInfo, neogeoDIPInfo,
 	NeoInit, NeoExit, NeoFrame, NeoRender, NeoScan, &NeoRecalcPalette,
 	0x1000,	304, 224, 4, 3
 };

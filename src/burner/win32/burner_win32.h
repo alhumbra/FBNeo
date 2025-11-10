@@ -117,6 +117,7 @@ extern bool bAutoLoadGameList;
 extern bool bQuietLoading;
 extern bool bNoPopups;
 extern bool bShonkyProfileMode;
+extern int nKailleraCheatEnableHack;
 extern bool bDontInitMedia;
 
 extern bool bNoChangeNumLock;
@@ -371,6 +372,7 @@ extern int NeoCDList_Init();
 extern bool bNeoCDListScanSub;
 extern bool bNeoCDListScanOnlyISO;
 extern TCHAR szNeoCDCoverDir[MAX_PATH];
+extern TCHAR szNeoCDPreviewDir[MAX_PATH];
 extern TCHAR szNeoCDGamesDir[MAX_PATH];
 
 HBITMAP ImageToBitmap(HWND hwnd, IMAGE* img);

@@ -54,6 +54,8 @@ bool bDontInitMedia = false; // doesn't init media (screen, input, etc.)
 
 bool bShonkyProfileMode = false;
 
+int nKailleraCheatEnableHack = 0;
+
 bool bNoChangeNumLock = 1;
 static bool bNumlockStatus;
 
@@ -1359,6 +1361,7 @@ static void CreateSupportFolders()
 		{_T("support/ips/")},
 		{_T("support/romdata/")},
 		{_T("support/neocdz/")},
+		{_T("support/neocdzpreviews/")},
 		{_T("support/blend/")},
 		{_T("support/select/")},
 		{_T("support/versus/")},
@@ -1370,9 +1373,11 @@ static void CreateSupportFolders()
 		{_T("support/marquees/")},
 		{_T("support/cpanel/")},
 		{_T("support/cabinets/")},
+		{_T("support/commands/")},
 		{_T("support/pcbs/")},
 		{_T("support/history/")},
 		{_T("support/lua/")},
+		{_T("support/shaders/")},
 		{_T("neocdiso/")},
 		// rom directories
 		{_T("roms/arcade/")},
