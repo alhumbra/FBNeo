@@ -70,12 +70,14 @@ STDINPUTINFO(Aztarac)
 
 static struct BurnDIPInfo AztaracDIPList[] =
 {
-	{0x0a, 0xf0, 0xff, 0xff, NULL},
+	DIP_OFFSET(0x0a)
 	{0x00, 0xff, 0xff, 0x00, NULL},
 
+#ifndef __LIBRETRO__
 	{0   , 0xfe, 0   ,    2, "Hires Mode"	},
 	{0x00, 0x01, 0x01, 0x00, "No"			},
 	{0x00, 0x01, 0x01, 0x01, "Yes"			},
+#endif
 };
 
 STDDIPINFO(Aztarac)
@@ -272,6 +274,9 @@ static INT32 __fastcall aztarac_irq_callback(INT32)
 
 static INT32 res_check()
 {
+#ifdef __LIBRETRO__
+	return 0;
+#endif
 	if (DrvDips[0] & 1) {
 		INT32 Width, Height;
 		BurnDrvGetVisibleSize(&Width, &Height);

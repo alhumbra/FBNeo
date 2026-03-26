@@ -1,6 +1,6 @@
 // FB Neo Sega SG-1000-based arcade driver module
 // Based on MAME driver by Tomasz Slanina
-// Code by iq_132, fixups & bring up-to-date by dink Aug 18, 2014
+// Code by iq_132, fixups & bring up-to-date by dink
 
 #include "tiles_generic.h"
 #include "z80_intf.h"
@@ -4042,7 +4042,7 @@ struct BurnDriver BurnDrvsg1k_antiair = {
 	"sg1k_antiair", NULL, NULL, NULL, "2024",
 	"AntiAir (HB)\0", NULL, "Inufuto", "Sega SG-1000",
 	NULL, NULL, NULL, NULL,
-	BDF_GAME_WORKING | BDF_HOMEBREW, 1, HARDWARE_SEGA_SG1000, GBF_SHOOT, 0,
+	BDF_GAME_WORKING | BDF_HOMEBREW, 1, HARDWARE_SEGA_SG1000, GBF_VERSHOOT, 0,
 	SG1KGetZipName, sg1k_antiairRomInfo, sg1k_antiairRomName, NULL, NULL, NULL, NULL, Sg1000InputInfo, Sg1000DIPInfo,
 	DrvInit, DrvExit, DrvFrame, TMS9928ADraw, DrvScan, NULL, TMS9928A_PALETTE_SIZE,
 	272, 228, 4, 3
@@ -4080,6 +4080,42 @@ struct BurnDriver BurnDrvsg1k_arnodash2 = {
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_HOMEBREW, 1, HARDWARE_SEGA_SG1000, GBF_ACTION, 0,
 	SG1KGetZipName, sg1k_arnodash2RomInfo, sg1k_arnodash2RomName, NULL, NULL, NULL, NULL, Sg1000InputInfo, Sg1000DIPInfo,
+	DrvInit, DrvExit, DrvFrame, TMS9928ADraw, DrvScan, NULL, TMS9928A_PALETTE_SIZE,
+	272, 228, 4, 3
+};
+
+// Astrododge (HB)
+static struct BurnRomInfo sg1k_astrododgeRomDesc[] = {
+	{ "Astrododge (2012)(Revival Studios).sg",	32768, 0xb895942d, BRF_PRG | BRF_ESS },
+};
+
+STD_ROM_PICK(sg1k_astrododge)
+STD_ROM_FN(sg1k_astrododge)
+
+struct BurnDriver BurnDrvsg1k_astrododge = {
+	"sg1k_astrododge", NULL, NULL, NULL, "2012",
+	"Astrododge (HB)\0", NULL, "Revival Studios", "Sega SG-1000",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_HOMEBREW, 2, HARDWARE_SEGA_SG1000, GBF_ACTION, 0,
+	SG1KGetZipName, sg1k_astrododgeRomInfo, sg1k_astrododgeRomName, NULL, NULL, NULL, NULL, Sg1000InputInfo, Sg1000DIPInfo,
+	DrvInit, DrvExit, DrvFrame, TMS9928ADraw, DrvScan, NULL, TMS9928A_PALETTE_SIZE,
+	272, 228, 4, 3
+};
+
+// Awass (HB)
+static struct BurnRomInfo sg1k_awassRomDesc[] = {
+	{ "Awass (2026)(Inufuto).sg",	16384, 0xbbff7ebf, BRF_PRG | BRF_ESS },
+};
+
+STD_ROM_PICK(sg1k_awass)
+STD_ROM_FN(sg1k_awass)
+
+struct BurnDriver BurnDrvsg1k_awass = {
+	"sg1k_awass", NULL, NULL, NULL, "2026",
+	"Awass (HB)\0", NULL, "Inufuto", "Sega SG-1000",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_HOMEBREW, 1, HARDWARE_SEGA_SG1000, GBF_PLATFORM | GBF_PUZZLE, 0,
+	SG1KGetZipName, sg1k_awassRomInfo, sg1k_awassRomName, NULL, NULL, NULL, NULL, Sg1000InputInfo, Sg1000DIPInfo,
 	DrvInit, DrvExit, DrvFrame, TMS9928ADraw, DrvScan, NULL, TMS9928A_PALETTE_SIZE,
 	272, 228, 4, 3
 };
@@ -4228,6 +4264,24 @@ struct BurnDriver BurnDrvsg1k_crosstrex = {
 	272, 228, 4, 3
 };
 
+// Eye Brawls (HB, v1.2)
+static struct BurnRomInfo sg1k_eyebrawlsRomDesc[] = {
+	{ "Eye Brawls v1.2 (2026)(Jess Creations, ArugulaZ).sg",	32768, 0xe2ce44f0, BRF_PRG | BRF_ESS },
+};
+
+STD_ROM_PICK(sg1k_eyebrawls)
+STD_ROM_FN(sg1k_eyebrawls)
+
+struct BurnDriver BurnDrvsg1k_eyebrawls = {
+	"sg1k_eyebrawls", NULL, NULL, NULL, "2026",
+	"Eye Brawls (HB, v1.2)\0", NULL, "Jess Creations - ArugulaZ", "Sega SG-1000",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_HOMEBREW, 1, HARDWARE_SEGA_SG1000, GBF_ACTION | GBF_MAZE, 0,
+	SG1KGetZipName, sg1k_eyebrawlsRomInfo, sg1k_eyebrawlsRomName, NULL, NULL, NULL, NULL, Sg1000InputInfo, Sg1000DIPInfo,
+	DrvInit, DrvExit, DrvFrame, TMS9928ADraw, DrvScan, NULL, TMS9928A_PALETTE_SIZE,
+	272, 228, 4, 3
+};
+
 // Foryster (HB, v00.9)
 static struct BurnRomInfo sg1k_forysterRomDesc[] = {
 	{ "Foryster v00.9 (2022)(siudym).sg",	32768, 0xf8d7fa2c, BRF_PRG | BRF_ESS },
@@ -4258,7 +4312,7 @@ struct BurnDriver BurnDrvsg1k_guntus = {
 	"sg1k_guntus", NULL, NULL, NULL, "2022",
 	"Guntus (HB)\0", NULL, "Inufuto", "Sega SG-1000",
 	NULL, NULL, NULL, NULL,
-	BDF_GAME_WORKING | BDF_HOMEBREW, 1, HARDWARE_SEGA_SG1000, GBF_SHOOT, 0,
+	BDF_GAME_WORKING | BDF_HOMEBREW, 1, HARDWARE_SEGA_SG1000, GBF_VERSHOOT, 0,
 	SG1KGetZipName, sg1k_guntusRomInfo, sg1k_guntusRomName, NULL, NULL, NULL, NULL, Sg1000InputInfo, Sg1000DIPInfo,
 	DrvInit, DrvExit, DrvFrame, TMS9928ADraw, DrvScan, NULL, TMS9928A_PALETTE_SIZE,
 	272, 228, 4, 3
@@ -4278,6 +4332,42 @@ struct BurnDriver BurnDrvsg1k_hopman = {
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_HOMEBREW, 1, HARDWARE_SEGA_SG1000, GBF_PLATFORM, 0,
 	SG1KGetZipName, sg1k_hopmanRomInfo, sg1k_hopmanRomName, NULL, NULL, NULL, NULL, Sg1000InputInfo, Sg1000DIPInfo,
+	DrvInit, DrvExit, DrvFrame, TMS9928ADraw, DrvScan, NULL, TMS9928A_PALETTE_SIZE,
+	272, 228, 4, 3
+};
+
+// Impetus (HB)
+static struct BurnRomInfo sg1k_impetusRomDesc[] = {
+	{ "Impetus (2022)(Inufuto).sg",	16624, 0x42179ce3, BRF_PRG | BRF_ESS },
+};
+
+STD_ROM_PICK(sg1k_impetus)
+STD_ROM_FN(sg1k_impetus)
+
+struct BurnDriver BurnDrvsg1k_impetus = {
+	"sg1k_impetus", NULL, NULL, NULL, "2022",
+	"Impetus (HB)\0", NULL, "Inufuto", "Sega SG-1000",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_HOMEBREW, 1, HARDWARE_SEGA_SG1000, GBF_VERSHOOT, 0,
+	SG1KGetZipName, sg1k_impetusRomInfo, sg1k_impetusRomName, NULL, NULL, NULL, NULL, Sg1000InputInfo, Sg1000DIPInfo,
+	DrvInit, DrvExit, DrvFrame, TMS9928ADraw, DrvScan, NULL, TMS9928A_PALETTE_SIZE,
+	272, 228, 4, 3
+};
+
+// Impetus+ (HB)
+static struct BurnRomInfo sg1k_impetusplusRomDesc[] = {
+	{ "Impetus+ (2025)(Inufuto).sg",	24576, 0x57f3ceec, BRF_PRG | BRF_ESS },
+};
+
+STD_ROM_PICK(sg1k_impetusplus)
+STD_ROM_FN(sg1k_impetusplus)
+
+struct BurnDriver BurnDrvsg1k_impetusplus = {
+	"sg1k_impetusplus", NULL, NULL, NULL, "2025",
+	"Impetus+ (HB)\0", NULL, "Inufuto", "Sega SG-1000",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_HOMEBREW, 1, HARDWARE_SEGA_SG1000, GBF_VERSHOOT, 0,
+	SG1KGetZipName, sg1k_impetusplusRomInfo, sg1k_impetusplusRomName, NULL, NULL, NULL, NULL, Sg1000InputInfo, Sg1000DIPInfo,
 	DrvInit, DrvExit, DrvFrame, TMS9928ADraw, DrvScan, NULL, TMS9928A_PALETTE_SIZE,
 	272, 228, 4, 3
 };
@@ -4459,6 +4549,24 @@ struct BurnDriver BurnDrvsg1k_pitman = {
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_HOMEBREW, 1, HARDWARE_SEGA_SG1000, GBF_PUZZLE, 0,
 	SG1KGetZipName, sg1k_pitmanRomInfo, sg1k_pitmanRomName, NULL, NULL, NULL, NULL, Sg1000InputInfo, Sg1000DIPInfo,
+	DrvInit, DrvExit, DrvFrame, TMS9928ADraw, DrvScan, NULL, TMS9928A_PALETTE_SIZE,
+	272, 228, 4, 3
+};
+
+// RetroPIPE (HB, v0.2)
+static struct BurnRomInfo sg1k_retropipeRomDesc[] = {
+	{ "RetroPIPE v0.2 (2025)(Visrealm).sg",	32768, 0x3885a1f3, BRF_PRG | BRF_ESS },
+};
+
+STD_ROM_PICK(sg1k_retropipe)
+STD_ROM_FN(sg1k_retropipe)
+
+struct BurnDriver BurnDrvsg1k_retropipe = {
+	"sg1k_retropipe", NULL, NULL, NULL, "2025",
+	"RetroPIPE (HB, v0.2)\0", NULL, "Visrealm", "Sega SG-1000",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_HOMEBREW, 1, HARDWARE_SEGA_SG1000, GBF_PUZZLE, 0,
+	SG1KGetZipName, sg1k_retropipeRomInfo, sg1k_retropipeRomName, NULL, NULL, NULL, NULL, Sg1000InputInfo, Sg1000DIPInfo,
 	DrvInit, DrvExit, DrvFrame, TMS9928ADraw, DrvScan, NULL, TMS9928A_PALETTE_SIZE,
 	272, 228, 4, 3
 };

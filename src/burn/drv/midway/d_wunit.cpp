@@ -37,6 +37,7 @@ static struct BurnInputInfo Mk3InputList[] = {
 	{"Tilt",			BIT_DIGITAL,	nWolfUnitJoy3 + 3,	"tilt"},
 	{"Dip A",			BIT_DIPSWITCH,	nWolfUnitDSW + 0,	"dip"},
 	{"Dip B",			BIT_DIPSWITCH,	nWolfUnitDSW + 1,	"dip"},
+	{"Dip C",			BIT_DIPSWITCH,	nWolfUnitDSW + 2,	"dip"},
 };
 
 STDINPUTINFO(Mk3)
@@ -102,6 +103,72 @@ static struct BurnDIPInfo Mk3DIPList[]=
 };
 
 STDDIPINFO(Mk3)
+
+static struct BurnDIPInfo UMk3DIPList[]=
+{
+	{0x1c, 0xff, 0xff, 0x7d, NULL		},
+	{0x1d, 0xff, 0xff, 0xd4, NULL		},
+	{0x1e, 0xff, 0xff, 0x00, NULL		},
+
+	{0   , 0xfe, 0   ,    2, "Test Switch"		},
+	{0x1c, 0x01, 0x01, 0x01, "Off"		},
+	{0x1c, 0x01, 0x01, 0x00, "On"		},
+
+	{0   , 0xfe, 0   ,    2, "Counters"		},
+	{0x1c, 0x01, 0x02, 0x02, "One"		},
+	{0x1c, 0x01, 0x02, 0x00, "Two"		},
+
+	{0   , 0xfe, 0   ,    19, "Coinage"		},
+	{0x1c, 0x01, 0x7c, 0x7c, "USA-1"		},
+	{0x1c, 0x01, 0x7c, 0x3c, "USA-2"		},
+	{0x1c, 0x01, 0x7c, 0x5c, "USA-3"		},
+	{0x1c, 0x01, 0x7c, 0x1c, "USA-4"		},
+	{0x1c, 0x01, 0x7c, 0x6c, "USA-ECA"		},
+	{0x1c, 0x01, 0x7c, 0x0c, "USA-Free Play"		},
+	{0x1c, 0x01, 0x7c, 0x74, "German-1"		},
+	{0x1c, 0x01, 0x7c, 0x34, "German-2"		},
+	{0x1c, 0x01, 0x7c, 0x54, "German-3"		},
+	{0x1c, 0x01, 0x7c, 0x14, "German-4"		},
+	{0x1c, 0x01, 0x7c, 0x64, "German-5"		},
+	{0x1c, 0x01, 0x7c, 0x24, "German-ECA"		},
+	{0x1c, 0x01, 0x7c, 0x04, "German-Free Play"		},
+	{0x1c, 0x01, 0x7c, 0x78, "French-1"		},
+	{0x1c, 0x01, 0x7c, 0x38, "French-2"		},
+	{0x1c, 0x01, 0x7c, 0x58, "French-3"		},
+	{0x1c, 0x01, 0x7c, 0x18, "French-4"		},
+	{0x1c, 0x01, 0x7c, 0x68, "French-ECA"		},
+	{0x1c, 0x01, 0x7c, 0x08, "French-Free Play"		},
+
+	{0   , 0xfe, 0   ,    2, "Coinage Source"		},
+	{0x1c, 0x01, 0x80, 0x80, "Dipswitch"		},
+	{0x1c, 0x01, 0x80, 0x00, "CMOS"		},
+
+	{0   , 0xfe, 0   ,    2, "Powerup Test"		},
+	{0x1d, 0x01, 0x02, 0x00, "Off"		},
+	{0x1d, 0x01, 0x02, 0x02, "On"		},
+
+	{0   , 0xfe, 0   ,    2, "Bill Validator"		},
+	{0x1d, 0x01, 0x04, 0x04, "Off"		},
+	{0x1d, 0x01, 0x04, 0x00, "On"		},
+
+	{0   , 0xfe, 0   ,    2, "Attract Sound"		},
+	{0x1d, 0x01, 0x10, 0x00, "Off"		},
+	{0x1d, 0x01, 0x10, 0x10, "On"		},
+
+	{0   , 0xfe, 0   ,    2, "Blood"		},
+	{0x1d, 0x01, 0x40, 0x00, "Off"		},
+	{0x1d, 0x01, 0x40, 0x40, "On"		},
+
+	{0   , 0xfe, 0   ,    2, "Violence"		},
+	{0x1d, 0x01, 0x80, 0x00, "Off"		},
+	{0x1d, 0x01, 0x80, 0x80, "On"		},
+
+	{0   , 0xfe, 0   ,    2, "Scorpion voice bugfix"	},
+	{0x1e, 0x01, 0x01, 0x00, "On"		},
+	{0x1e, 0x01, 0x01, 0x01, "Off"		},
+};
+
+STDDIPINFO(UMk3)
 
 static struct BurnInputInfo OpeniceInputList[] = {
 	{"P1 Coin",		    BIT_DIGITAL,	nWolfUnitJoy3 + 0,	"p1 coin"},
@@ -747,8 +814,8 @@ struct BurnDriver BurnDrvUmk3 = {
 	"Ultimate Mortal Kombat 3 (rev 1.2)\0", NULL, "Midway", "MIDWAY Wolf-Unit",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING, 2, HARDWARE_MIDWAY_WUNIT, GBF_VSFIGHT, 0,
-	NULL, umk3RomInfo, umk3RomName, NULL, NULL, NULL, NULL, Mk3InputInfo, Mk3DIPInfo,
-    WolfUnitInit, WolfUnitExit, WolfUnitFrame, WolfUnitDraw, WolfUnitScan, &nWolfUnitRecalc, 0x8000,
+	NULL, umk3RomInfo, umk3RomName, NULL, NULL, NULL, NULL, Mk3InputInfo, UMk3DIPInfo,
+    WolfUnitInitUMK3Patch, WolfUnitExit, WolfUnitFrame, WolfUnitDraw, WolfUnitScan, &nWolfUnitRecalc, 0x8000,
     WUNIT_SCREEN_WIDTH, WUNIT_SCREEN_HEIGHT, 4, 3
 };
 
@@ -2044,6 +2111,7 @@ struct BurnDriver BurnDrvWwfmaniap = {
     WUNIT_SCREEN_WIDTH, WUNIT_SCREEN_HEIGHT, 4, 3
 };
 
+
 // WWF: Wrestlemania (Acid Clown Edition)
 
 static struct BurnRomInfo wwfmanacRomDesc[] = {
@@ -2085,6 +2153,43 @@ struct BurnDriver BurnDrvWwfmanac = {
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE, 2, HARDWARE_MIDWAY_WUNIT, GBF_SPORTSMISC, 0,
 	NULL, wwfmanacRomInfo, wwfmanacRomName, NULL, NULL, NULL, NULL, WwfmaniaInputInfo, WwfmaniaDIPInfo,
+	WolfUnitInit, WolfUnitExit, WolfUnitFrame, WolfUnitDraw, WolfUnitScan, &nWolfUnitRecalc, 0x8000,
+	WUNIT_SCREEN_WIDTH, WUNIT_SCREEN_HEIGHT, 4, 3
+};
+
+
+// NBA Jam Special Edition (Wolf-Unit, rev 5.05 12/23/25)
+
+static struct BurnRomInfo nbajamseRomDesc[] = {
+	{ "nbajam_special_edition.u54",  0x080000, 0x321976a3, 1 | BRF_PRG | BRF_ESS }, //  0 TMS34010
+	{ "nbajam_special_edition.u63",  0x080000, 0x3b124fed, 1 | BRF_PRG | BRF_ESS }, //  1
+
+	{ "nbajam_special_edition.u2",   0x100000, 0xe7abf014, 2 | BRF_PRG | BRF_ESS }, //  2 ADPCM sound banks
+	{ "nbajam_special_edition.u3",   0x100000, 0x2760465f, 2 | BRF_PRG | BRF_ESS }, //  3
+	{ "nbajam_special_edition.u4",   0x100000, 0x382153c1, 2 | BRF_PRG | BRF_ESS }, //  4
+	{ "nbajam_special_edition.u5",   0x100000, 0x24a972e3, 2 | BRF_PRG | BRF_ESS }, //  5
+	{ "nbajam_special_edition.u6",   0x100000, 0xf4915367, 2 | BRF_PRG | BRF_ESS }, //  6
+
+	{ "nbajam_special_edition.u129", 0x100000, 0x1d448803, 3 | BRF_GRA | BRF_ESS | WUNIT_GFX(0x04, 0) }, //  7 GFX
+	{ "nbajam_special_edition.u128", 0x100000, 0x860b34a4, 3 | BRF_GRA | BRF_ESS | WUNIT_GFX(0x04, 1) }, //  8
+	{ "nbajam_special_edition.u127", 0x100000, 0x2ce04388, 3 | BRF_GRA | BRF_ESS | WUNIT_GFX(0x04, 2) }, //  9
+	{ "nbajam_special_edition.u126", 0x100000, 0x11870a50, 3 | BRF_GRA | BRF_ESS | WUNIT_GFX(0x04, 3) }, // 10
+
+	{ "nbajam_special_edition.u125", 0x100000, 0x140acee3, 3 | BRF_GRA | BRF_ESS | WUNIT_GFX(0x08, 0) }, // 11
+	{ "nbajam_special_edition.u124", 0x100000, 0xf6da1a70, 3 | BRF_GRA | BRF_ESS | WUNIT_GFX(0x08, 1) }, // 12
+	{ "nbajam_special_edition.u123", 0x100000, 0x98702ff3, 3 | BRF_GRA | BRF_ESS | WUNIT_GFX(0x08, 2) }, // 13
+	{ "nbajam_special_edition.u122", 0x100000, 0xddf1bc38, 3 | BRF_GRA | BRF_ESS | WUNIT_GFX(0x08, 3) }, // 14
+};
+
+STD_ROM_PICK(nbajamse)
+STD_ROM_FN(nbajamse)
+
+struct BurnDriver BurnDrvNbajamse = {
+	"nbajamse", "nbajamte", NULL, NULL, "2025",
+	"NBA Jam Special Edition (Wolf-Unit, rev 5.05 12/23/25)\0", NULL, "hack (Team Jam)", "MIDWAY Wolf-Unit",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK, 4, HARDWARE_MIDWAY_WUNIT, GBF_SPORTSMISC, 0,
+	NULL, nbajamseRomInfo, nbajamseRomName, NULL, NULL, NULL, NULL, NbahangtInputInfo, NbahangtDIPInfo,
 	WolfUnitInit, WolfUnitExit, WolfUnitFrame, WolfUnitDraw, WolfUnitScan, &nWolfUnitRecalc, 0x8000,
 	WUNIT_SCREEN_WIDTH, WUNIT_SCREEN_HEIGHT, 4, 3
 };

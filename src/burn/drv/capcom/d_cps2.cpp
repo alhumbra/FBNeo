@@ -5728,6 +5728,32 @@ STD_ROM_PICK(Vhuntjr3)
 STD_ROM_FN(Vhuntjr3)
 
 static struct BurnRomInfo ProgearRomDesc[] = {
+	{ "pgae.03",       0x080000, 0x8577bc86, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "pgae.04",       0x080000, 0xd850da04, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+
+	{ "pga-simm.01c",  0x200000, 0x452f98b0, CPS2_GFX_SIMM | BRF_GRA },
+	{ "pga-simm.01d",  0x200000, 0x9e672092, CPS2_GFX_SIMM | BRF_GRA },
+	{ "pga-simm.01a",  0x200000, 0xae9ddafe, CPS2_GFX_SIMM | BRF_GRA },
+	{ "pga-simm.01b",  0x200000, 0x94d72D94, CPS2_GFX_SIMM | BRF_GRA },
+	{ "pga-simm.03c",  0x200000, 0x48a1886d, CPS2_GFX_SIMM | BRF_GRA },
+	{ "pga-simm.03d",  0x200000, 0x172d7e37, CPS2_GFX_SIMM | BRF_GRA },
+	{ "pga-simm.03a",  0x200000, 0x9ee33d98, CPS2_GFX_SIMM | BRF_GRA },
+	{ "pga-simm.03b",  0x200000, 0x848dee32, CPS2_GFX_SIMM | BRF_GRA },
+
+	{ "pga.01",        0x020000, 0xbdbfa992, CPS2_PRG_Z80 | BRF_ESS | BRF_PRG },
+
+	{ "pga-simm.05a",  0x200000, 0xc0aac80c, CPS2_QSND_SIMM | BRF_SND },
+	{ "pga-simm.05b",  0x200000, 0x37a65d86, CPS2_QSND_SIMM | BRF_SND },
+	{ "pga-simm.06a",  0x200000, 0xd3f1e934, CPS2_QSND_SIMM | BRF_SND },
+	{ "pga-simm.06b",  0x200000, 0x8b39489a, CPS2_QSND_SIMM | BRF_SND },
+	
+	{ "progear.key",   0x000014, 0xeee6b2a8, CPS2_ENCRYPTION_KEY },
+};
+
+STD_ROM_PICK(Progear)
+STD_ROM_FN(Progear)
+
+static struct BurnRomInfo ProgearuRomDesc[] = {
 	{ "pgau.03",       0x080000, 0x343a783e, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
 	{ "pgau.04",       0x080000, 0x16208d79, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
 
@@ -5747,11 +5773,11 @@ static struct BurnRomInfo ProgearRomDesc[] = {
 	{ "pga-simm.06a",  0x200000, 0xd3f1e934, CPS2_QSND_SIMM | BRF_SND },
 	{ "pga-simm.06b",  0x200000, 0x8b39489a, CPS2_QSND_SIMM | BRF_SND },
 	
-	{ "progear.key",   0x000014, 0x46736b17, CPS2_ENCRYPTION_KEY },
+	{ "progearu.key",   0x000014, 0x46736b17, CPS2_ENCRYPTION_KEY },
 };
 
-STD_ROM_PICK(Progear)
-STD_ROM_FN(Progear)
+STD_ROM_PICK(Progearu)
+STD_ROM_FN(Progearu)
 
 static struct BurnRomInfo ProgearaRomDesc[] = {
 	{ "pgaa.03",       0x080000, 0x25e6e2ce, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
@@ -11655,10 +11681,20 @@ struct BurnDriver BurnDrvCpsVhuntjr3 = {
 
 struct BurnDriver BurnDrvCpsProgear = {
 	"progear", NULL, NULL, NULL, "2001",
-	"Progear (USA 010117)\0", NULL, "Cave (Capcom license)", "CPS2",
+	"Progear (Europe 010117)\0", NULL, "Cave (Capcom license)", "CPS2",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_HISCORE_SUPPORTED, 2, HARDWARE_CAPCOM_CPS2 | HARDWARE_CAPCOM_CPS2_SIMM, GBF_HORSHOOT, 0,
 	NULL, ProgearRomInfo, ProgearRomName, NULL, NULL, NULL, NULL, ProgearInputInfo, NULL,
+	Cps2Init, DrvExit, Cps2Frame, CpsRedraw, CpsAreaScan,
+	&CpsRecalcPal, 0x1000, 384, 224, 4, 3
+};
+
+struct BurnDriver BurnDrvCpsProgearu = {
+	"progearu", "progear", NULL, NULL, "2001",
+	"Progear (USA 010117)\0", NULL, "Cave (Capcom license)", "CPS2",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_HISCORE_SUPPORTED, 2, HARDWARE_CAPCOM_CPS2 | HARDWARE_CAPCOM_CPS2_SIMM, GBF_HORSHOOT, 0,
+	NULL, ProgearuRomInfo, ProgearuRomName, NULL, NULL, NULL, NULL, ProgearInputInfo, NULL,
 	Cps2Init, DrvExit, Cps2Frame, CpsRedraw, CpsAreaScan,
 	&CpsRecalcPal, 0x1000, 384, 224, 4, 3
 };
@@ -13686,15 +13722,15 @@ static struct BurnRomInfo Hsf2appRomDesc[] = {
 STD_ROM_PICK(Hsf2app)
 STD_ROM_FN(Hsf2app)
 
-// Street Fighter II': Prime (Ver 0.66, Hack)
+// Street Fighter II': Prime (Ver 0.74, Hack)
 // Modified by Zero800
 // https://sf2prime.github.io/
 
 static struct BurnRomInfo Sf2primeRomDesc[] = {
-	{ "sf2pr.03",		0x080000, 0x27b6ac88, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
-	{ "sf2pr.04",		0x080000, 0x8d9baac1, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
-	{ "sf2pr.05",		0x080000, 0x15f6c1b9, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
-	{ "sf2pr.06",		0x080000, 0x095ee372, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "sf2pr.03",		0x080000, 0xca82ea74, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "sf2pr.04",		0x080000, 0x53024689, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "sf2pr.05",		0x080000, 0x853ff428, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "sf2pr.06",		0x080000, 0x9eb5604b, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
 #if 0
 	// All filled with 0xFF.
 	{ "sf2pr.07",		0x080000, 0x504bf849, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
@@ -13703,10 +13739,10 @@ static struct BurnRomInfo Sf2primeRomDesc[] = {
 	{ "sf2pr.10",		0x080000, 0x504bf849, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
 #endif
 
-	{ "sf2pr.13m",		0x800000, 0x51b072ab, CPS2_GFX | BRF_GRA },
-	{ "sf2pr.15m",		0x800000, 0xf236c5da, CPS2_GFX | BRF_GRA },
-	{ "sf2pr.17m",		0x800000, 0xea223314, CPS2_GFX | BRF_GRA },
-	{ "sf2pr.19m",		0x800000, 0x623b6cb3, CPS2_GFX | BRF_GRA },
+	{ "sf2pr.13m",		0x800000, 0x90b65b83, CPS2_GFX | BRF_GRA },
+	{ "sf2pr.15m",		0x800000, 0x61ac6bae, CPS2_GFX | BRF_GRA },
+	{ "sf2pr.17m",		0x800000, 0x6ad37bee, CPS2_GFX | BRF_GRA },
+	{ "sf2pr.19m",		0x800000, 0xd28d1d04, CPS2_GFX | BRF_GRA },
 
 	{ "sf2pr.01",		0x020000, 0x6ce233a7, CPS2_PRG_Z80 | BRF_ESS | BRF_PRG },
 	{ "sf2pr.02",		0x020000, 0x2d8794aa, CPS2_PRG_Z80 | BRF_ESS | BRF_PRG },
@@ -15205,8 +15241,8 @@ struct BurnDriver BurnDrvCpsHsf2app = {
 };
 
 struct BurnDriver BurnDrvCpsSf2prime = {
-	"sf2prime", "hsf2", NULL, NULL, "2025",
-	"Street Fighter II': Prime (Ver 0.66, Hack)\0", NULL, "Zero800", "CPS2",
+	"sf2prime", "hsf2", NULL, NULL, "2026",
+	"Street Fighter II': Prime (Ver 0.74, Hack)\0", NULL, "Zero800", "CPS2",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK | BDF_HISCORE_SUPPORTED, 2, HARDWARE_CAPCOM_CPS2, GBF_VSFIGHT, FBF_SF,
 	NULL, Sf2primeRomInfo, Sf2primeRomName, NULL, NULL, NULL, NULL, Cps2FightingInputInfo, NULL,

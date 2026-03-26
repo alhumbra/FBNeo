@@ -4,7 +4,6 @@
 #include "z180_intf.h"
 #include "burn_gun.h"
 
-#define REFRESHRATE 60
 #define VBLANK_LINES (32)
 
 static UINT8 DrvButton[8] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -513,7 +512,7 @@ static INT32 DrvInit()
 	bToaRotateScreen = false;
 #endif
 
-	BurnSetRefreshRate(REFRESHRATE);
+	BurnSetRefreshRate(TOA_REFRESHRATE);
 
 	nGP9001ROMSize[0] = 0x100000;
 
@@ -645,7 +644,7 @@ static INT32 DrvFrame()
 		ToaClearOpposites(&DrvInput[1]);
 
 		BurnTrackballConfig(0, AXIS_NORMAL, AXIS_NORMAL);
-		BurnTrackballFrame(0, DrvAnalogPort[0], DrvAnalogPort[2], 0x02, 0x0f);
+		BurnTrackballFrame(0, DrvAnalogPort[0], DrvAnalogPort[2], 0x01, 0x1f);
 		BurnTrackballUDLR(0, DrvJoy2[2], DrvJoy2[3], DrvJoy1[2], DrvJoy1[3]);
 		BurnTrackballUpdate(0);
 	}
@@ -657,7 +656,7 @@ static INT32 DrvFrame()
 
 	SekIdle(nCyclesDone[0]);
 
-	nCyclesTotal[0] = (INT32)((INT64)10000000 * nBurnCPUSpeedAdjust / (0x0100 * REFRESHRATE));
+	nCyclesTotal[0] = (INT32)((INT64)10000000 * nBurnCPUSpeedAdjust / (0x0100 * TOA_REFRESHRATE));
 	nCyclesTotal[1] = nCyclesTotal[0];
 
 	nCyclesDone[1] = 0;

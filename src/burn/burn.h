@@ -372,6 +372,10 @@ void BurnRandomSetSeed(UINT64 nSeed);               // Set the seed - useful for
 INT32 BurnSynchroniseStream(INT32 nSoundRate);
 double BurnGetTime();
 
+// Handy functions for changing resolution
+extern void (__cdecl *BurnResizeCallback)(INT32 width, INT32 height);
+void BurnSetResolution(INT32 width, INT32 height);
+
 // Handy debug binary-file dumper
 #if defined (FBNEO_DEBUG)
 void BurnDump_(char *filename, UINT8 *buffer, INT32 bufsize, INT32 append);
@@ -389,6 +393,11 @@ void BurnDumpLoad_(char *filename, UINT8 *buffer, INT32 bufsize);
 	BurnDumpLoad_(fn, b, bs); } while (0)
 
 #endif
+
+// Handy defines
+#define d_min(a, b) (((a) < (b)) ? (a) : (b))
+#define d_max(a, b) (((a) > (b)) ? (a) : (b))
+#define d_abs(z) (((z) < 0) ? -(z) : (z))
 
 // ---------------------------------------------------------------------------
 // Retrieve driver information
@@ -420,6 +429,7 @@ INT32 BurnDrvGetRomName(char** pszName, UINT32 i, INT32 nAka);
 INT32 BurnDrvGetInputInfo(struct BurnInputInfo* pii, UINT32 i);
 INT32 BurnDrvGetDIPInfo(struct BurnDIPInfo* pdi, UINT32 i);
 INT32 BurnDrvGetVisibleSize(INT32* pnWidth, INT32* pnHeight);
+INT32 BurnDrvGetOriginalVisibleSize(INT32* pnWidth, INT32* pnHeight);
 INT32 BurnDrvGetVisibleOffs(INT32* pnLeft, INT32* pnTop);
 INT32 BurnDrvGetFullSize(INT32* pnWidth, INT32* pnHeight);
 INT32 BurnDrvGetAspect(INT32* pnXAspect, INT32* pnYAspect);
@@ -436,6 +446,7 @@ INT32 BurnDrvGetSampleName(char** pszName, UINT32 i, INT32 nAka);
 INT32 BurnDrvGetHDDInfo(struct BurnHDDInfo *pri, UINT32 i);
 INT32 BurnDrvGetHDDName(char** pszName, UINT32 i, INT32 nAka);
 char* BurnDrvGetSourcefile();
+
 
 void Reinitialise(); // re-inits everything, including UI window
 void ReinitialiseVideo(); // re-init's video w/ new resolution/aspect ratio (see drv/megadrive.cpp)

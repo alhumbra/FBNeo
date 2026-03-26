@@ -3244,6 +3244,12 @@ static struct BurnDIPInfo QzquestDIPList[]=
 	{0x12, 0x01, 0x03, 0x03, "Medium"                         },
 	{0x12, 0x01, 0x03, 0x01, "Hard"                           },
 	{0x12, 0x01, 0x03, 0x00, "Hardest"                        },
+
+	{0   , 0xfe, 0   , 4   , "Countdown Timer"                },
+	{0x12, 0x01, 0x0c, 0x00, "Very Slow"                      },
+	{0x12, 0x01, 0x0c, 0x04, "Slow"                           },
+	{0x12, 0x01, 0x0c, 0x0c, "Medium"                         },
+	{0x12, 0x01, 0x0c, 0x08, "Fast"                           },
 };
 
 STDDIPINFO(Qzquest)
@@ -7905,6 +7911,7 @@ static INT32 CameltryInit()
 
 	SpritePriWritebackMode = 0;
 	bNoClearOpposites = 1;
+	TaitoF2SpriteBufferFunction = TaitoF2PartialBufferDelayed;
 
 	BurnTrackballInit(2);
 	has_dial = 1;

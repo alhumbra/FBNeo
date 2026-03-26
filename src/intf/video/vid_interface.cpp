@@ -296,6 +296,10 @@ INT32 VidInit()
 			free(pLineBuffer);
 			pLineBuffer = NULL;
 		}
+
+		// Paint & Validate: fixes sizing w/some systems & blitter
+		// combinations with the splash screen.
+		VidPaint(1);
 	}
 
 	if (hbitmap) {

@@ -156,10 +156,14 @@ static struct BurnDIPInfo TempestDIPList[]=
 	{0x04, 0x01, 0x10, 0x10, "Off"  		        },
 	{0x04, 0x01, 0x10, 0x00, "On"   	            },
 
-	{0   , 0xfe, 0   ,    3, "Hires Mode"			},
-	{0x05, 0x01, 0x03, 0x00, "No"  		        	},
-	{0x05, 0x01, 0x03, 0x01, "Yes (1024)"			},
-	{0x05, 0x01, 0x03, 0x02, "Yes (1080)"			},
+#ifndef __LIBRETRO__
+	{0   , 0xfe, 0   ,    5, "Hires Mode"			},
+	{0x05, 0x01, 0x07, 0x00, "No"  		        	},
+	{0x05, 0x01, 0x07, 0x01, "Yes (1024)"			},
+	{0x05, 0x01, 0x07, 0x02, "Yes (1080)"			},
+	{0x05, 0x01, 0x07, 0x03, "Yes (1440)"			},
+	{0x05, 0x01, 0x07, 0x04, "Yes (2160)"			},
+#endif
 };
 
 STDDIPINFO(Tempest)
@@ -264,13 +268,16 @@ static void tempest_write(UINT16 address, UINT8 data)
 
 static INT32 res_check()
 {
-	const INT32 reso_list[3] = { 640, 1024, 1080 };
+#ifdef __LIBRETRO__
+	return 0;
+#endif
+	const INT32 reso_list[7] = { 640, 1024, 1080, 1440, 2160, 2160, 2160 };
 	INT32 Width, Height;
-	INT32 Selected = reso_list[DrvDips[5] & 3];
+	INT32 Selected = reso_list[DrvDips[5] & 7];
 	BurnDrvGetVisibleSize(&Width, &Height);
 //	bprintf(0, _T("now:  %d   Selected (dip):  %d\n"), Height, Selected);
 	if (Height != Selected) {
-		vector_rescale((Selected * 480 / 640), Selected);
+		vector_rescale(Selected, (Selected * 480 / 640));
 		return 1;
 	}
 
@@ -526,7 +533,7 @@ static INT32 DrvFrame()
 
 		BurnTrackballConfig(0, AXIS_NORMAL, AXIS_NORMAL);
 		BurnTrackballFrame(0, Analog[0], Analog[1], 0x01, 0x0f, 20);
-		BurnTrackballUDLR(0, DrvJoy4f[2], DrvJoy4f[3], DrvJoy4f[0], DrvJoy4f[1]);
+		BurnTrackballUDLR(0, DrvJoy4f[2], DrvJoy4f[3], DrvJoy4f[0], DrvJoy4f[1], 5);
 		BurnTrackballUpdate(0);
 
 		DrvInputs[0] = (DrvInputs[0] & 0x2f) | (DrvDips[4] & 0x10); // service mode

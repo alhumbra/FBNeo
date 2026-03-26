@@ -104,6 +104,15 @@ static struct BurnInputInfo AlphaoneInputList[] = {
 STDINPUTINFO(Alphaone)
 #undef A
 
+#ifdef __LIBRETRO__
+#define RESO_DIP
+#else
+#define RESO_DIP \
+	{0   , 0xfe, 0   ,    2, "Hires Mode"			}, \
+	{0x03, 0x01, 0x01, 0x00, "No"					}, \
+	{0x03, 0x01, 0x01, 0x01, "Yes"					},
+#endif
+
 static struct BurnDIPInfo MhavocDIPList[]=
 {
 	DIP_OFFSET(0x0e)
@@ -168,9 +177,7 @@ static struct BurnDIPInfo MhavocDIPList[]=
 	{0x02, 0x01, 0x02, 0x02, "Off"					},
 	{0x02, 0x01, 0x02, 0x00, "On"					},
 
-	{0   , 0xfe, 0   ,    2, "Hires Mode"			},
-	{0x03, 0x01, 0x01, 0x00, "No"					},
-	{0x03, 0x01, 0x01, 0x01, "Yes"					},
+	RESO_DIP
 };
 
 STDDIPINFO(Mhavoc)
@@ -194,9 +201,7 @@ static struct BurnDIPInfo AlphaoneDIPList[]=
 	{0x00, 0x01, 0x10, 0x10, "Off"					},
 	{0x00, 0x01, 0x10, 0x00, "On"					},
 
-	{0   , 0xfe, 0   ,    2, "Hires Mode"			},
-	{0x03, 0x01, 0x01, 0x00, "No"					},
-	{0x03, 0x01, 0x01, 0x01, "Yes"					},
+	RESO_DIP
 };
 
 STDDIPINFO(Alphaone)
@@ -504,6 +509,9 @@ static INT32 port0_read(INT32 /*offset*/)
 
 static INT32 res_check()
 {
+#ifdef __LIBRETRO__
+	return 0;
+#endif
 	if (DrvDips[3] & 1) {
 		INT32 Width, Height;
 		BurnDrvGetVisibleSize(&Width, &Height);

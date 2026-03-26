@@ -770,7 +770,7 @@ static struct BurnInputInfo RadrInputList[] = {
 	A("P1 Brake",		BIT_ANALOG_REL, &Analog[2],		"p1 z-axis"	),
 
 	{"Reset",			BIT_DIGITAL,	&DrvReset,		"reset"		},
-	{"Service Mode",	BIT_DIGITAL,	DrvJoy5 + 1,	"service"	},
+	{"Service Mode",	BIT_DIGITAL,	DrvJoy5 + 1,	"diag"		},
 	{"Service 1",		BIT_DIGITAL,	DrvJoy5 + 0,	"service"	},
 	{"Service 2",		BIT_DIGITAL,	DrvJoy6 + 4,	"service"	},
 	{"Service 3",		BIT_DIGITAL,	DrvJoy6 + 5,	"service"	},
@@ -1030,6 +1030,23 @@ static struct BurnDIPInfo RadrDIPList[]=
 
 STDDIPINFO(Radr)
 
+static struct BurnDIPInfo SlipstrmDIPList[]=
+{
+	DIP_OFFSET(0x0b)
+	{0x00, 0xff, 0xff, 0x0f, NULL					},
+	{0x01, 0xff, 0xff, 0x00, NULL					},
+
+	{0   , 0xfe, 0   ,    2, "Freeze Frame"			},
+	{0x00, 0x01, 0x04, 0x00, "On"					},
+	{0x00, 0x01, 0x04, 0x04, "Off"					},
+
+	{0   , 0xfe, 0   ,    2, "Steering Response"	},
+	{0x01, 0x01, 0x10, 0x10, "Linear"				},
+	{0x01, 0x01, 0x10, 0x00, "Logarithmic"			},
+};
+
+STDDIPINFO(Slipstrm)
+
 #define DEFAULT_UNUSED_DIPS_MS(setname, offs)			\
 static struct BurnDIPInfo setname##DIPList[]=			\
 {														\
@@ -1044,6 +1061,11 @@ static struct BurnDIPInfo setname##DIPList[]=			\
 	{0   , 0xfe, 0   ,    2, "Multi-Screen Mode"	},	\
 	{0x01, 0x01, 0x01, 0x01, "Disabled"				},	\
 	{0x01, 0x01, 0x01, 0x00, "Enabled"				},	\
+														\
+	{0   , 0xfe, 0   ,    3, "Speaker Mode"			},	\
+	{0x01, 0x01, 0x0c, 0x00, "Stereo"				},	\
+	{0x01, 0x01, 0x0c, 0x04, "Mono"					},	\
+	{0x01, 0x01, 0x0c, 0x08, "Left Side Only"		},	\
 };														\
 														\
 STDDIPINFO(setname)
@@ -1062,6 +1084,11 @@ static struct BurnDIPInfo setname##DIPList[]=			\
 	{0   , 0xfe, 0   ,    2, "Multi-Screen Mode"	},	\
 	{0x01, 0x01, 0x01, 0x01, "Disabled"				},	\
 	{0x01, 0x01, 0x01, 0x00, "Enabled"				},	\
+														\
+	{0   , 0xfe, 0   ,    3, "Speaker Mode"			},	\
+	{0x01, 0x01, 0x0c, 0x00, "Stereo"				},	\
+	{0x01, 0x01, 0x0c, 0x04, "Mono"					},	\
+	{0x01, 0x01, 0x0c, 0x08, "Left Side Only"		},	\
 														\
 	{0   , 0xfe, 0   ,    2, "Steering Response"	},  \
 	{0x01, 0x01, 0x10, 0x10, "Linear"				},  \
@@ -1115,7 +1142,6 @@ DEFAULT_UNUSED_DIPS(Holo, 0x15)
 DEFAULT_UNUSED_DIPS(Dbzvrvs, 0x17)
 DEFAULT_UNUSED_DIPS(Spidmanu, 0x25)
 DEFAULT_UNUSED_DIPS(Sonic, 0x14)
-DEFAULT_UNUSED_DIPS_WHEEL(Slipstrm, 0x0b)
 DEFAULT_UNUSED_DIPS_WHEEL(Radm, 0x0c)
 DEFAULT_UNUSED_DIPS_WHEEL(F1en, 0x0c)
 DEFAULT_UNUSED_DIPS_WHEEL(F1lap, 0x0d)
@@ -4228,6 +4254,9 @@ static INT32 DrvDraw()
 
 static INT32 MultiScreenCheck()
 {
+	// audio check :)
+	MultiPCMSetMonoMode((DrvDips[1] & 0xc) >> 2);
+
 	INT32 screensize = (DrvDips[1] & 1) ? 320 : 640;
 	if (screensize != nScreenWidth)
 	{
@@ -4236,10 +4265,8 @@ static INT32 MultiScreenCheck()
 		BurnDrvSetVisibleSize(screensize, 224);
 		if (screensize == 320) {
 			BurnDrvSetAspect(4, 3);
-			MultiPCMSetMono(1);
 		} else {
 			BurnDrvSetAspect(8, 3);
-			MultiPCMSetMono(0);
 		}
 		ReinitialiseVideo(); // re-inits video subsystem (pBurnDraw)
 		BurnTransferRealloc(); // re-inits pTransDraw

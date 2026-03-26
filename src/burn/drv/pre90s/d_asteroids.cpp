@@ -153,14 +153,21 @@ STDINPUTINFO(Llander)
 
 static struct BurnInputInfo LlandertInputList[] = {
 	// correct!
-	
+
 	{"Reset",			BIT_DIGITAL,	&DrvReset,		"reset"		},
 	{"Dip A",			BIT_DIPSWITCH,	DrvDips + 0,	"dip"		},
 };
 
 STDINPUTINFO(Llandert)
 
-#define DO 0xb    // getting tired of re-basing the dips. :P
+#ifdef __LIBRETRO__
+#define RESO_DIP
+#else
+#define RESO_DIP \
+	{0   , 0xfe, 0   ,    2, "Hires Mode"			}, \
+	{0x03, 0x01, 0x01, 0x00, "No"					}, \
+	{0x03, 0x01, 0x01, 0x01, "Yes"					},
+#endif
 
 static struct BurnDIPInfo AsteroidDIPList[]=
 {
@@ -202,9 +209,7 @@ static struct BurnDIPInfo AsteroidDIPList[]=
 	{0x02, 0x01, 0x80, 0x00, "Off"					},
 	{0x02, 0x01, 0x80, 0x80, "On"					},
 
-	{0   , 0xfe, 0   ,    2, "Hires Mode"			},
-	{0x03, 0x01, 0x01, 0x00, "No"					},
-	{0x03, 0x01, 0x01, 0x01, "Yes"					},
+	RESO_DIP
 };
 
 STDDIPINFO(Asteroid)
@@ -249,9 +254,7 @@ static struct BurnDIPInfo AerolitosDIPList[]=
 	{0x02, 0x01, 0x80, 0x00, "Off"					},
 	{0x02, 0x01, 0x80, 0x80, "On"					},
 
-	{0   , 0xfe, 0   ,    2, "Hires Mode"			},
-	{0x03, 0x01, 0x01, 0x00, "No"					},
-	{0x03, 0x01, 0x01, 0x01, "Yes"					},
+	RESO_DIP
 };
 
 STDDIPINFO(Aerolitos)
@@ -284,9 +287,7 @@ static struct BurnDIPInfo AsteroidbDIPList[]=
 	{0x02, 0x01, 0x80, 0x00, "Off"					},
 	{0x02, 0x01, 0x80, 0x80, "On"					},
 
-	{0   , 0xfe, 0   ,    2, "Hires Mode"			},
-	{0x03, 0x01, 0x01, 0x00, "No"					},
-	{0x03, 0x01, 0x01, 0x01, "Yes"					},
+	RESO_DIP
 };
 
 STDDIPINFO(Asteroidb)
@@ -331,9 +332,7 @@ static struct BurnDIPInfo AsterockDIPList[]=
 	{0x02, 0x01, 0x80, 0x00, "Off"					},
 	{0x02, 0x01, 0x80, 0x80, "On"					},
 
-	{0   , 0xfe, 0   ,    2, "Hires Mode"			},
-	{0x03, 0x01, 0x01, 0x00, "No"					},
-	{0x03, 0x01, 0x01, 0x01, "Yes"					},
+	RESO_DIP
 };
 
 STDDIPINFO(Asterock)
@@ -399,9 +398,7 @@ static struct BurnDIPInfo AstdeluxDIPList[]=
 	{0x02, 0x01, 0x80, 0x00, "Off"					},
 	{0x02, 0x01, 0x80, 0x80, "On"					},
 
-	{0   , 0xfe, 0   ,    2, "Hires Mode"			},
-	{0x03, 0x01, 0x01, 0x00, "No"					},
-	{0x03, 0x01, 0x01, 0x01, "Yes"					},
+	RESO_DIP
 };
 
 STDDIPINFO(Astdelux)
@@ -443,9 +440,7 @@ static struct BurnDIPInfo LlanderDIPList[]=
 	{0x01, 0x01, 0x02, 0x02, "Off"					},
 	{0x01, 0x01, 0x02, 0x00, "On"					},
 
-	{0   , 0xfe, 0   ,    2, "Hires Mode"			},
-	{0x03, 0x01, 0x01, 0x00, "No"					},
-	{0x03, 0x01, 0x01, 0x01, "Yes"					},
+	RESO_DIP
 };
 
 STDDIPINFO(Llander)
@@ -483,9 +478,7 @@ static struct BurnDIPInfo Llander1DIPList[]=
 	{0x01, 0x01, 0x02, 0x02, "Off"					},
 	{0x01, 0x01, 0x02, 0x00, "On"					},
 
-	{0   , 0xfe, 0   ,    2, "Hires Mode"			},
-	{0x03, 0x01, 0x01, 0x00, "No"					},
-	{0x03, 0x01, 0x01, 0x01, "Yes"					},
+	RESO_DIP
 };
 
 STDDIPINFO(Llander1)
@@ -788,6 +781,9 @@ static INT32 allpot_read(INT32 /*offset*/)
 
 static INT32 res_check()
 {
+#ifdef __LIBRETRO__
+	return 0;
+#endif
 	if (DrvDips[3] & 1) {
 		INT32 Width, Height;
 		BurnDrvGetVisibleSize(&Width, &Height);

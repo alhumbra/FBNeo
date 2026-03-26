@@ -789,6 +789,17 @@ static INT32 DrvAspectX, DrvAspectY;
 static INT32 DrvX, DrvY;
 static INT32 DrvCached = 0;
 
+// Game's original resolution
+// Some games change the resolution by modifying the original size with
+// BurnDrvSetVisibleSize() then running Reinitialise() or ReinitialiseVideo()
+extern "C" INT32 BurnDrvGetOriginalVisibleSize(INT32* pnWidth, INT32* pnHeight)
+{
+	*pnWidth  = DrvX;
+	*pnHeight = DrvY;
+
+	return 0;
+}
+
 static void BurnCacheSizeAspect_Internal()
 {
 	BurnDrvGetFullSize(&DrvX, &DrvY);
@@ -1047,6 +1058,15 @@ INT32 BurnUpdateProgress(double fProgress, const TCHAR* pszText, bool bAbs)
 	}
 
 	return 1;
+}
+
+// ----------------------------------------------------------------------------
+
+void (__cdecl *BurnResizeCallback)(INT32 width, INT32 height) = NULL;
+
+void BurnSetResolution(INT32 width, INT32 height)
+{
+	if (BurnResizeCallback) BurnResizeCallback(width, height);
 }
 
 // ----------------------------------------------------------------------------
@@ -1704,7 +1724,7 @@ struct MovieExtInfo
 	UINT32 hour, minute, second;
 };
 
-#if !defined(BUILD_SDL) && !defined(BUILD_SDL2) && !defined(BUILD_MACOS)
+#if !defined(BUILD_SDL) && !defined(BUILD_SDL2) && !defined(BUILD_MACOS) && !defined(__LIBRETRO__)
 extern struct MovieExtInfo MovieInfo; // from replay.cpp
 #else
 struct MovieExtInfo MovieInfo = { 0, 0, 0, 0, 0, 0, 0 };

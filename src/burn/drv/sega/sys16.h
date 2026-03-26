@@ -122,7 +122,6 @@ extern bool Lockonph;
 extern bool AltbeastMode;
 extern bool ThndrbldMode;
 extern bool TturfMode;
-extern bool System16Z80Enable;
 extern bool System1668KEnable;
 
 extern INT32 System16YM2413IRQInterval;
@@ -338,8 +337,6 @@ void fd1094_scan(INT32 nAction);
 // genesis_vid.cpp
 
 // sega_315_5195.cpp
-extern bool LaserGhost;
-
 typedef UINT8 (*sega_315_5195_custom_io)(UINT32);
 extern sega_315_5195_custom_io sega_315_5195_custom_io_do;
 

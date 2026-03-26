@@ -172,9 +172,11 @@ static struct BurnDIPInfo StarwarsDIPList[]=
 	{0x02, 0x01, 0x01, 0x00, "Inverted"				},
 	{0x02, 0x01, 0x01, 0x01, "Normal"				},
 
+#ifndef __LIBRETRO__
 	{0   , 0xfe, 0   ,    2, "Hires Mode"			},
 	{0x03, 0x01, 0x01, 0x00, "No"					},
 	{0x03, 0x01, 0x01, 0x01, "Yes"					},
+#endif
 };
 
 STDDIPINFO(Starwars)
@@ -245,9 +247,11 @@ static struct BurnDIPInfo EsbDIPList[]=
 	{0x02, 0x01, 0x01, 0x00, "Inverted"				},
 	{0x02, 0x01, 0x01, 0x01, "Normal"				},
 
+#ifndef __LIBRETRO__
 	{0   , 0xfe, 0   ,    2, "Hires Mode"			},
 	{0x03, 0x01, 0x01, 0x00, "No"					},
 	{0x03, 0x01, 0x01, 0x01, "Yes"					},
+#endif
 };
 
 STDDIPINFO(Esb)
@@ -682,6 +686,9 @@ static UINT8 starwars_sound_read(UINT16 address)
 
 static INT32 res_check()
 {
+#ifdef __LIBRETRO__
+	return 0;
+#endif
 	if (DrvDips[3] & 1) {
 		INT32 Width, Height;
 		BurnDrvGetVisibleSize(&Width, &Height);

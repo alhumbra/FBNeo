@@ -127,9 +127,11 @@ static struct BurnDIPInfo OmegraceDIPList[]=
 	{0x02, 0x01, 0x80, 0x80, "Off"						},
 	{0x02, 0x01, 0x80, 0x00, "On"						},
 
+#ifndef __LIBRETRO__
 	{0   , 0xfe, 0   ,    2, "Hires Mode"				},
 	{0x03, 0x01, 0x01, 0x00, "No"						},
 	{0x03, 0x01, 0x01, 0x01, "Yes"						},
+#endif
 };
 
 STDDIPINFO(Omegrace)
@@ -241,6 +243,9 @@ static UINT8 __fastcall omegrace_sound_read_port(UINT16 port)
 
 static INT32 res_check()
 {
+#ifdef __LIBRETRO__
+	return 0;
+#endif
 	if (DrvDips[3] & 1) {
 		INT32 Width, Height;
 		BurnDrvGetVisibleSize(&Width, &Height);
