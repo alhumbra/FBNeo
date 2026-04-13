@@ -589,6 +589,85 @@ static struct BurnDIPInfo SalamandDIPList[]=
 
 STDDIPINFO(Salamand)
 
+// Salamander (SP version) - author hack, LifeForce-based DIP layout
+// DSW0 default=0xFF: bits0-3=reserved, bit4=1(GradiusIII font), bit5=1(NEW logo),
+//                    bit6=1(Ripple), bit7=1(1P side input)
+// DSW1 default=0x00: bits0-1=00(3 lives), bit2=0(hatches off),
+//                    bits3-4=00(100k/300k bonus), bits5-6=00(Easy), bit7=0(demo off)
+// DSW2 default=0x00: bit0=0(normal screen), bit1=0(table), bit2=0(game mode)
+static struct BurnDIPInfo SalamandspDIPList[]=
+{
+	DIP_OFFSET(0x12)
+	{0x00, 0xff, 0xff, 0xff, NULL					},
+	{0x01, 0xff, 0xff, 0x00, NULL					},
+	{0x02, 0xff, 0xff, 0x00, NULL					},
+
+	// DSW0 - bits 0-3 reserved/unused
+
+	{0   , 0xfe, 0   ,    2, "Font"					},
+	{0x00, 0x01, 0x10, 0x10, "Gradius III"			},
+	{0x00, 0x01, 0x10, 0x00, "Koi no Hotrock"		},
+
+	{0   , 0xfe, 0   ,    2, "Logo"					},
+	{0x00, 0x01, 0x20, 0x20, "New (1987-)"			},
+	{0x00, 0x01, 0x20, 0x00, "Old (pre-1987)"		},
+
+	{0   , 0xfe, 0   ,    2, "Pulse Gauge"			},
+	{0x00, 0x01, 0x40, 0x40, "Ripple"				},
+	{0x00, 0x01, 0x40, 0x00, "Pulse"				},
+
+	{0   , 0xfe, 0   ,    2, "2P Alone Play"			},
+	{0x00, 0x01, 0x80, 0x80, "1P side"				},
+	{0x00, 0x01, 0x80, 0x00, "2P side"				},
+
+	// DSW1 - author spec: 00=3, 01=4, 10=5, 11=6
+	{0   , 0xfe, 0   ,    4, "Lives"				},
+	{0x01, 0x01, 0x03, 0x00, "3"					},
+	{0x01, 0x01, 0x03, 0x01, "4"					},
+	{0x01, 0x01, 0x03, 0x02, "5"					},
+	{0x01, 0x01, 0x03, 0x03, "6"					},
+
+	{0   , 0xfe, 0   ,    2, "Stage4 Expert Hatches"	},
+	{0x01, 0x01, 0x04, 0x04, "On"					},
+	{0x01, 0x01, 0x04, 0x00, "Off"					},
+
+	// author spec: 00=100k/300k, 01=70k/200k, 10=100k only, 11=none
+	{0   , 0xfe, 0   ,    4, "Bonus Life"			},
+	{0x01, 0x01, 0x18, 0x00, "100k and every 300k"	},
+	{0x01, 0x01, 0x18, 0x08, "70k and every 200k"	},
+	{0x01, 0x01, 0x18, 0x10, "100k only"			},
+	{0x01, 0x01, 0x18, 0x18, "None"				},
+
+	// author spec: 00=Easy, 01=Normal, 10=Hard, 11=Very Hard
+	{0   , 0xfe, 0   ,    4, "Difficulty"			},
+	{0x01, 0x01, 0x60, 0x00, "Easy"				},
+	{0x01, 0x01, 0x60, 0x20, "Normal"				},
+	{0x01, 0x01, 0x60, 0x40, "Hard"				},
+	{0x01, 0x01, 0x60, 0x60, "Very Hard"			},
+
+	// author spec: 0=off, 1=on
+	{0   , 0xfe, 0   ,    2, "Demo Sound"			},
+	{0x01, 0x01, 0x80, 0x80, "On"					},
+	{0x01, 0x01, 0x80, 0x00, "Off"					},
+
+	// DSW2 - author spec: 0=normal, 1=flip
+	{0   , 0xfe, 0   ,    2, "Flip Screen"			},
+	{0x02, 0x01, 0x01, 0x01, "On"					},
+	{0x02, 0x01, 0x01, 0x00, "Off"					},
+
+	// author spec: 0=table, 1=upright
+	{0   , 0xfe, 0   ,    2, "Cabinet"				},
+	{0x02, 0x01, 0x02, 0x02, "Upright"				},
+	{0x02, 0x01, 0x02, 0x00, "Table"				},
+
+	// author spec: 0=game, 1=test
+	{0   , 0xfe, 0   ,    2, "Service Mode"			},
+	{0x02, 0x01, 0x04, 0x04, "On"					},
+	{0x02, 0x01, 0x04, 0x00, "Off"					},
+};
+
+STDDIPINFO(Salamandsp)
+
 static struct BurnDIPInfo LifefrcejDIPList[]=
 {
 	DIP_OFFSET(0x14)
@@ -4174,6 +4253,35 @@ struct BurnDriver BurnDrvsalamandt = {
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_HISCORE_SUPPORTED, 2, HARDWARE_KONAMI_68K_Z80, GBF_HORSHOOT, 0,
 	NULL, salamandtRomInfo, salamandtRomName, NULL, NULL, NULL, NULL, SalamandInputInfo, SalamandDIPInfo,
+	SalamandInit, DrvExit, SalamandFrame, DrvDraw, DrvScan, &DrvRecalc, 0x800,
+	256, 224, 4, 3
+};
+
+
+// Salamander (SP version) - hack by SP
+
+static struct BurnRomInfo spcloneRomDesc[] = {
+	{ "spclone.18b",	0x10000, 0x14c19a46, 1 | BRF_PRG | BRF_ESS }, //  0 m68000 Code (hi)
+	{ "spclone.18c",	0x10000, 0xfdafc246, 1 | BRF_PRG | BRF_ESS }, //  1 m68000 Code (lo)
+	{ "587-c03.17b",	0x20000, 0xe5caf6e6, 1 | BRF_PRG | BRF_ESS }, //  2 Graphic data hi (shared)
+	{ "587-c06.17c",	0x20000, 0xc2f567ea, 1 | BRF_PRG | BRF_ESS }, //  3 Graphic data lo (shared)
+
+	{ "spclone.11j",	0x08000, 0xbf83b182, 2 | BRF_PRG | BRF_ESS }, //  4 Z80 Code
+
+	{ "587-d08.8g",		0x04000, 0xf9ac6b82, 4 | BRF_SND },           //  5 VLM5030 Samples
+
+	{ "587-c01.10a",	0x20000, 0x09fe0632, 5 | BRF_SND },           //  6 K007232 Samples
+};
+
+STD_ROM_PICK(spclone)
+STD_ROM_FN(spclone)
+
+struct BurnDriver BurnDrvSpclone = {
+	"spclone", "salamand", NULL, NULL, "1986",
+	"Salamander (SP version)\0", NULL, "hack", "GX587",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK | BDF_HISCORE_SUPPORTED, 2, HARDWARE_KONAMI_68K_Z80, GBF_HORSHOOT, 0,
+	NULL, spcloneRomInfo, spcloneRomName, NULL, NULL, NULL, NULL, SalamandInputInfo, SalamandspDIPInfo,
 	SalamandInit, DrvExit, SalamandFrame, DrvDraw, DrvScan, &DrvRecalc, 0x800,
 	256, 224, 4, 3
 };
