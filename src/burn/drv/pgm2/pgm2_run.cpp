@@ -87,6 +87,7 @@ UINT8  Pgm2Reset           = 0;
 // Encryption support (runtime decryption via internal boot ROM)
 static UINT8 *Pgm2ArmROMEncrypted = NULL;     // encrypted backup for reset
 static INT32  Pgm2HasDecrypted = 0;            // prevents double decryption
+static INT32  Pgm2HasDecrypted_Cached = 0;     // prevents double decryption
 static UINT8  Pgm2EncryptTable[0x100] = {0};  // captured from writes to 0xFFFFFC00
 static INT32  Pgm2RtcBase = 0;
 static INT32  Pgm2EncWriteCount = 0;
@@ -102,6 +103,7 @@ static INT32  Pgm2IntRomNeedRestore = 0;       // 1 = need to restore all patche
 static INT32  Pgm2ArmROMFileLen = 0;          // actual ROM file size (e.g. 0x800000)
 static INT32  Pgm2CardRomIndex = -1;
 static INT32  Pgm2SramRomIndex = 10;
+static INT32  Pgm2ArmRomIndex = 1;
 static INT32  Pgm2PerSlotCardIndex[4] = {-1, -1, -1, -1};
 static INT32  Pgm2CardLogCount = 0;
 
@@ -113,9 +115,11 @@ INT32  Pgm2MaxCardSlots = 0;
 INT32  Pgm2ActiveCardSlot = 0;
 bool   Pgm2CardInserted[4] = {false, false, false, false};
 
+UINT8 CardlessHack = 0;
+
 // Speed hack variables
-static UINT32 Pgm2SpeedHackAddr = 0;
-static UINT32 Pgm2SpeedHackPC[4] = {0};
+static UINT32 Pgm2SpeedHackAddr[2] = { 0, 0 };
+static UINT32 Pgm2SpeedHackPC[2][4] = {0};
 
 // RAM/ROM board (ddpdojt) — 2MB of writable RAM at 0x10000000, ROM at 0x10200000
 static UINT8 *Pgm2RomBoardRAM = NULL;
@@ -130,6 +134,7 @@ INT32  Pgm2ColourROMOffset = 0;  // byte offset in SprROM where colour data star
 // KOV3 module support
 static INT32  Pgm2HasKov3Module = 0;
 static INT32  Pgm2HasDecryptedKov3Module = 0;
+static INT32  Pgm2HasDecryptedKov3Module_Cached = 0;
 static const UINT8 *Pgm2ModuleKey = NULL;
 static const UINT8 *Pgm2ModuleSum = NULL;
 static UINT32 Pgm2ModuleAddrXor = 0;
@@ -158,6 +163,11 @@ void pgm2SetStorageRomIndices(INT32 cardRomIndex, INT32 sramRomIndex)
     Pgm2SramRomIndex = sramRomIndex;
 }
 
+void pgm2SetArmRomIndex(INT32 armRomIndex)
+{
+    Pgm2ArmRomIndex = armRomIndex;
+}
+
 void pgm2SetCardRomIndex(INT32 slot, INT32 index)
 {
     if (slot >= 0 && slot < 4) Pgm2PerSlotCardIndex[slot] = index;
@@ -183,13 +193,13 @@ INT32 pgm2GetCardRomTemplate(UINT8* buffer, INT32 maxSize)
     return PGM2_CARD_SIZE;
 }
 
-void pgm2SetSpeedhack(UINT32 addr, UINT32 pc1, UINT32 pc2, UINT32 pc3, UINT32 pc4)
+void pgm2SetSpeedhack(UINT32 id, UINT32 addr, UINT32 pc1, UINT32 pc2, UINT32 pc3, UINT32 pc4)
 {
-    Pgm2SpeedHackAddr = addr & ~3;
-    Pgm2SpeedHackPC[0] = pc1;
-    Pgm2SpeedHackPC[1] = pc2;
-    Pgm2SpeedHackPC[2] = pc3;
-    Pgm2SpeedHackPC[3] = pc4;
+    Pgm2SpeedHackAddr[id] = addr & ~3;
+    Pgm2SpeedHackPC[id][0] = pc1;
+    Pgm2SpeedHackPC[id][1] = pc2;
+    Pgm2SpeedHackPC[id][2] = pc3;
+    Pgm2SpeedHackPC[id][3] = pc4;
 }
 
 void pgm2EnableKov3Module(const UINT8 *key, const UINT8 *sum, UINT32 addrXor, UINT16 dataXor)
@@ -243,7 +253,8 @@ static void pgm2DecryptKov3Module(UINT32 addrXor, UINT16 dataXor)
     memcpy(rom, buffer, Pgm2ArmROMLen);
     BurnFree(buffer);
 
-    Pgm2HasDecryptedKov3Module = 1;
+	Pgm2HasDecryptedKov3Module = 1;
+	Pgm2HasDecryptedKov3Module_Cached = 1;
     PGM2_LOG(PGM2_LOG_MODULE, "kov3 module decrypted addrXor=%06X dataXor=%04X", addrXor, dataXor);
 }
 
@@ -485,7 +496,8 @@ static void pgm2DoDecrypt(const char* source)
         }
     }
 
-    Pgm2HasDecrypted = 1;
+	Pgm2HasDecrypted = 1;
+	Pgm2HasDecrypted_Cached = 1;
 }
 
 // ---------------------------------------------------------------------------
@@ -825,12 +837,12 @@ static void pgm2McuCommand(bool isCommand)
                 Pgm2McuRegs[3] = Pgm2McuResult0;
                 Pgm2McuRegs[4] = Pgm2McuResult1;
                 Pgm2McuLastCmd = 0;
-            break;
+                break;
 
             case 0xe0: // startup/self-test echo
                 Pgm2McuResult0 = Pgm2McuRegs[0];
                 Pgm2McuResult1 = Pgm2McuRegs[1];
-            break;
+                break;
 
             case 0xe1: // shared RAM fill helper used by boot code
                 // MCU sees the opposite bank while CPU accesses the selected one.
@@ -838,10 +850,17 @@ static void pgm2McuCommand(bool isCommand)
                     memset(Pgm2SharedRAM2 + ((~Pgm2ShareBank & 1) * 0x80), arg3, 0x80);
                 }
                 Pgm2McuResult0 = cmd;
-            break;
+                break;
 
             case 0xc0: // insert card / check card presence
             case 0xc1: // check ready/busy
+                if ((CardlessHack & 1) && (0xc0 == cmd)) {  // Cardless mode
+                    if (!pgm2CardPresent(arg1 & 3)) {
+                        status = 0x00f70000;
+                    }
+                    Pgm2McuResult0 = cmd;
+                    break;
+                }
                 if (!pgm2CardPresent(arg1)) {
                     status = 0x00f40000;
                 }
@@ -850,7 +869,7 @@ static void pgm2McuCommand(bool isCommand)
                     Pgm2CardLogCount++;
                 }
                 Pgm2McuResult0 = cmd;
-            break;
+                break;
 
             case 0xc2: // read card data to shared RAM
                 for (INT32 i = 0; i < arg3; i++) {
@@ -865,7 +884,7 @@ static void pgm2McuCommand(bool isCommand)
                     Pgm2CardLogCount++;
                 }
                 Pgm2McuResult0 = cmd;
-            break;
+                break;
 
             case 0xc3: // save shared RAM to card data
                 for (INT32 i = 0; i < arg3; i++) {
@@ -880,7 +899,7 @@ static void pgm2McuCommand(bool isCommand)
                     Pgm2CardLogCount++;
                 }
                 Pgm2McuResult0 = cmd;
-            break;
+                break;
 
             case 0xc4: // read security bytes 1..3
                 if (pgm2CardPresent(arg1)) {
@@ -893,7 +912,7 @@ static void pgm2McuCommand(bool isCommand)
                     Pgm2CardLogCount++;
                 }
                 Pgm2McuResult0 = cmd;
-            break;
+                break;
 
             case 0xc5: // write security byte
                 if (pgm2CardPresent(arg1)) {
@@ -906,7 +925,7 @@ static void pgm2McuCommand(bool isCommand)
                     Pgm2CardLogCount++;
                 }
                 Pgm2McuResult0 = cmd;
-            break;
+                break;
 
             case 0xc6: // write protection byte
                 if (pgm2CardPresent(arg1)) {
@@ -919,7 +938,7 @@ static void pgm2McuCommand(bool isCommand)
                     Pgm2CardLogCount++;
                 }
                 Pgm2McuResult0 = cmd;
-            break;
+                break;
 
             case 0xc7: // read protection bytes
                 if (pgm2CardPresent(arg1)) {
@@ -932,7 +951,7 @@ static void pgm2McuCommand(bool isCommand)
                     Pgm2CardLogCount++;
                 }
                 Pgm2McuResult0 = cmd;
-            break;
+                break;
 
             case 0xc8: // write one card data byte
                 if (pgm2CardPresent(arg1)) {
@@ -945,7 +964,7 @@ static void pgm2McuCommand(bool isCommand)
                     Pgm2CardLogCount++;
                 }
                 Pgm2McuResult0 = cmd;
-            break;
+                break;
 
             case 0xc9: // card authentication (SLE4442 PSC verification)
                 if (pgm2CardPresent(arg1)) {
@@ -961,13 +980,13 @@ static void pgm2McuCommand(bool isCommand)
                     Pgm2CardLogCount++;
                 }
                 Pgm2McuResult0 = cmd;
-            break;
+                break;
 
             default:
                 // Match MAME: unknown commands report error status (0xF4).
                 status = 0x00f40000;
                 Pgm2McuResult0 = cmd;
-            break;
+                break;
         }
 
         // Status is exposed in bits [23:16].
@@ -1036,6 +1055,41 @@ static void pgm2SetVidSubPtrs()
     Pgm2VideoRegs  = (UINT32*)(Pgm2VidRAM + 0x120000);
 }
 
+
+static void checkSpeedhack(UINT32 addr, UINT32 v)
+{
+	// Speed hack: detect busy-loop reads and eat remaining cycles
+	if ( (Pgm2SpeedHackAddr[0] && (addr & ~3) == Pgm2SpeedHackAddr[0]) ||
+		 (Pgm2SpeedHackAddr[1] && (addr & ~3) == Pgm2SpeedHackAddr[1]) )
+	{
+		UINT32 pc = Arm9DbgGetPC() & 0x7FFFFFFF;
+		bool pcMatch = false;
+		int shId = 0;
+		for (UINT32 id = 0; id < 2; id++) {
+			for (UINT32 i = 0; i < 4; i++) {
+				if (Pgm2SpeedHackPC[id][i] && pc == Pgm2SpeedHackPC[id][i]) {
+					pcMatch = true;
+					shId = id;
+					break;
+				}
+			}
+		}
+		if (pcMatch && (addr & 0x7fffc) <= 0x7FFF8) {
+			UINT32 next = 0;
+			if (shId == 0) {
+				next = BURN_ENDIAN_SWAP_INT32(*(UINT32*)(Pgm2ArmRAM + (addr & 0x7fffc) + 4));
+			} else {
+				// shId 1, used by ddpdojt (masked to second byte & inverted)
+				next = !(BURN_ENDIAN_SWAP_INT32(*(UINT32*)(Pgm2ArmRAM + (addr & 0x7fffc))) & 0x00ff0000);
+			}
+
+			if ((v == 0 || shId == 1) && next == 0) {
+				Arm9RunEndEatCycles();
+			}
+		}
+	}
+}
+
 // ---------------------------------------------------------------------------
 // Memory helpers — match MAME pgm2_map() address ranges
 // ---------------------------------------------------------------------------
@@ -1056,24 +1110,8 @@ static inline UINT32 pgm2ReadLongDirect(UINT32 addr)
     // Main RAM 0x20000000-0x2007FFFF
     if (addr >= 0x20000000 && addr <= 0x2007FFFF) {
         UINT32 v = BURN_ENDIAN_SWAP_INT32(*(UINT32*)(Pgm2ArmRAM + (addr - 0x20000000)));
-        // Speed hack: detect busy-loop reads and eat remaining cycles
-        if (Pgm2SpeedHackAddr && (addr & ~3) == Pgm2SpeedHackAddr) {
-            UINT32 pc = Arm9DbgGetPC() & 0x7FFFFFFF;
-            bool pcMatch = false;
-            for (INT32 i = 0; i < 4; i++) {
-                if (Pgm2SpeedHackPC[i] && pc == Pgm2SpeedHackPC[i]) {
-                    pcMatch = true;
-                    break;
-                }
-            }
-            if (pcMatch && (addr - 0x20000000) <= 0x7FFF8) {
-                UINT32 next = BURN_ENDIAN_SWAP_INT32(*(UINT32*)(Pgm2ArmRAM + (addr - 0x20000000) + 4));
-                if (v == 0 && next == 0) {
-                    Arm9RunEndEatCycles();
-                }
-            }
-        }
-        return v;
+		checkSpeedhack(addr, v);
+		return v;
     }
 
     // Sprite OAM 0x30000000-0x30001FFF (8KB, matches MAME pgm2_map)
@@ -1715,14 +1753,13 @@ INT32 pgm2Init()
     // Game-specific ROM load + decrypt callback
     if (pPgm2InitCallback)
         pPgm2InitCallback();
-	
 
     // Detect actual ROM file size for correct decrypt length and MAP_ROM range
     Pgm2ArmROMFileLen = Pgm2ArmROMLen;  // default to buffer size
     if (Pgm2ArmROM && Pgm2ArmROMLen > 0) {
         struct BurnRomInfo armri;
         memset(&armri, 0, sizeof(armri));
-        if (BurnDrvGetRomInfo(&armri, 1) == 0 && armri.nLen > 0) {
+        if (BurnDrvGetRomInfo(&armri, Pgm2ArmRomIndex) == 0 && armri.nLen > 0) {
             Pgm2ArmROMFileLen = armri.nLen;
             PGM2_LOG(PGM2_LOG_SYS, "arm rom file size=%d (0x%X) buffer=%d (0x%X)", armri.nLen, armri.nLen, Pgm2ArmROMLen, Pgm2ArmROMLen);
             // Fill unloaded tail with 0x00 to match MAME's ROM_REGION default zero-fill.
@@ -1802,6 +1839,7 @@ INT32 pgm2Init()
     }
 
     Pgm2HasDecrypted = 0;
+	Pgm2HasDecrypted_Cached = 0;
 
     // Initialize KOV3 module clock counter to 151 (matches MAME machine_reset).
     // This skips the false clock pulse that occurs during GPIO initialization.
@@ -1875,33 +1913,25 @@ INT32 pgm2Init()
             Arm9MapMemory(Pgm2ArmROM, 0x10000000, romEnd, MAP_ROM);
             PGM2_LOG(PGM2_LOG_SYS, "mapped ext ROM at 0x10000000-0x%08X as MAP_ROM (buffer=%08X)", romEnd, Pgm2ArmROMLen);
         }
-    }
+	}
+
     // Map main RAM at 0x20000000.
+	Arm9MapMemory(Pgm2ArmRAM, 0x20000000, 0x2007FFFF, MAP_RAM);
+
     // Reads from directly mapped pages bypass pgm2ReadLongDirect, so the
     // speedhack page must remain read-unmapped or the busy-loop interception
     // never triggers.
-    if (Pgm2SpeedHackAddr >= 0x20000000 && Pgm2SpeedHackAddr <= 0x2007FFFF) {
-        const UINT32 ramStart = 0x20000000;
-        const UINT32 ramEnd = 0x2007FFFF;
-        const UINT32 hackPageStart = Pgm2SpeedHackAddr & ~0xFFF;
-        const UINT32 hackPageEnd = hackPageStart + 0xFFF;
+	for (INT32 id = 0; id < 2; id++) {
+		if (Pgm2SpeedHackAddr[id] >= 0x20000000 && Pgm2SpeedHackAddr[id] <= 0x2007FFFF) {
+			const UINT32 hackPageStart = Pgm2SpeedHackAddr[id] & ~0xFFF;
+			const UINT32 hackPageEnd = hackPageStart + 0xFFF;
+			// Un-map speedhack page in the ArmRAM for handler callback
+			Arm9UnmapMemory(hackPageStart, hackPageEnd, MAP_READ);
+			bprintf(0, _T("speedhack[%d] active addr = %08X - %08x\n"), id, hackPageStart, hackPageEnd);
+		}
+	}
 
-        if (hackPageStart > ramStart) {
-            Arm9MapMemory(Pgm2ArmRAM, ramStart, hackPageStart - 1, MAP_RAM);
-        }
-        // Map the speedhack page as WRITE-only so reads go through the callback
-        Arm9MapMemory(Pgm2ArmRAM + (hackPageStart - ramStart), hackPageStart, hackPageEnd, MAP_WRITE);
-        if (hackPageEnd < ramEnd) {
-            Arm9MapMemory(Pgm2ArmRAM + (hackPageEnd + 1 - ramStart), hackPageEnd + 1, ramEnd, MAP_RAM);
-        }
-        PGM2_LOG(PGM2_LOG_SYS, "speedhack active addr=%08X pcs=%08X,%08X,%08X,%08X page=%08X-%08X read-unmapped",
-            Pgm2SpeedHackAddr,
-            Pgm2SpeedHackPC[0], Pgm2SpeedHackPC[1], Pgm2SpeedHackPC[2], Pgm2SpeedHackPC[3],
-            hackPageStart, hackPageEnd);
-    } else {
-        Arm9MapMemory(Pgm2ArmRAM, 0x20000000, 0x2007FFFF, MAP_RAM);
-    }
-    // Map SRAM at 0x02000000
+	// Map SRAM at 0x02000000
     Arm9MapMemory(Pgm2ExtRAM, 0x02000000, 0x0200FFFF, MAP_RAM);
 
     // Map video RAM directly for performance (boot ROM fills FG videoram extensively)
@@ -1939,7 +1969,9 @@ INT32 pgm2DoReset()
 		memcpy(Pgm2ArmROM, Pgm2ArmROMEncrypted, Pgm2ArmROMLen);
 
 	Pgm2HasDecryptedKov3Module = 0;
+	Pgm2HasDecryptedKov3Module_Cached = 0;
 	Pgm2HasDecrypted = 0;
+	Pgm2HasDecrypted_Cached = 0;
 	Pgm2ModuleClkCnt = 151; // MAME: prevents false clock pulse during GPIO init
 	Pgm2ModulePrevState = 0;
 	Pgm2ModuleInLatch = 0;
@@ -1993,6 +2025,7 @@ INT32 pgm2Exit()
     pPgm2InitCallback = NULL;
     pPgm2ResetCallback = NULL;
     pPgm2ScanCallback = NULL;
+    Pgm2ArmRomIndex = 1;
     Pgm2CardRomIndex = -1;
     for (int i = 0; i < 4; i++) Pgm2PerSlotCardIndex[i] = -1;
     memset(Pgm2CardAuthenticated, 0, sizeof(Pgm2CardAuthenticated));
@@ -2001,7 +2034,7 @@ INT32 pgm2Exit()
     Pgm2ActiveCardSlot = 0;
 
     // Reset speed hack
-    Pgm2SpeedHackAddr = 0;
+    Pgm2SpeedHackAddr[0] = Pgm2SpeedHackAddr[1] = 0;
     memset(Pgm2SpeedHackPC, 0, sizeof(Pgm2SpeedHackPC));
 
     // Reset RAM/ROM board
@@ -2016,7 +2049,8 @@ INT32 pgm2Exit()
 
     // Reset kov3 module state
     Pgm2HasKov3Module = 0;
-    Pgm2HasDecryptedKov3Module = 0;
+	Pgm2HasDecryptedKov3Module = 0;
+	Pgm2HasDecryptedKov3Module_Cached = 0;
     Pgm2ModuleKey = NULL;
     Pgm2ModuleSum = NULL;
     Pgm2ModuleAddrXor = 0;
@@ -2334,12 +2368,12 @@ INT32 pgm2Scan(INT32 nAction, INT32 *pnMin)
         SCAN_VAR(Pgm2AicLevelStack);
         SCAN_VAR(Pgm2AicLvlIdx);
 
-        SCAN_VAR(Pgm2HasDecrypted);
+        SCAN_VAR(Pgm2HasDecrypted); // do _not_ scan "Pgm2HasDecrypted_Cached" - internal cached value!
         SCAN_VAR(Pgm2EncryptTable);
 
-        if (Pgm2HasKov3Module) 
+		if (Pgm2HasKov3Module)
 		{
-            SCAN_VAR(Pgm2HasDecryptedKov3Module);
+            SCAN_VAR(Pgm2HasDecryptedKov3Module); // do _not_ scan "Pgm2HasDecryptedKov3Module_Cached" - internal cached value!
             SCAN_VAR(Pgm2ModuleClkCnt);
             SCAN_VAR(Pgm2ModulePrevState);
             SCAN_VAR(Pgm2ModuleInLatch);
@@ -2351,20 +2385,29 @@ INT32 pgm2Scan(INT32 nAction, INT32 *pnMin)
         }
     }
 
-    // After loading a savestate, restore encrypted ROM and re-decrypt if needed
-    // (MAME: device_post_load — module XOR first, then table decrypt)
-    if (nAction & ACB_WRITE) {
-        if (Pgm2ArmROMEncrypted && Pgm2ArmROM)
-            memcpy(Pgm2ArmROM, Pgm2ArmROMEncrypted, Pgm2ArmROMLen);
-        if (Pgm2HasDecryptedKov3Module) {
-            pgm2DecryptKov3Module(Pgm2ModuleAddrXor, Pgm2ModuleDataXor);
-        }
-        if (Pgm2HasDecrypted) {
-            if (Pgm2ArmROM && Pgm2ArmROMLen > 0) {
-                INT32 decryptLen = (Pgm2ArmROMFileLen > 0) ? Pgm2ArmROMFileLen : Pgm2ArmROMLen;
-                pgm2_igs036_decrypt(Pgm2ArmROM, decryptLen, Pgm2EncryptTable, Pgm2DecryptWordOffset);
-            }
-        }
+    // After loading a savestate, restore encrypted ROM and re-decrypt if
+	// Decryption values in state do not match internal cached value
+	if (nAction & ACB_WRITE) {
+		const bool pgm2_decr_check = Pgm2HasDecrypted != Pgm2HasDecrypted_Cached;
+		const bool kov3_decr_check = Pgm2HasKov3Module && (Pgm2HasDecryptedKov3Module != Pgm2HasDecryptedKov3Module_Cached);
+		if (pgm2_decr_check || kov3_decr_check) {
+			Pgm2HasDecrypted_Cached = 0;
+			Pgm2HasDecryptedKov3Module_Cached = 0;
+
+			if (Pgm2ArmROMEncrypted && Pgm2ArmROM)
+				memcpy(Pgm2ArmROM, Pgm2ArmROMEncrypted, Pgm2ArmROMLen);
+			if (Pgm2HasDecryptedKov3Module) {
+				pgm2DecryptKov3Module(Pgm2ModuleAddrXor, Pgm2ModuleDataXor);
+				Pgm2HasDecryptedKov3Module_Cached = 1;
+			}
+			if (Pgm2HasDecrypted) {
+				if (Pgm2ArmROM && Pgm2ArmROMLen > 0) {
+					INT32 decryptLen = (Pgm2ArmROMFileLen > 0) ? Pgm2ArmROMFileLen : Pgm2ArmROMLen;
+					pgm2_igs036_decrypt(Pgm2ArmROM, decryptLen, Pgm2EncryptTable, Pgm2DecryptWordOffset);
+					Pgm2HasDecrypted_Cached = 1;
+				}
+			}
+		}
     }
 
     if (pPgm2ScanCallback)
