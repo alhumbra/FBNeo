@@ -2746,24 +2746,37 @@ static INT32 SalamandInit()
 	{
 		INT32 nIndex = 0;
 
-		if (BurnLoadRom(Drv68KROM + 0x000001, nIndex++, 2)) return 1;
-		if (BurnLoadRom(Drv68KROM + 0x000000, nIndex++, 2)) return 1;
-		if (BurnLoadRom(Drv68KROM + 0x040001, nIndex++, 2)) return 1;
-		if (BurnLoadRom(Drv68KROM + 0x040000, nIndex++, 2)) return 1;
+		if (0 == strcmp(BurnDrvGetTextA(DRV_NAME), "spclone")) {
+			// spclone: 68K program is 2 files x 0x10000, interleaved at 0x000000
+			// idx0: spclone.18b (hi byte), idx1: spclone.18c (lo byte)
+			if (BurnLoadRom(Drv68KROM + 0x000001, nIndex++, 2)) return 1;
+			if (BurnLoadRom(Drv68KROM + 0x000000, nIndex++, 2)) return 1;
 
-		if (0 == strcmp(BurnDrvGetTextA(DRV_NAME), "salamandt")) {
-			if (BurnLoadRom(Drv68KROM + 0x060001, nIndex++, 2)) return 1;
-			if (BurnLoadRom(Drv68KROM + 0x060000, nIndex++, 2)) return 1;
-		}
+			if (BurnLoadRom(DrvZ80ROM + 0x000000, nIndex++, 1)) return 1;
 
-		if (BurnLoadRom(DrvZ80ROM + 0x000000, nIndex++, 1)) return 1;
+			if (BurnLoadRom(DrvVLMROM + 0x000000, nIndex++, 1)) return 1;
 
-		if (BurnLoadRom(DrvVLMROM + 0x000000, nIndex++, 1)) return 1;
+			if (BurnLoadRom(K007232ROM + 0x00000,  nIndex++, 1)) return 1;
+		} else {
+			if (BurnLoadRom(Drv68KROM + 0x000001, nIndex++, 2)) return 1;
+			if (BurnLoadRom(Drv68KROM + 0x000000, nIndex++, 2)) return 1;
+			if (BurnLoadRom(Drv68KROM + 0x040001, nIndex++, 2)) return 1;
+			if (BurnLoadRom(Drv68KROM + 0x040000, nIndex++, 2)) return 1;
 
-		if (BurnLoadRom(K007232ROM + 0x00000, nIndex++, 1)) return 1;
+			if (0 == strcmp(BurnDrvGetTextA(DRV_NAME), "salamandt")) {
+				if (BurnLoadRom(Drv68KROM + 0x060001, nIndex++, 2)) return 1;
+				if (BurnLoadRom(Drv68KROM + 0x060000, nIndex++, 2)) return 1;
+			}
 
-		if (0 == strcmp(BurnDrvGetTextA(DRV_NAME), "salamandt")) {
-			if (BurnLoadRom(K007232ROM + 0x10000, nIndex++, 1)) return 1;
+			if (BurnLoadRom(DrvZ80ROM + 0x000000, nIndex++, 1)) return 1;
+
+			if (BurnLoadRom(DrvVLMROM + 0x000000, nIndex++, 1)) return 1;
+
+			if (BurnLoadRom(K007232ROM + 0x00000, nIndex++, 1)) return 1;
+
+			if (0 == strcmp(BurnDrvGetTextA(DRV_NAME), "salamandt")) {
+				if (BurnLoadRom(K007232ROM + 0x10000, nIndex++, 1)) return 1;
+			}
 		}
 	}
 
@@ -4259,18 +4272,18 @@ struct BurnDriver BurnDrvsalamandt = {
 
 
 // Salamander (SP version) - hack by SP
+// 68K program: 2 files x 0x10000, interleaved hi/lo at 0x000000
+// ROM load order: idx0=68K hi, idx1=68K lo, idx2=Z80, idx3=VLM, idx4=K007232
 
 static struct BurnRomInfo spcloneRomDesc[] = {
 	{ "spclone.18b",	0x10000, 0x14c19a46, 1 | BRF_PRG | BRF_ESS }, //  0 m68000 Code (hi)
 	{ "spclone.18c",	0x10000, 0xfdafc246, 1 | BRF_PRG | BRF_ESS }, //  1 m68000 Code (lo)
-	{ "587-c03.17b",	0x20000, 0xe5caf6e6, 1 | BRF_PRG | BRF_ESS }, //  2 Graphic data hi (shared)
-	{ "587-c06.17c",	0x20000, 0xc2f567ea, 1 | BRF_PRG | BRF_ESS }, //  3 Graphic data lo (shared)
 
-	{ "spclone.11j",	0x08000, 0xbf83b182, 2 | BRF_PRG | BRF_ESS }, //  4 Z80 Code
+	{ "spclone.11j",	0x08000, 0xbf83b182, 2 | BRF_PRG | BRF_ESS }, //  2 Z80 Code
 
-	{ "587-d08.8g",		0x04000, 0xf9ac6b82, 4 | BRF_SND },           //  5 VLM5030 Samples
+	{ "587-d08.8g",		0x04000, 0xf9ac6b82, 4 | BRF_SND },           //  3 VLM5030 Samples (shared)
 
-	{ "587-c01.10a",	0x20000, 0x09fe0632, 5 | BRF_SND },           //  6 K007232 Samples
+	{ "587-c01.10a",	0x20000, 0x09fe0632, 5 | BRF_SND },           //  4 K007232 Samples (shared)
 };
 
 STD_ROM_PICK(spclone)
