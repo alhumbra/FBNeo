@@ -5499,6 +5499,37 @@ struct BurnDriver BurnDrvmspacmanblt2 = {
 };
 
 
+// Come-Cocos (Ms. Pac-Man) ('Made in Greece' Triunvi bootleg, set 3)
+// Only some text strings altered (ghost names, etc.)
+
+static struct BurnRomInfo mspacmanblt3RomDesc[] = {
+	{ "11.bin",       0x8000, 0x3e2fb093, 1 | BRF_ESS | BRF_PRG },	//  0 Z80 Code
+
+	{ "13.bin",       0x8000, 0xf2c5da43, 2 | BRF_GRA },			//  1 Graphics
+
+	// not dumped for this set
+	{ "82s123.h7",    0x0020, 0x3545e7e9, 3 | BRF_GRA },			//  2 Color Proms
+	{ "82s129-3.d1",  0x0100, 0x3eb3a8e4, 3 | BRF_GRA },			//  3
+
+	// sound PROMs, not dumped for this set
+	{ "82s129-1.a9",  0x0100, 0xa9cc86bf, 4 | BRF_SND },			//  4 Sound Prom
+	{ "82s129-2.c9",  0x0100, 0x77245b66, 0 | BRF_SND | BRF_OPT },	//  5 Timing Prom (not used)
+};
+
+STD_ROM_PICK(mspacmanblt3)
+STD_ROM_FN(mspacmanblt3)
+
+struct BurnDriver BurnDrvmspacmanblt3 = {
+	"mspacmanblt3", "mspacman", NULL, NULL, "1992",
+	"Come-Cocos (Ms. Pac-Man) ('Made in Greece' Triunvi bootleg, set 3)\0", NULL, "bootleg (Triunvi)", "Pac-man",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_ORIENTATION_VERTICAL | BDF_ORIENTATION_FLIPPED | BDF_BOOTLEG | BDF_HISCORE_SUPPORTED, 2, HARDWARE_PACMAN, GBF_MAZE | GBF_ACTION, 0,
+	NULL, mspacmanblt3RomInfo, mspacmanblt3RomName, NULL, NULL, NULL, NULL, DrvInputInfo, mspacmanDIPInfo,
+	mspacmanbgInit, DrvExit, DrvFrame, DrvDraw, DrvScan, &DrvRecalc, 0x200,
+	224, 288, 3, 4
+};
+
+
 // Come-Cocos (Ms. Pac-Man) ('Made in Greece' Tecnausa bootleg)
 
 static struct BurnRomInfo mspacmanbccRomDesc[] = {
@@ -5759,6 +5790,40 @@ struct BurnDriver BurnDrvmspacmap = {
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_ORIENTATION_VERTICAL | BDF_ORIENTATION_FLIPPED | BDF_HACK | BDF_HISCORE_SUPPORTED, 2, HARDWARE_PACMAN, GBF_MAZE | GBF_ACTION, 0,
 	NULL, mspacmapRomInfo, mspacmapRomName, NULL, NULL, NULL, NULL, DrvInputInfo, mspacmanDIPInfo,
+	mspacmanbInit, DrvExit, DrvFrame, DrvDraw, DrvScan, &DrvRecalc, 0x200,
+	224, 288, 3, 4
+};
+
+
+// Man-Pac
+
+static struct BurnRomInfo manpacRomDesc[] = {
+	{ "manpac.1",     0x1000, 0xf5c9570a, 1 | BRF_ESS | BRF_PRG },	//  0 Z80 Code
+	{ "manpac.2",     0x1000, 0x508e2275, 1 | BRF_ESS | BRF_PRG },	//  1
+	{ "manpac.3",     0x1000, 0xdc293d68, 1 | BRF_ESS | BRF_PRG },	//  2
+	{ "manpac.4",     0x1000, 0x1c2a3102, 1 | BRF_ESS | BRF_PRG },	//  3
+	{ "manpac.5",     0x1000, 0xa88fd7cf, 1 | BRF_ESS | BRF_PRG },	//  4
+	{ "manpac.6",     0x1000, 0x47aae27e, 1 | BRF_ESS | BRF_PRG },	//  5
+
+	{ "manpac.5e",    0x1000, 0x0f2493ad, 2 | BRF_GRA },			//  6 Graphics
+	{ "manpac.5f",    0x1000, 0xdde2fba2, 2 | BRF_GRA },			//  7
+
+	{ "manpac.7f",    0x0020, 0x1b75882b, 3 | BRF_GRA },			//  8 Color Proms
+	{ "manpac.4a",    0x0100, 0x25987267, 3 | BRF_GRA },			//  9
+
+	{ "manpac.1m",    0x0100, 0xc310be6c, 4 | BRF_SND },			// 10 Sound Prom
+	{ "manpac.3m",    0x0100, 0x8e84bdc1, 0 | BRF_SND | BRF_OPT },	// 11 Timing Prom (not used)
+};
+
+STD_ROM_PICK(manpac)
+STD_ROM_FN(manpac)
+
+struct BurnDriver BurnDrvmanpac = {
+	"manpac", "mspacman", NULL, NULL, "2020-2024",
+	"Man-Pac\0", NULL, "hack (Screw)", "Pac-man",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_ORIENTATION_VERTICAL | BDF_ORIENTATION_FLIPPED | BDF_HACK | BDF_HISCORE_SUPPORTED, 2, HARDWARE_PACMAN, GBF_MAZE | GBF_ACTION, 0,
+	NULL, manpacRomInfo, manpacRomName, NULL, NULL, NULL, NULL, DrvInputInfo, mspacmanDIPInfo,
 	mspacmanbInit, DrvExit, DrvFrame, DrvDraw, DrvScan, &DrvRecalc, 0x200,
 	224, 288, 3, 4
 };
@@ -7709,7 +7774,7 @@ struct BurnDriver BurnDrvsprglbpg = {
 };
 
 
-// Beastie Feastie (Pac-Man conversion)
+// Beastie Feastie (Pac-Man conversion, set 1)
 
 static struct BurnRomInfo beastfpRomDesc[] = {
 	{ "bf-u2.bin",    			0x2000, 0x3afc517b, 1 | BRF_ESS | BRF_PRG },	//  0 Z80 Code
@@ -7732,7 +7797,7 @@ STD_ROM_FN(beastfp)
 
 struct BurnDriver BurnDrvbeastfp = {
 	"beastfp", "suprglob", NULL, NULL, "1984",
-	"Beastie Feastie (Pac-Man conversion)\0", NULL, "Epos Corporation", "Pac-man",
+	"Beastie Feastie (Pac-Man conversion, set 1)\0", NULL, "Epos Corporation", "Pac-man",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_ORIENTATION_VERTICAL | BDF_ORIENTATION_FLIPPED | BDF_HISCORE_SUPPORTED, 2, HARDWARE_PACMAN, GBF_PLATFORM, 0,
 	NULL, beastfpRomInfo, beastfpRomName, NULL, NULL, NULL, NULL, theglobpInputInfo, theglobpDIPInfo,
@@ -7741,7 +7806,41 @@ struct BurnDriver BurnDrvbeastfp = {
 };
 
 
+// Beastie Feastie (Pac-Man conversion, set 2)
+// just the CPU board available, so only the program ROMs were dumped for this set.
+
+static struct BurnRomInfo beastfpaRomDesc[] = {
+	{ "u2_beastie_feastie_pb02864.u2",  0x2000, 0x97a2041b, 1 | BRF_ESS | BRF_PRG },	//  0 Z80 Code
+	{ "u3_beastie_feastie_pb02864.u3",  0x2000, 0xd379bbeb, 1 | BRF_ESS | BRF_PRG },	//  1
+
+	{ "beastf.5e",    					0x1000, 0x5654dc34, 2 | BRF_GRA },				//  2 Graphics
+	{ "beastf.5f",    					0x1000, 0x1b30ca61, 2 | BRF_GRA },				//  3
+
+	{ "7_f_the_glob.7f",      			0x0020, 0x1f617527, 3 | BRF_GRA },				//  4 Color Proms
+	{ "4_a_the_glob.4a",      			0x0100, 0x28faa769, 3 | BRF_GRA },				//  5
+
+	{ "82s126.1m",    					0x0100, 0xa9cc86bf, 4 | BRF_SND },				//  6 Sound Prom
+	{ "82s126.3m"  ,  					0x0100, 0x77245b66, 0 | BRF_SND | BRF_OPT },	//  7 Timing Prom (not used)
+	
+	{ "beastf.ic4",   					0x002c, 0xa6ab926d, 0 | BRF_OPT },				//  8 PAL
+};
+
+STD_ROM_PICK(beastfpa)
+STD_ROM_FN(beastfpa)
+
+struct BurnDriver BurnDrvbeastfpa = {
+	"beastfpa", "suprglob", NULL, NULL, "1984",
+	"Beastie Feastie (Pac-Man conversion, set 2)\0", NULL, "Epos Corporation", "Pac-man",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_ORIENTATION_VERTICAL | BDF_ORIENTATION_FLIPPED | BDF_HISCORE_SUPPORTED, 2, HARDWARE_PACMAN, GBF_PLATFORM, 0,
+	NULL, beastfpaRomInfo, beastfpaRomName, NULL, NULL, NULL, NULL, theglobpInputInfo, theglobpDIPInfo,
+	theglobpInit, DrvExit, DrvFrame, DrvDraw, DrvScan, &DrvRecalc, 0x200,
+	224, 288, 3, 4
+};
+
+
 // Eeekk! (Pac-Man conversion)
+// Pac-Man PCB conversion kit. Includes a small daughtercard (2 roms + 4 PLDs, plugs in through the Z80 socket), 2 roms + 2 BPROMs
 
 static struct BurnRomInfo eeekkpRomDesc[] = {
 	{ "u_2_eeekk_pg03094.u2",	0x2000, 0x701e37f2, 1 | BRF_PRG | BRF_ESS }, //  0 Z80 Code
@@ -9140,7 +9239,7 @@ struct BurnDriver BurnDrvzolapac = {
 
 static struct BurnRomInfo ChuckieeggRomDesc[] = {
 	{ "ppokoj1.bin",    0x1000, 0xf2ba04fd, 1 | BRF_ESS | BRF_PRG },	//  0 Z80 Code
-	{ "ppokoj2.bin",    0x1000, 0x161510d3, 1 | BRF_ESS | BRF_PRG },	//  1
+	{ "ppokoj2.bin",    0x1000, 0x80285be4, 1 | BRF_ESS | BRF_PRG },	//  1
 	{ "ppokoj3.bin",    0x1000, 0x5c594671, 1 | BRF_ESS | BRF_PRG },	//  2
 	{ "ppokoj4.bin",    0x1000, 0x25d4fc4f, 1 | BRF_ESS | BRF_PRG },	//  3
 	{ "ppoko5.bin",     0x1000, 0x54ca3d7d, 1 | BRF_ESS | BRF_PRG },	//  4

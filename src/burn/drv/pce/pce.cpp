@@ -7,12 +7,8 @@
 #include "vdc.h"
 #include "c6280.h"
 #include "bitswap.h"
-
-/*
-Notes:
-
-	There is no CD emulation at all.
-*/
+#include "pce_cd.h"
+#include "pcecdlist.h"
 
 static UINT8 *AllMem;
 static UINT8 *MemEnd;
@@ -21,7 +17,6 @@ static UINT8 *RamEnd;
 static UINT8 *PCECartROM;
 static UINT8 *PCECartRAM;
 static UINT8 *PCEUserRAM;
-static UINT8 *PCECDBRAM;
 
 static UINT32 *DrvPalette;
 UINT8 PCEPaletteRecalc;
@@ -41,7 +36,7 @@ UINT8 PCEJoy2[12];
 UINT8 PCEJoy3[12];
 UINT8 PCEJoy4[12];
 UINT8 PCEJoy5[12];
-UINT8 PCEDips[3];
+UINT8 PCEDips[4];
 
 static UINT8 last_dip;
 
@@ -50,8 +45,9 @@ static INT32 nExtraCycles;
 static UINT8 system_identify;
 static INT32 pce_sf2 = 0;
 static INT32 pce_sf2_bank;
-static UINT8 bram_locked = 1;
 static INT32 wondermomohack = 0;
+
+INT32 hardware_type = 0;
 
 INT32 PceGetZipName(char** pszName, UINT32 i)
 {
@@ -161,7 +157,7 @@ static void pce_write(UINT32 address, UINT8 data)
 		if (pce_sf2) sf2_bankswitch(address & 3);
 		return;
 	}
-	
+
 	switch (address & ~0x3ff)
 	{
 		case 0x1fe000:
@@ -210,42 +206,21 @@ static void pce_write(UINT32 address, UINT8 data)
 			h6280_irq_status_w(address & 0x3ff, data);
 		return;
 
-		case 0x1ff800:	// cd system
-		{
-			switch( address & 0xf )
-			{
-				case 0x07:	/* BRAM unlock / CD status */
-				{
-					if (data & 0x80)
-					{
-						bram_locked = 0;
-					}
-				}
-				break;
-			}
-
-			bprintf(0,_T("CD write %x:%x\n"), address, data );
-		}
+		case 0x1ff800: // cd system (bram, registers)
+			CDSubsystemRegsWrite(address, data);
 		return;
 	}
-	
-	if ((address >= 0x1ee000) && (address <= 0x1ee7ff)) {
-//		bprintf(0,_T("bram write %x:%x\n"), address & 0x7ff, data );
-		if (!bram_locked)
-		{
-			PCECDBRAM[address & 0x7FF] = data;
-		}
-		return;
-	}	
-	
-	
-	bprintf(0,_T("unknown write %x:%x\n"), address, data );
+
+	if (!CDSubsystemMiscWrite(address, data)) { // cd system (acard, bram)
+		// if the cd system doesn't handle this address, better log it!
+		bprintf(0,_T("unknown write %x:%x\n"), address, data);
+	}
 }
 
 static UINT8 pce_read(UINT32 address)
 {
 	address &= 0x1fffff;
-	
+
 	switch (address & ~0x3ff)
 	{
 		case 0x1fe000:
@@ -282,7 +257,7 @@ static UINT8 pce_read(UINT32 address)
 
 			ret &= 0x0f;
 			ret |= 0x30; // ?
-			ret |= 0x80; // no cd!
+			ret |= HAS_CD ? 0x00 : 0x80;
 			ret |= system_identify; // 0x40 pce, sgx, 0x00 tg16
 
 			return ret;
@@ -292,24 +267,10 @@ static UINT8 pce_read(UINT32 address)
 			return h6280_irq_status_r(address & 0x3ff);
 
 		case 0x1ff800:
-			switch( address & 0xf )
-			{
-				case 0x03:	/* BRAM lock / CD status */
-					bram_locked = 1;
-					break;
-			}
-			bprintf(0,_T("CD read %x\n"), address );
-			return 0; // cd system
+			return CDSubsystemRegsRead(address); // cd system (bram, registers)
 	}
-	
-	if ((address >= 0x1ee000) && (address <= 0x1ee7ff)) {
-	//	bprintf(0,_T("bram read %x:%x\n"), address,address & 0x7ff );
-		return PCECDBRAM[address & 0x7ff];
-	}	
-		
-	bprintf(0,_T("Unknown read %x\n"), address );
 
-	return 0;
+	return CDSubsystemMiscRead(address); // cd system (acard, bram)
 }
 
 static UINT8 sgx_read(UINT32 address)
@@ -367,20 +328,19 @@ static void sgx_write_port(UINT8 port, UINT8 data)
 	}
 }
 
-static INT32 MemIndex(UINT32 cart_size, INT32 type)
+static INT32 MemIndex(UINT32 cart_size)
 {
 	UINT8 *Next; Next = AllMem;
 
 	PCECartROM	= Next; Next += (cart_size <= 0x100000) ? 0x100000 : cart_size;
-
 	DrvPalette	= (UINT32*)Next; Next += 0x0401 * sizeof(UINT32);
 
 	AllRam		= Next;
-
-	PCEUserRAM	= Next; Next += (type == 2) ? 0x008000 : 0x002000; // pce/tg16 0x2000, sgx 0x8000
-
+	PCEUserRAM	= Next; Next += (hardware_type == SGX_HW) ? 0x008000 : 0x002000; // pce/tg16 0x2000, sgx 0x8000
 	PCECartRAM	= Next; Next += 0x008000; // populous
-	PCECDBRAM	= Next; Next += 0x00800; // Bram thingy
+
+	CDSubsystemMemIndex(Next);
+
 	vce_data	= (UINT16*)Next; Next += 0x200 * sizeof(UINT16);
 
 	vdc_vidram[0]	= Next; Next += 0x010000;
@@ -397,8 +357,6 @@ static INT32 MemIndex(UINT32 cart_size, INT32 type)
 
 static INT32 PCEDoReset()
 {
-	memset (AllRam, 0, RamEnd - AllRam);
-
 	h6280Open(0);
 	h6280Reset();
 	h6280Close();
@@ -421,6 +379,8 @@ static INT32 PCEDoReset()
 
 	clear_opposite.reset();
 
+	CDSubsystemReset();
+
 	return 0;
 }
 
@@ -430,17 +390,19 @@ static INT32 CommonInit(int type)
 	BurnDrvGetRomInfo(&ri, 0);
 	UINT32 length = ri.nLen;
 
+	hardware_type = type;
+
 	AllMem = NULL;
-	MemIndex(length, type);
+	MemIndex(length);
 	INT32 nLen = MemEnd - (UINT8 *)0;
 	if ((AllMem = (UINT8 *)BurnMalloc(nLen)) == NULL) return 1;
 	memset(AllMem, 0, nLen);
-	MemIndex(length, type);
+	MemIndex(length);
 
 	{
 		memset (PCECartROM, 0xff, length);
 
-		if (BurnLoadRom(PCECartROM, 0, 1)) return 1;
+		if (BurnLoadRom(PCECartROM, PCEDips[3], 1)) return 1;
 
 		if (ri.nLen & 0x200) { // remove header
 			memcpy (PCECartROM, PCECartROM + 0x200, ri.nLen - 0x200);
@@ -468,7 +430,7 @@ static INT32 CommonInit(int type)
 			{
 				memcpy (PCECartROM + 0x40000, PCECartROM + 0x00000, 0x40000);
 			}
-	
+
 			if (length <= 0x80000)
 			{
 				memcpy (PCECartROM + 0x80000, PCECartROM + 0x00000, 0x80000);
@@ -476,11 +438,16 @@ static INT32 CommonInit(int type)
 		}
 	}
 
-	if (type == 0 || type == 1) // pce / tg-16
+	if ((type == PCE_HW) || (type == TG16_HW) || HAS_CD) // pce, tg-16, cd, acard
 	{
 		h6280Init(0);
 		h6280Open(0);
-		h6280MapMemory(PCECartROM + 0x000000, 0x000000, 0x0fffff, MAP_ROM);
+		if (type == ACARD_HW) {
+			h6280MapMemory(PCECartROM + 0x000000, 0x000000, 0x07ffff, MAP_ROM);
+			h6280MapMemory(PCECartROM + 0x088000, 0x088000, 0x0fffff, MAP_ROM);
+		} else {
+			h6280MapMemory(PCECartROM + 0x000000, 0x000000, 0x0fffff, MAP_ROM);
+		}
 		h6280MapMemory(PCEUserRAM + 0x000000, 0x1f0000, 0x1f1fff, MAP_RAM); // mirrored
 		h6280MapMemory(PCEUserRAM + 0x000000, 0x1f2000, 0x1f3fff, MAP_RAM);
 		h6280MapMemory(PCEUserRAM + 0x000000, 0x1f4000, 0x1f5fff, MAP_RAM);
@@ -500,13 +467,13 @@ static INT32 CommonInit(int type)
 		interrupt = pce_interrupt;
 		hblank = pce_hblank;
 
-		if (type == 0) {		// pce
-			system_identify = 0x40;
-		} else {			// tg16
-			system_identify = 0x00;
+		if (type == TG16_HW) {
+			system_identify = 0x00; // tg16
+		} else {
+			system_identify = 0x40; // pce, cd, acard
 		}
 	}
-	else if (type == 2) // sgx
+	else if (type == SGX_HW) // sgx
 	{
 		h6280Init(0);
 		h6280Open(0);
@@ -522,12 +489,14 @@ static INT32 CommonInit(int type)
 
 		system_identify = 0x40;
 	}
-	
-	bram_locked = 1;
-	
+
+	if (HAS_CD) // cd, acard
+	{
+		CDSubsystemInit();
+	}
+
 	vdc_init();
 	vce_palette_init(DrvPalette, NULL);
-
 	c6280_init(3579545, 0, (strcmp(BurnDrvGetTextA(DRV_NAME), "pce_lostsunh") == 0) ? 1 : 0);
 	c6280_set_renderer(PCEDips[2] & 0x80);
 	c6280_set_route(BURN_SND_C6280_ROUTE_1, 1.00, BURN_SND_ROUTE_LEFT);
@@ -542,17 +511,22 @@ static INT32 CommonInit(int type)
 
 INT32 PCEInit()
 {
-	return CommonInit(0);
+	return CommonInit(PCE_HW);
 }
 
 INT32 TG16Init()
 {
-	return CommonInit(1);
+	return CommonInit(TG16_HW);
 }
 
 INT32 SGXInit()
 {
-	return CommonInit(2);
+	return CommonInit(SGX_HW);
+}
+
+INT32 PCECDInit()
+{
+	return CommonInit(PCEDips[2] & 1 ? ACARD_HW : CD_HW);
 }
 
 INT32 populousInit()
@@ -577,16 +551,20 @@ INT32 wondermomoInit()
 INT32 PCEExit()
 {
 	GenericTilesExit();
-
 	c6280_exit();
 	vdc_exit();
-
 	h6280Exit();
 
-	BurnFree (AllMem);
+	CDSubsystemExit();
+
+	// release the PC Engine CD information object if needed
+	PceCDInfo_Exit();
+
+	BurnFree(AllMem);
 
 	pce_sf2 = 0;
 	wondermomohack = 0;
+	hardware_type = 0;
 
 	return 0;
 }
@@ -685,6 +663,7 @@ INT32 PCEFrame()
 	}
 
 	h6280NewFrame(); // needed for c6280
+	if (HAS_CD) timerNewFrame();
 
 	PCECompileInputs();
 
@@ -692,12 +671,21 @@ INT32 PCEFrame()
 	INT32 nCyclesTotal[1] = { (INT32)((INT64)7159090 * nBurnCPUSpeedAdjust / (0x0100 * 60)) };
 	INT32 nCyclesDone[1] = { nExtraCycles };
 
+	if (HAS_CD) MSM5205NewFrame(0, 7159090, nInterleave);
+
 	h6280Open(0);
 	h6280Idle(nExtraCycles);
+	if (HAS_CD) timerIdle(nExtraCycles);
 	for (INT32 i = 0; i < nInterleave; i++)
 	{
 		nCyclesDone[0] += h6280Run(1128/3); // 1128 m-cycles brings us to hblank. "/ 3" m-cycles -> cpu cycles
 		hblank();
+
+		if (HAS_CD) {
+			CDSubsystemTick();
+			MSM5205UpdateScanline(i);
+		}
+
 		// if thinking of changing this, make sure to check for these side effects:
 		// blodia, game select bounce
 		// dragon egg, hang booting
@@ -712,6 +700,7 @@ INT32 PCEFrame()
 
 	if (pBurnSoundOut) {
 		c6280_update(pBurnSoundOut, nBurnSoundLen);
+		CDSubsystemSoundUpdate(pBurnSoundOut, nBurnSoundLen);
 	}
 
 	nExtraCycles = h6280TotalCycles() - nCyclesTotal[0];
@@ -728,7 +717,7 @@ INT32 PCEFrame()
 INT32 PCEScan(INT32 nAction, INT32 *pnMin)
 {
 	struct BurnArea ba;
-	
+
 	if (pnMin != NULL) {
 		*pnMin = 0x029698;
 	}
@@ -750,7 +739,6 @@ INT32 PCEScan(INT32 nAction, INT32 *pnMin)
 		SCAN_VAR(joystick_port_select);
 		SCAN_VAR(joystick_data_select);
 		SCAN_VAR(joystick_6b_select);
-		SCAN_VAR(bram_locked);
 
 		SCAN_VAR(nExtraCycles);
 
@@ -761,6 +749,8 @@ INT32 PCEScan(INT32 nAction, INT32 *pnMin)
 			sf2_bankswitch(pce_sf2_bank);
 		}
 	}
+
+	CDSubsystemScan(nAction, pnMin);
 
 	return 0;
 }

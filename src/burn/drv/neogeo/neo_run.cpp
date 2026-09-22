@@ -2763,7 +2763,15 @@ static void NeoCDProcessCommand()
 
 				case 7: {
 					NeoCDCommsStatusFIFO[2] = 0;
-					NeoCDCommsStatusFIFO[3] = 2; // must be 02, 0E, 0F, or 05
+
+					// CDZ copy protection / disc recognition response
+					// Most games need 0x02, but Twinkle Star Sprites needs 0x0F
+					INT32 nGameID = SekReadWord(0x108);
+					if (nGameID == 0x0224) {			// Twinkle Star Sprites CD (TSS)
+						NeoCDCommsStatusFIFO[3] = 0x0F;
+					} else {
+						NeoCDCommsStatusFIFO[3] = 0x02;	// must be 02, 0E, 0F, or 05
+					}
 
 					NeoCDCommsStatusFIFO[4] = 0;
 					NeoCDCommsStatusFIFO[5] = 0;
@@ -4338,6 +4346,7 @@ INT32 NeoInit()
 
 	nBIOS = 9999;
 	if (NeoLoad68KBIOS(NeoSystem & 0x3f)) {
+		bprintf(0, _T("Error loading bios!\n"));
 		return 1;
 	}
 
@@ -4767,6 +4776,12 @@ INT32 NeoFrame()
 		}
 	}
 
+	// note: Many neogeo games will be blocked on an anti-piracy screen or a black screen when the cpu is overclocked,
+	//       this is especially true for mslug games, one such case is mslug2 at both 0x200 and 0x400.
+	//       This seems directly related to SRAM writing, because getting the SRAM generated once at 0x100
+	//       and overclocking later works fine, meaning booting games with a forced overclock as it was done prior to
+	//       https://github.com/finalburnneo/FBNeo/commit/600088b8122d9977d3ae020dcd4101a3d5092a4d is not acceptable
+	//       (dozens of those mslug hacks wouldn't boot)
 	if (nPrevBurnCPUSpeedAdjust != nBurnCPUSpeedAdjust) {
 		bprintf(0, _T("\n---init cycles etc ---\n"));
 		// 68K CPU clock is 12MHz, modified by nBurnCPUSpeedAdjust

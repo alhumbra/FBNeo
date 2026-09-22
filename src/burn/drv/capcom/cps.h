@@ -1,3 +1,7 @@
+#pragma once
+#ifndef _CPS_H_
+#define _CPS_H_
+
 // CPS ----------------------------------
 #include "burnint.h"
 #include "m68000_intf.h"
@@ -113,6 +117,7 @@ INT32 Cps2LoadTilesGigaman2(UINT8 *Tile, UINT8 *pSrc);
 #define HACK_B_4		29
 #define HACK_B_5		30
 #define HACK_B_6		31
+#define HACK_B_7		32
 
 #define GFXTYPE_SPRITES		(1<<0)
 #define GFXTYPE_SCROLL1		(1<<1)
@@ -133,43 +138,45 @@ INT32 Cps2LoadTilesGigaman2(UINT8 *Tile, UINT8 *pSrc);
 #define mapper_YI24B		10
 #define mapper_AR24B		11
 #define mapper_AR22B		12
-#define mapper_O224B		13
-#define mapper_MS24B		14
-#define mapper_CK24B		15
-#define mapper_NM24B		16
-#define mapper_CA24B		17
-#define mapper_CA22B		18
-#define mapper_STF29		19
-#define mapper_RT24B		20
-#define mapper_RT22B		21
-#define mapper_KD29B		22
-#define mapper_CC63B		23
-#define mapper_KR63B		24
-#define mapper_S9263B		25
-#define mapper_VA63B		26
-#define mapper_VA22B		27
-#define mapper_Q522B		28
-#define mapper_TK263B		29
-#define mapper_CD63B		30
-#define mapper_PS63B		31
-#define mapper_MB63B		32
-#define mapper_QD22B		33
-#define mapper_QD63B		34
-#define mapper_TN2292		35
-#define mapper_RCM63B		36
-#define mapper_PKB10B		37
-#define mapper_pang3		38
-#define mapper_sfzch		39
-#define mapper_cps2			40
-#define mapper_frog			41
-#define mapper_pokon		42
-#define mapper_KNM10B		43
-#define mapper_gulun		44
+#define mapper_ARA63B		13
+#define mapper_O224B		14
+#define mapper_MS24B		15
+#define mapper_CK24B		16
+#define mapper_NM24B		17
+#define mapper_CA24B		18
+#define mapper_CA22B		19
+#define mapper_STF29		20
+#define mapper_RT24B		21
+#define mapper_RT22B		22
+#define mapper_KD29B		23
+#define mapper_CC63B		24
+#define mapper_KR63B		25
+#define mapper_S9263B		26
+#define mapper_VA63B		27
+#define mapper_VA22B		28
+#define mapper_Q522B		29
+#define mapper_TK263B		30
+#define mapper_CD63B		31
+#define mapper_PS63B		32
+#define mapper_MB63B		33
+#define mapper_QD22B		34
+#define mapper_QD63B		35
+#define mapper_TN2292		36
+#define mapper_RCM63B		37
+#define mapper_PKB10B		38
+#define mapper_pang3		39
+#define mapper_sfzch		40
+#define mapper_cps2			41
+#define mapper_frog			42
+#define mapper_pokon		43
+#define mapper_KNM10B		44
+#define mapper_gulun		45
 #define mapper_SFZ63B		mapper_RCM63B
-#define mapper_CP1B1F		45
-#define mapper_CP1B1F_boot	46
-#define mapper_pang3b4		47
-#define mapper_TKSGZB		48
+#define mapper_CP1B1F		46
+#define mapper_CP1B1F_boot	47
+#define mapper_pang3b4		48
+#define mapper_TKSGZB		49
+#define mapper_varthb2		50
 extern void SetGfxMapper(INT32 MapperId);
 extern INT32 GfxRomBankMapper(INT32 Type, INT32 Code);
 extern void SetCpsBId(INT32 CpsBId, INT32 bStars);
@@ -519,6 +526,20 @@ void Sf2mdtSoundFrameStart();
 void Sf2mdtSoundFrameEnd();
 INT32 Sf2mdtScanSound(INT32 nAction, INT32 *pnMin);
 
+// d_cps1.cpp
+#define CPS1_68K_PROGRAM_BYTESWAP			1
+#define CPS1_68K_PROGRAM_NO_BYTESWAP		2
+#define CPS1_Z80_PROGRAM					3
+#define CPS1_TILES							4
+#define CPS1_OKIM6295_SAMPLES				5
+#define CPS1_QSOUND_SAMPLES					6
+#define CPS1_PIC							7
+#define CPS1_EXTRA_TILES_SF2EBBL_400000		8
+#define CPS1_EXTRA_TILES_400000				9
+#define CPS1_EXTRA_TILES_SF2KORYU_400000	10
+#define CPS1_EXTRA_TILES_SF2B_400000		11
+#define CPS1_EXTRA_TILES_SF2MKOT_400000		12
+
 // d_cps2.cpp
 #define CPS2_PRG_68K						1
 #define CPS2_PRG_68K_SIMM					2
@@ -540,3 +561,5 @@ extern INT32 Cps2DisableDigitalVolume;
 extern UINT8 Cps2VolUp;
 extern UINT8 Cps2VolDwn;
 extern UINT8 AspectDIP;
+
+#endif

@@ -2184,6 +2184,40 @@ struct BurnDriver BurnDrvZero2 = {
 };
 
 
+// Operacion Defender (bootleg of Defender)
+
+static struct BurnRomInfo defenderomRomDesc[] = {
+	{ "rom1.bin",		0x1000, 0x8c04602b, 1 | BRF_PRG | BRF_ESS }, //  0 M6809 Code
+	{ "rom2.bin",		0x1000, 0x89b75984, 1 | BRF_PRG | BRF_ESS }, //  1
+	{ "rom3.bin",		0x1000, 0x94f51e9b, 1 | BRF_PRG | BRF_ESS }, //  2
+	{ "rom10.bin",		0x0800, 0x12e2bd1c, 1 | BRF_PRG | BRF_ESS }, //  3
+	{ "rom7.bin",		0x0800, 0x19e1ac79, 1 | BRF_PRG | BRF_ESS }, //  4
+	{ "rom9.bin",		0x0800, 0xb8ac5966, 1 | BRF_PRG | BRF_ESS }, //  5
+	{ "rom6.bin",		0x0800, 0x9deaf6d9, 1 | BRF_PRG | BRF_ESS }, //  6 BAD_DUMP, borrowed from defenseb
+	{ "rom8.bin",		0x0800, 0x339e092e, 1 | BRF_PRG | BRF_ESS }, //  7 BAD_DUMP, borrowed from defenseb
+	{ "rom5.bin",		0x0800, 0x871f75a0, 1 | BRF_PRG | BRF_ESS }, //  8
+	{ "rom4.bin",		0x0800, 0x65f4efd1, 1 | BRF_PRG | BRF_ESS }, //  9
+
+	{ "rom12.bin",		0x0800, 0xf122d9c9, 2 | BRF_PRG | BRF_ESS }, // 10 M6808 Code
+
+	{ "7641-1.bin",		0x0200, 0x25de5d85, 0 | BRF_OPT },           // 11 Address Decoder
+	{ "7641-2.bin",		0x0200, 0xc3f45f70, 0 | BRF_OPT },           // 12
+};
+
+STD_ROM_PICK(defenderom)
+STD_ROM_FN(defenderom)
+
+struct BurnDriver BurnDrvDefenderom = {
+	"defenderom", "defender", NULL, NULL, "1981",
+	"Operacion Defender (bootleg of Defender)\0", NULL, "bootleg (Operamatic)", "6809 System",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_BOOTLEG | BDF_HISCORE_SUPPORTED, 2, HARDWARE_MISC_PRE90S, GBF_HORSHOOT, 0,
+	NULL, defenderomRomInfo, defenderomRomName, NULL, NULL, NULL, NULL, DefenderInputInfo, NULL,
+	DefenceInit, DrvExit, DrvFrame, DrvDraw, DrvScan, &DrvRecalc, 0x10,
+	292, 240, 4, 3
+};
+
+
 // Defense Command (bootleg of Defender)
 
 static struct BurnRomInfo defcmndRomDesc[] = {
@@ -2680,7 +2714,7 @@ struct BurnDriver BurnDrvStargate = {
 
 
 // Robotron: 2084 (Solid Blue label)
-/* Solid Blue labels, "B" type ROMs labeled 3005-13 through 3005-24 */
+/* "Release 5" Solid Blue labels, "B" type ROMs labeled 3005-13 through 3005-24 */
 
 static struct BurnRomInfo robotronRomDesc[] = {
 	{ "2084_rom_10b_3005-22.a7",		0x1000, 0x13797024, 1 | BRF_PRG | BRF_ESS }, //  0 M6809 Code
@@ -2712,7 +2746,7 @@ static INT32 RobotronInit()
 
 struct BurnDriver BurnDrvRobotron = {
 	"robotron", NULL, NULL, NULL, "1982",
-	"Robotron: 2084 (Solid Blue label)\0", NULL, "Williams / Vid Kidz", "6809 System",
+	"Robotron: 2084 (Release 5, solid blue label)\0", NULL, "Williams / Vid Kidz", "6809 System",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING, 2, HARDWARE_MISC_PRE90S, GBF_SHOOT, 0,
 	NULL, robotronRomInfo, robotronRomName, NULL, NULL, NULL, NULL, RobotronInputInfo, NULL,
@@ -2722,7 +2756,7 @@ struct BurnDriver BurnDrvRobotron = {
 
 
 // Robotron: 2084 (Yellow/Orange label)
-/* Yellow label / Red stripe & Black print or Yellow label / Red stripe & Green print "B" type ROMs numbered 3005-13 through 3005-24 */
+/* "Release 4" Yellow label / Red stripe & Black print or Yellow label / Red stripe & Green print "B" type ROMs numbered 3005-13 through 3005-24 */
 	
 static struct BurnRomInfo robotronyoRomDesc[] = {
 	{ "2084_rom_10b_3005-10.a7",		0x1000, 0x4a9d5f52, 1 | BRF_PRG | BRF_ESS }, //  0 M6809 Code
@@ -2749,10 +2783,47 @@ STD_ROM_FN(robotronyo)
 
 struct BurnDriver BurnDrvRobotronyo = {
 	"robotronyo", "robotron", NULL, NULL, "1982",
-	"Robotron: 2084 (Yellow/Orange label)\0", NULL, "Williams / Vid Kidz", "6809 System",
+	"Robotron: 2084 (Release 4, yellow/orange label)\0", NULL, "Williams / Vid Kidz", "6809 System",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE, 2, HARDWARE_MISC_PRE90S, GBF_SHOOT, 0,
 	NULL, robotronyoRomInfo, robotronyoRomName, NULL, NULL, NULL, NULL, RobotronInputInfo, NULL,
+	RobotronInit, DrvExit, DrvFrame, DrvDraw, DrvScan, &DrvRecalc, 0x10,
+	292, 240, 4, 3
+};
+
+
+// Robotron: 2084 (Release 3)
+/* "Release 3" Censored prototype seen in the Robotron promo videotape, recovered from the Vid Kidz dev system */
+	
+static struct BurnRomInfo robotronr3RomDesc[] = {
+	{ "r3_10.a7",						0x1000, 0x1fb75828, 1 | BRF_PRG | BRF_ESS }, //  0 M6809 Code
+	{ "r3_11.c7",						0x1000, 0xccfaf7da, 1 | BRF_PRG | BRF_ESS }, //  1
+	{ "r3_12.e7",						0x1000, 0xcfdc9990, 1 | BRF_PRG | BRF_ESS }, //  2
+	{ "r3_1.e4",						0x1000, 0x2e5433ee, 1 | BRF_PRG | BRF_ESS }, //  3
+	{ "r3_2.c4",						0x1000, 0x5bc6c614, 1 | BRF_PRG | BRF_ESS }, //  4
+	{ "r3_3.a4",						0x1000, 0x37962af2, 1 | BRF_PRG | BRF_ESS }, //  5
+	{ "r3_4.e5",						0x1000, 0x9c140843, 1 | BRF_PRG | BRF_ESS }, //  6
+	{ "r3_5.c5",						0x1000, 0x24726007, 1 | BRF_PRG | BRF_ESS }, //  7
+	{ "r3_6.a5",						0x1000, 0x097e174d, 1 | BRF_PRG | BRF_ESS }, //  8
+	{ "r3_7.e6",						0x1000, 0x17a7ce34, 1 | BRF_PRG | BRF_ESS }, //  9
+	{ "r3_8.c6",						0x1000, 0xb6e8dbb9, 1 | BRF_PRG | BRF_ESS }, // 10
+	{ "r3_9.a6",						0x1000, 0xe7b53345, 1 | BRF_PRG | BRF_ESS }, // 11
+	
+	{ "video_sound_rom_3_std_767.ic12",	0x1000, 0xc56c1d28, 2 | BRF_PRG | BRF_ESS }, // 12 M6800 Code
+
+	{ "decoder_rom_4.3g",				0x0200, 0xe6631c23, 0 | BRF_OPT },           // 13 Address Decoder
+	{ "decoder_rom_6.3c",				0x0200, 0x83faf25e, 0 | BRF_OPT },           // 14
+};
+
+STD_ROM_PICK(robotronr3)
+STD_ROM_FN(robotronr3)
+
+struct BurnDriver BurnDrvRobotronr3 = {
+	"robotronr3", "robotron", NULL, NULL, "1982",
+	"Robotron: 2084 (Release 3, prototype)\0", NULL, "Williams / Vid Kidz", "6809 System",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_PROTOTYPE, 2, HARDWARE_MISC_PRE90S, GBF_SHOOT, 0,
+	NULL, robotronr3RomInfo, robotronr3RomName, NULL, NULL, NULL, NULL, RobotronInputInfo, NULL,
 	RobotronInit, DrvExit, DrvFrame, DrvDraw, DrvScan, &DrvRecalc, 0x10,
 	292, 240, 4, 3
 };
@@ -2822,7 +2893,7 @@ STD_ROM_FN(robotron87)
 
 struct BurnDriver BurnDrvRobotron87 = {
 	"robotron87", "robotron", NULL, NULL, "1987",
-	"Robotron: 2084 (1987 'shot-in-the-corner' bugfix)\0", NULL, "hack", "6809 System",
+	"Robotron: 2084 (1987 'shot-in-the-corner' bug fix)\0", NULL, "hack", "6809 System",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK, 2, HARDWARE_MISC_PRE90S, GBF_SHOOT, 0,
 	NULL, robotron87RomInfo, robotron87RomName, NULL, NULL, NULL, NULL, RobotronInputInfo, NULL,
@@ -3836,6 +3907,49 @@ struct BurnDriver BurnDrvBlaster = {
 };
 
 
+// Blaster (conversion kit)
+// 20 Level version with single sound board & mono sound
+
+static struct BurnRomInfo blasterkitRomDesc[] = {
+	{ "blastkit_rom_16.ic39",			0x1000, 0x414b2abf, 1 | BRF_PRG | BRF_ESS }, //  0 M6809 Code
+	{ "blastkit_rom_13.ic27",			0x2000, 0x9c64db76, 1 | BRF_PRG | BRF_ESS }, //  1
+	{ "blastkit_rom_11.ic25",			0x2000, 0xb7df4914, 1 | BRF_PRG | BRF_ESS }, //  2
+	{ "blastkit_rom_12.ic26",			0x2000, 0x8b1e26ab, 1 | BRF_PRG | BRF_ESS }, //  3
+	{ "blastkit_rom_17.ic41",			0x1000, 0x577d1e9a, 1 | BRF_PRG | BRF_ESS }, //  4
+	{ "blastkit_rom_15.ic38",			0x4000, 0x1ad146a4, 1 | BRF_PRG | BRF_ESS }, //  5
+	{ "blastkit_rom_8.ic20",			0x4000, 0xf110bbb0, 1 | BRF_PRG | BRF_ESS }, //  6
+	{ "blastkit_rom_9.ic22",			0x4000, 0x5c5b0f8a, 1 | BRF_PRG | BRF_ESS }, //  7
+	{ "blastkit_rom_10.ic24",			0x4000, 0xd47eb67f, 1 | BRF_PRG | BRF_ESS }, //  8
+	{ "blastkit_rom_6.ic13",			0x4000, 0x47fc007e, 1 | BRF_PRG | BRF_ESS }, //  9
+	{ "blastkit_rom_5.ic11",			0x4000, 0x15c1b94d, 1 | BRF_PRG | BRF_ESS }, // 10
+	{ "blastkit_rom_14.ic35",			0x4000, 0xaea6b846, 1 | BRF_PRG | BRF_ESS }, // 11
+	{ "blastkit_rom_7.ic15",			0x4000, 0x6fcc2153, 1 | BRF_PRG | BRF_ESS }, // 12
+	{ "blastkit_rom_1.ic1",				0x4000, 0x8d0ea9e7, 1 | BRF_PRG | BRF_ESS }, // 13
+	{ "blastkit_rom_2.ic3",				0x4000, 0x03c4012c, 1 | BRF_PRG | BRF_ESS }, // 14
+	{ "blastkit_rom_4.ic7",				0x4000, 0xf80e9ff5, 1 | BRF_PRG | BRF_ESS }, // 15
+	{ "blastkit_rom_3.ic6",				0x4000, 0x20e851f9, 1 | BRF_PRG | BRF_ESS }, // 16
+
+	{ "blastkit_rom_18",				0x1000, 0xc33a3145, 2 | BRF_PRG | BRF_ESS }, // 17 M6800 Code (single mono sound board)
+
+	{ "decoder_rom_4.ic42",				0x0200, 0xe6631c23, 0 | BRF_OPT },           // 18 proms
+	{ "video_decoder_rom_6.ic23",		0x0200, 0x83faf25e, 0 | BRF_OPT },           // 19
+	{ "blaster.col",					0x0800, 0xbac50bc4, 4 | BRF_GRA },           // 20
+};
+
+STD_ROM_PICK(blasterkit)
+STD_ROM_FN(blasterkit)
+
+struct BurnDriver BurnDrvBlasterkit = {
+	"blasterkit", "blaster", NULL, NULL, "1983",
+	"Blaster (conversion kit)\0", NULL, "Williams / Vid Kidz", "6809 System",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE, 2, HARDWARE_MISC_PRE90S, GBF_SHOOT, 0,
+	NULL, blasterkitRomInfo, blasterkitRomName, NULL, NULL, NULL, NULL, BlasterInputInfo, NULL,
+	BlasterInit, DrvExit, DrvFrame, BlasterDraw, DrvScan, &DrvRecalc, 0x110,
+	292, 240, 4, 3
+};
+
+
 // Blaster (location test)
 // 30 Level version
 
@@ -3879,4 +3993,3 @@ struct BurnDriver BurnDrvBlastero = {
 	BlasterInit, DrvExit, DrvFrame, BlasterDraw, DrvScan, &DrvRecalc, 0x110,
 	292, 240, 4, 3
 };
-

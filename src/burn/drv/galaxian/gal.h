@@ -1,3 +1,7 @@
+#pragma once
+#ifndef GAL_H
+#define GAL_H
+
 #include "tiles_generic.h"
 #include "z80_intf.h"
 #include "dac.h"
@@ -162,6 +166,7 @@ void GalaxianDrawBackground();
 void RockclimDrawBackground();
 void JumpbugDrawBackground();
 void FroggerDrawBackground();
+void FantastcDrawBackground();
 void TurtlesDrawBackground();
 void ScrambleDrawBackground();
 void AnteaterDrawBackground();
@@ -287,6 +292,8 @@ void MapHarem();
 void MapNamenayo();
 void MapTurtles();
 void MapScobra();
+void harem_bankswitch(INT32 bank);
+void harem_decrypt_scan(INT32 nAction);
 void harem_decrypt_bit_write(UINT8 data);
 void harem_decrypt_clk_write(UINT8 data);
 void harem_decrypt_rst_write(UINT8 data);
@@ -340,6 +347,13 @@ void GalRenderSoundSamples(INT16 *pSoundBuf, INT32 nLength);
 void GalaxianSoundWrite(UINT32 Offset, UINT8 d);
 void GalaxianLfoFreqWrite(UINT32 Offset, UINT8 d);
 void GalaxianSoundUpdateTimers();
+// Crazy Climber / Moon Shuttle sample player (cclimber_audio.cpp)
+void cclimber_sample_init();
+void cclimber_sample_exit();
+UINT8 *cclimber_sample_rom();
+void cclimber_sample_w_freq(UINT8 data);
+void cclimber_sample_w_vol(UINT8 data);
+void cclimber_sample_start();
 void cclimber_sample_render(INT16 *buffer, INT32 nLen);
 void cclimber_sample_scan();
 void cclimber_sample_num(UINT32, UINT32 data);
@@ -357,3 +371,5 @@ void JumpbugRenderStarLayer();
 void ScrambleRenderStarLayer();
 void MarinerRenderStarLayer();
 void RescueRenderStarLayer();
+
+#endif

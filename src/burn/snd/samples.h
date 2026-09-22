@@ -25,14 +25,15 @@ void BurnSampleSetPosition(INT32 sample, UINT32 position);
 
 void BurnSampleChannelPlay(INT32 channel, INT32 sample, INT32 loop = 0); // loop: -1, use config from sample struct
 void BurnSampleChannelPause(INT32 channel, bool pause);
-void BurnSampleChannelStop(INT32 channel);
+void BurnSampleChannelStop(INT32 channel, bool softstop = false);
 INT32 BurnSampleGetChannelStatus(INT32 channel);
 INT32 BurnSampleChannelGetPosition(INT32 channel);
 void BurnSampleChannelSetPosition(INT32 channel, UINT32 position);
-INT32 BurnSampleGetChannelSample(); // which sample is playing in this channel?
+INT32 BurnSampleGetChannelSample(INT32 channel); // which sample is playing in this channel?
 
 // how fast is playback for this sample? (0-400%)
 void BurnSampleSetPlaybackRate(INT32 sample, INT32 rate); 
+void BurnSampleChannelSetPlaybackRate(INT32 channel, INT32 rate);
 void BurnSampleReset();
 
 void BurnSampleInit(INT32 bAdd);
@@ -73,3 +74,14 @@ extern INT32 bBurnSampleTrimSampleEnd; // set before BurnSampleInit();
 	BurnSampleSetRouteAllSamples(BURN_SND_SAMPLE_ROUTE_1, v, d);	\
 	BurnSampleSetRouteAllSamples(BURN_SND_SAMPLE_ROUTE_2, v, d);    \
 }
+
+// dink's super handy macros
+void splay(INT32 sam, double volume, bool checkplay = false, bool loop = false);
+void splayex(INT32 sam, double volume, INT32 rate = 100, bool checkplay = false, bool loop = false);
+void splaych(INT32 ch, INT32 sam, double volume, bool checkplay = false, bool loop = false);
+void splayexch(INT32 ch, INT32 sam, double volume, INT32 rate = 100, bool checkplay = false, bool loop = false);
+void sstop(INT32 sam);
+void sstopch(INT32 ch);
+bool splaying(INT32 sam);
+bool splayingch(INT32 ch);
+

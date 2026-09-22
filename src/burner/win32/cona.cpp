@@ -238,8 +238,10 @@ int ConfigAppLoad()
   if (szValue) x = _tcstod(szValue, NULL); }
 #define STR(x) { TCHAR* szValue = LabelCheck(szLine,_T(#x) _T(" "));	\
   if (szValue) _tcscpy(x,szValue); }
+#if 0
 #define PAT(x) { TCHAR* szValue = LabelCheck(szLine,_T(#x) _T(" "));	\
 	if (szValue) { _tcscpy(x, szValue); UpdatePath(x); } }
+#endif
 #define DRV(x) { TCHAR* szValue = LabelCheck(szLine,_T(#x) _T(" "));	\
   if (szValue) x = NameToDriver(szValue); }
 
@@ -389,7 +391,9 @@ int ConfigAppLoad()
 		VAR(nKailleraCheatEnableHack);
 
 		VAR(nCDEmuSelect);
-		PAT(CDEmuImage);
+
+		// Note: was PAT(CDEmuImage) - but this caused slow startup when cd images are on a flash drive, and CDEmuImage points there
+		STR(CDEmuImage);
 
 		VAR(nRomsDlgWidth);
 		VAR(nRomsDlgHeight);
@@ -507,7 +511,6 @@ int ConfigAppLoad()
 		DRV(nBurnDrvSelect[5]);
 
 		VAR(bNeoCDListScanSub);
-		VAR(bNeoCDListScanOnlyISO);
 		
 		VAR(bRDListScanSub);
 
@@ -923,7 +926,6 @@ int ConfigAppSave()
 
 	_ftprintf(h, _T("\n// Neo Geo CD Load Game Dialog options\n"));
 	VAR(bNeoCDListScanSub);
-	VAR(bNeoCDListScanOnlyISO);
 
 	_ftprintf(h, _T("\n// RomData Load Game Dialog options\n"));
 	VAR(bRDListScanSub);

@@ -1,3 +1,7 @@
+#pragma once
+#ifndef _SYS16_H_
+#define _SYS16_H_
+
 #include "tiles_generic.h"
 #include "m68000_intf.h"
 #include "z80_intf.h"
@@ -163,6 +167,9 @@ extern System16ResetCallback System16ResetCallbackDo;
 
 UINT8 __fastcall System16PPIZ80PortRead(UINT16 a);
 void __fastcall System16Z80PortWrite(UINT16 a, UINT8 d);
+
+UINT8 __fastcall DfjailZ80PortRead(UINT16 a);
+void __fastcall DfjailZ80PortWrite(UINT16 a, UINT8 d);
 
 INT32 System16LoadRoms(bool bLoad);
 
@@ -357,3 +364,5 @@ void sega_315_5195_configure_explicit(UINT8 *map_data);
 void sega_315_5195_init();
 void sega_315_5195_exit();
 INT32 sega_315_5195_scan(INT32 nAction);
+
+#endif

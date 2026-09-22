@@ -72,13 +72,19 @@ INCLUDEPATH += \
     $$SRC/intf/cd \
     $$SRC/dep/libs/libpng \
     $$SRC/dep/libs/zlib \
+    $$SRC/dep/libs/libchdr \
+    $$SRC/dep/libs/libchdr/include \
+    $$SRC/dep/libs/lzma \
+    $$SRC/dep/libs/lzma/include \
+    $$SRC/dep/libs/zstd \
 
 DEFINES += BUILD_SDL \
     LSB_FIRST \
     "__fastcall=" \
     "_fastcall=" \
     WITH_QTCREATOR \
-    INCLUDE_LIB_PNGH
+    INCLUDE_LIB_PNGH \
+    CHDR_SYSTEM_ZLIB
 
 # no warnings...
 QMAKE_CXXFLAGS += -w
@@ -414,6 +420,7 @@ $$DRV_GALAXIAN {
 	SOURCES += \
 	    ../../src/burn/drv/galaxian/d_galaxian.cpp \
 	    ../../src/burn/drv/galaxian/gal_gfx.cpp \
+	    ../../src/burn/drv/galaxian/cclimber_audio.cpp \
 	    ../../src/burn/drv/galaxian/gal_run.cpp \
 	    ../../src/burn/drv/galaxian/gal_sound.cpp \
 	    ../../src/burn/drv/galaxian/gal_stars.cpp
@@ -480,14 +487,14 @@ $$DRV_KONAMI {
 	    ../../src/burn/drv/konami/d_ultraman.cpp \
 	    ../../src/burn/drv/konami/d_vendetta.cpp \
 	    ../../src/burn/drv/konami/d_xmen.cpp \
-	    ../../src/burn/drv/konami/k051316.cpp \
+	    ../../src/burn/devices/k051316.cpp \
 	    ../../src/burn/drv/konami/k051733.cpp \
 	    ../../src/burn/drv/konami/k051960.cpp \
 	    ../../src/burn/drv/konami/k052109.cpp \
 	    ../../src/burn/drv/konami/k053245.cpp \
 	    ../../src/burn/drv/konami/k053247.cpp \
 	    ../../src/burn/drv/konami/k053251.cpp \
-	    ../../src/burn/drv/konami/k053936.cpp \
+	    ../../src/burn/devices/k053936.cpp \
 	    ../../src/burn/drv/konami/k054000.cpp \
 	    ../../src/burn/drv/konami/konamiic.cpp
 }
@@ -605,7 +612,7 @@ $$DRV_PRE90S {
 	    ../../src/burn/drv/pre90s/d_marineb.cpp \
 	    ../../src/burn/drv/pre90s/d_markham.cpp \
 	    ../../src/burn/drv/pre90s/d_meijinsn.cpp \
-	    ../../src/burn/drv/pre90s/d_mitchell.cpp \
+	    ../../src/burn/drv/capcom/d_mitchell.cpp \
 	    ../../src/burn/drv/pre90s/d_mole.cpp \
 	    ../../src/burn/drv/pre90s/d_momoko.cpp \
 	    ../../src/burn/drv/pre90s/d_mrdo.cpp \
@@ -752,7 +759,7 @@ $$DRV_SEGA {
 	HEADERS += \
 	    ../../src/burn/drv/sega/fd1094.h \
 	    ../../src/burn/drv/sega/genesis_vid.h \
-	    ../../src/burn/drv/sega/mc8123.h \
+	    ../../src/burn/devices/mc8123.h \
 	    ../../src/burn/drv/sega/sys16.h
 	
 	SOURCES += \
@@ -771,7 +778,7 @@ $$DRV_SEGA {
 	    ../../src/burn/drv/sega/fd1089.cpp \
 	    ../../src/burn/drv/sega/fd1094.cpp \
 	    ../../src/burn/drv/sega/genesis_vid.cpp \
-	    ../../src/burn/drv/sega/mc8123.cpp \
+	    ../../src/burn/devices/mc8123.cpp \
 	    ../../src/burn/drv/sega/sys16_fd1094.cpp \
 	    ../../src/burn/drv/sega/sys16_gfx.cpp \
 	    ../../src/burn/drv/sega/sys16_run.cpp
@@ -800,7 +807,7 @@ $$DRV_TAITO {
 
 	HEADERS += \
 	    ../../src/burn/drv/taito/taito_ic.h \
-	    ../../src/burn/drv/taito/taito_m68705.h \
+	    ../../src/burn/devices/taito_m68705.h \
 	    ../../src/burn/drv/taito/taito.h \
 	    ../../src/burn/drv/taito/tnzs_prot.h
 	
@@ -831,7 +838,7 @@ $$DRV_TAITO {
 	    ../../src/burn/drv/taito/pc080sn.cpp \
 	    ../../src/burn/drv/taito/pc090oj.cpp \
 	    ../../src/burn/drv/taito/taito_ic.cpp \
-	    ../../src/burn/drv/taito/taito_m68705.cpp \
+	    ../../src/burn/devices/taito_m68705.cpp \
 	    ../../src/burn/drv/taito/taito.cpp \
 	    ../../src/burn/drv/taito/tc0100scn.cpp \
 	    ../../src/burn/drv/taito/tc0110pcr.cpp \
@@ -1070,6 +1077,24 @@ SOURCES += \
     ../../src/intf/audio/lowpass2.cpp \
     ../../src/intf/audio/sdl/aud_sdl.cpp \
     ../../src/intf/cd/cd_interface.cpp \
+    ../../src/intf/cd/cd_img.cpp \
+    ../../src/intf/cd/cd_chd.cpp \
+    ../../src/dep/libs/libchdr/libchdr_bitstream.c \
+    ../../src/dep/libs/libchdr/libchdr_cdrom.c \
+    ../../src/dep/libs/libchdr/libchdr_chd.c \
+    ../../src/dep/libs/libchdr/libchdr_codec_cdfl.c \
+    ../../src/dep/libs/libchdr/libchdr_codec_cdlz.c \
+    ../../src/dep/libs/libchdr/libchdr_codec_cdzl.c \
+    ../../src/dep/libs/libchdr/libchdr_codec_cdzs.c \
+    ../../src/dep/libs/libchdr/libchdr_codec_flac.c \
+    ../../src/dep/libs/libchdr/libchdr_codec_huff.c \
+    ../../src/dep/libs/libchdr/libchdr_codec_lzma.c \
+    ../../src/dep/libs/libchdr/libchdr_codec_zlib.c \
+    ../../src/dep/libs/libchdr/libchdr_codec_zstd.c \
+    ../../src/dep/libs/libchdr/libchdr_flac.c \
+    ../../src/dep/libs/libchdr/libchdr_huffman.c \
+    ../../src/dep/libs/lzma/libchdr_lzma.c \
+    ../../src/dep/libs/zstd/zstddeclib.c \
     ../../src/intf/input/inp_interface.cpp \
     ../../src/intf/input/sdl/inp_sdl.cpp \
     ../../src/intf/video/vid_interface.cpp \
@@ -1077,7 +1102,7 @@ SOURCES += \
     ../../src/intf/video/sdl/vid_sdlfx.cpp \
     ../../src/intf/video/sdl/vid_sdlopengl.cpp \
     ../../src/cpu/z80_intf.cpp \
-    ../../src/burner/libretro/neocdlist.cpp \
+    ../../src/burner/cdlist.cpp \
     ../../src/intf/video/vid_softfx.cpp \
     ../../src/intf/video/scalers/2xpm.cpp \
     ../../src/intf/video/scalers/2xsai.cpp \

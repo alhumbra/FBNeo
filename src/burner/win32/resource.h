@@ -17,6 +17,9 @@
 #define IDI_TV_NOTFOUND_NON         	    15
 #define IDI_INPD_DETECT_GAMEPADS            16 // icon
 #define IDC_INPD_DETECT_GAMEPADS            17 // control
+#define IDI_TV_ROMDATA_DRV                  18
+#define IDI_LV_CDIMAGE_CUE                  19
+#define IDI_LV_CDIMAGE_CHD                  20
 
 #define IDD_SPLASH							50
 #define IDD_INPD                        	51
@@ -369,7 +372,11 @@
 #define IDC_NCD_SCAN_BUTTON					20811
 #define IDC_NCD_SEL_DIR_BUTTON				20812
 #define IDC_NCD_PLAY_BUTTON					20813
+/*
+*	Use the IDCANCEL control (standard value 2);
+	otherwise, the ESC key cannot be responded to and the modal dialog window cannot be closed.
 #define IDC_NCD_CANCEL_BUTTON				20814
+*/
 #define IDC_NCD_COVER_PREVIEW_PIC			20815
 #define IDC_NCD_LABELSHORT					20816
 #define IDC_NCD_LABELPUBLISHER				20817
@@ -559,7 +566,7 @@
 #define MENU_RESET                       	10013
 #define MENU_LOAD_ROMDATA					10014
 #define MENU_LOAD_IPSPATCH					10015
-#define MENU_LOAD_NEOGEOCD					10016
+#define MENU_LOAD_CDIMAGE					10016
 #define MENU_LOAD_ARCHIVE					10017
 #define MENU_ROMDATA_MANAGER				10018
 #define MENU_MEMCARD_CREATE					10020
@@ -787,11 +794,13 @@
 #define MENU_AUDIO_VOLUME_80				10689
 #define MENU_AUDIO_VOLUME_90				10690
 #define MENU_AUDIO_VOLUME_100				10691
+#define MENU_AUDIO_VOLUME_150				10696
+#define MENU_AUDIO_VOLUME_200				10699
 
-#define MENU_ICONS_BY_GAME					10692
-#define MENU_ICONS_BY_HARDWARE				10693
+#define MENU_ICONS_BY_GAME					10892
+#define MENU_ICONS_BY_HARDWARE				10893
 
-#define MENU_ICONS_REFRESH					10694
+#define MENU_ICONS_REFRESH					10894
 
 #define MENU_RES_ARCADE_VERTICAL			10700
 #define MENU_RES_1_VERTICAL					10701
@@ -834,6 +843,8 @@
 #define MENU_CLRMAME_PRO_XML_SNES_ONLY      10738
 #define MENU_CLRMAME_PRO_XML_NGP_ONLY		10739
 #define MENU_CLRMAME_PRO_XML_CHANNELF_ONLY	10740
+#define MENU_CLRMAME_PRO_XML_ASTROHOME_ONLY	10741
+#define MENU_CLRMAME_PRO_XML_GBA_ONLY		10742
 
 #define MENU_INPUT_P1_DISABLE				10750
 #define MENU_INPUT_P1_SOCDN					10751

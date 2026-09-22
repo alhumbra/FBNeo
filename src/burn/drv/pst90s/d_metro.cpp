@@ -22,7 +22,7 @@
 #include "upd7810_intf.h"
 #include "i4x00.h"
 #include "eeprom.h"
-#include "konamiic.h"
+#include "k053936.h"
 #include "burn_ym2610.h"
 #include "burn_ym2413.h"
 #include "burn_ym2151.h"
@@ -3878,7 +3878,6 @@ static INT32 common_type1_init(INT32 video_type, INT32 gfx_len, INT32 load_roms,
 	blitter_bit = 2;
 
 	GenericTilesInit();
-	KonamiAllocateBitmaps();
 
 	DrvDoReset();
 
@@ -4266,7 +4265,7 @@ static INT32 DrvExit()
 		break;
 	}
 
-	KonamiICExit();
+	K053936Exit();
 	GenericTilesExit();
 
 	SekExit();
@@ -4641,7 +4640,7 @@ static INT32 DrvScan(INT32 nAction,INT32 *pnMin)
 			break;
 		}
 
-		KonamiICScan(nAction);
+		K053936Scan(nAction);
 
 		SCAN_VAR(soundlatch);
 		SCAN_VAR(requested_int);
@@ -4733,7 +4732,7 @@ STD_ROM_FN(gstrik2)
 
 struct BurnDriver BurnDrvGstrik2 = {
 	"gstrik2", NULL, NULL, NULL, "1996",
-	"Grand Striker 2 (Europe and Oceania)\0", "ROZ layer broken", "Human Amusement", "Miscellaneous",
+	"Grand Striker 2 (Europe and Oceania)\0", NULL, "Human Amusement", "Miscellaneous",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_HISCORE_SUPPORTED, 2, HARDWARE_MISC_POST90S, GBF_SPORTSFOOTBALL, 0,
 	NULL, gstrik2RomInfo, gstrik2RomName, NULL, NULL, NULL, NULL, Gstrik2InputInfo, Gstrik2DIPInfo,
@@ -4773,7 +4772,7 @@ STD_ROM_FN(gstrik2j)
 
 struct BurnDriverD BurnDrvGstrik2j = {
 	"gstrik2j", "gstrik2", NULL, NULL, "1996",
-	"Grand Striker 2 (Japan)\0", "ROZ layer broken", "Human Amusement", "Miscellaneous",
+	"Grand Striker 2 (Japan)\0", NULL, "Human Amusement", "Miscellaneous",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_HISCORE_SUPPORTED, 2, HARDWARE_MISC_POST90S, GBF_SPORTSFOOTBALL, 0,
 	NULL, gstrik2jRomInfo, gstrik2jRomName, NULL, NULL, NULL, NULL, Gstrik2InputInfo, Gstrik2DIPInfo,

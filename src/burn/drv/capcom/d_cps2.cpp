@@ -1255,6 +1255,36 @@ static struct BurnInputInfo Spf2tInputList[] = {
 
 STDINPUTINFO(Spf2t)
 
+static struct BurnInputInfo MmatrixiInputList[] = {
+	{"P1 Coin"          , BIT_DIGITAL  , CpsInp020+4, "p1 coin"   },
+	{"P1 Start"         , BIT_DIGITAL  , CpsInp020+0, "p1 start"  },
+	{"P1 Up"            , BIT_DIGITAL  , CpsInp001+3, "p1 up"     },
+	{"P1 Down"          , BIT_DIGITAL  , CpsInp001+2, "p1 down"   },
+	{"P1 Left"          , BIT_DIGITAL  , CpsInp001+1, "p1 left"   },
+	{"P1 Right"         , BIT_DIGITAL  , CpsInp001+0, "p1 right"  },
+	{"P1 Shot"          , BIT_DIGITAL  , CpsInp001+4, "p1 fire 1" },
+	{"P1 Rapid-Cannon"  , BIT_DIGITAL  , CpsInp001+5, "p1 fire 2" },
+	{"P1 Rapid-Shot"    , BIT_DIGITAL  , CpsInp001+6, "p1 fire 3" },
+
+	{"P2 Coin"          , BIT_DIGITAL  , CpsInp020+5, "p2 coin"   },
+	{"P2 Start"         , BIT_DIGITAL  , CpsInp020+1, "p2 start"  },
+	{"P2 Up"            , BIT_DIGITAL  , CpsInp000+3, "p2 up"     },
+	{"P2 Down"          , BIT_DIGITAL  , CpsInp000+2, "p2 down"   },
+	{"P2 Left"          , BIT_DIGITAL  , CpsInp000+1, "p2 left"   },
+	{"P2 Right"         , BIT_DIGITAL  , CpsInp000+0, "p2 right"  },
+	{"P2 Shot"          , BIT_DIGITAL  , CpsInp000+4, "p2 fire 1" },
+	{"P2 Rapid-Cannon"  , BIT_DIGITAL  , CpsInp000+5, "p2 fire 2" },
+	{"P2 Rapid-Shot"    , BIT_DIGITAL  , CpsInp000+6, "p2 fire 3" },
+
+	{"Reset"            , BIT_DIGITAL  , &CpsReset  , "reset"     },
+	{"Diagnostic"       , BIT_DIGITAL  , CpsInp021+1, "diag"      },
+	{"Service"          , BIT_DIGITAL  , CpsInp021+2, "service"   },
+	{"Volume Up"        , BIT_DIGITAL  , &Cps2VolUp , "volumeup"  },
+	{"Volume Down"      , BIT_DIGITAL  , &Cps2VolDwn, "volumedown"},
+};
+
+STDINPUTINFO(Mmatrixi)
+
 // Rom Definitions
 
 static struct BurnRomInfo NinexxRomDesc[] = {
@@ -3297,6 +3327,38 @@ static struct BurnRomInfo DstlkaRomDesc[] = {
 
 STD_ROM_PICK(Dstlka)
 STD_ROM_FN(Dstlka)
+
+static struct BurnRomInfo DstlkbRomDesc[] = {
+	// just the region byte changed if compared to the Hispanic version
+	{ "vamb.03a",      0x080000, 0x48831596, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vamb.04a",      0x080000, 0x2217e9a0, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vamb.05a",      0x080000, 0x3a05b13c, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vamb.06a",      0x080000, 0x11d70a1c, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vamb.07a",      0x080000, 0xdb5a8767, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vamb.08a",      0x080000, 0x2a4fd79b, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vamb.09a",      0x080000, 0x15187632, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vamb.10a",      0x080000, 0x192d2d81, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+
+	{ "vam.13m",       0x400000, 0xc51baf99, CPS2_GFX | BRF_GRA },
+	{ "vam.15m",       0x400000, 0x3ce83c77, CPS2_GFX | BRF_GRA },
+	{ "vam.17m",       0x400000, 0x4f2408e0, CPS2_GFX | BRF_GRA },
+	{ "vam.19m",       0x400000, 0x9ff60250, CPS2_GFX | BRF_GRA },
+	{ "vam.14m",       0x100000, 0xbd87243c, CPS2_GFX | BRF_GRA },
+	{ "vam.16m",       0x100000, 0xafec855f, CPS2_GFX | BRF_GRA },
+	{ "vam.18m",       0x100000, 0x3a033625, CPS2_GFX | BRF_GRA },
+	{ "vam.20m",       0x100000, 0x2bff6a89, CPS2_GFX | BRF_GRA },
+
+	{ "vam.01",        0x020000, 0x64b685d5, CPS2_PRG_Z80 | BRF_ESS | BRF_PRG },
+	{ "vam.02",        0x020000, 0xcf7c97c7, CPS2_PRG_Z80 | BRF_ESS | BRF_PRG },
+
+	{ "vam.11m",       0x200000, 0x4a39deb2, CPS2_QSND | BRF_SND },
+	{ "vam.12m",       0x200000, 0x1a3e5c03, CPS2_QSND | BRF_SND },
+	
+	{ "dstlkb.key",    0x000014, 0xd748cb77, CPS2_ENCRYPTION_KEY },
+};
+
+STD_ROM_PICK(Dstlkb)
+STD_ROM_FN(Dstlkb)
 
 static struct BurnRomInfo DstlkhRomDesc[] = {
 	{ "vamh.03c",      0x080000, 0x4d7b9e8f, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
@@ -10829,6 +10891,16 @@ struct BurnDriver BurnDrvCpsDstlka = {
 	&CpsRecalcPal, 0x1000, 384, 224, 4, 3
 };
 
+struct BurnDriver BurnDrvCpsDstlkb = {
+	"dstlkb", "dstlk", NULL, NULL, "1994",
+	"Darkstalkers: The Night Warriors (Brazil 940818)\0", NULL, "Capcom", "CPS2",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_HISCORE_SUPPORTED, 2, HARDWARE_CAPCOM_CPS2, GBF_VSFIGHT, FBF_DSTLK,
+	NULL, DstlkbRomInfo, DstlkbRomName, NULL, NULL, NULL, NULL, Cps2FightingInputInfo, NULL,
+	Cps2Init, DrvExit, Cps2Frame, CpsRedraw, CpsAreaScan,
+	&CpsRecalcPal, 0x1000, 384, 224, 4, 3
+};
+
 struct BurnDriver BurnDrvCpsDstlkh = {
 	"dstlkh", "dstlk", NULL, NULL, "1994",
 	"Darkstalkers: The Night Warriors (Hispanic 940818)\0", NULL, "Capcom", "CPS2",
@@ -13722,15 +13794,15 @@ static struct BurnRomInfo Hsf2appRomDesc[] = {
 STD_ROM_PICK(Hsf2app)
 STD_ROM_FN(Hsf2app)
 
-// Street Fighter II': Prime (Ver 0.75, Hack)
+// Street Fighter II': Prime (Ver 0.80, Hack)
 // Modified by Zero800
 // https://sf2prime.github.io/
 
 static struct BurnRomInfo Sf2primeRomDesc[] = {
-	{ "sf2pr.03",		0x080000, 0x09ea5a36, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
-	{ "sf2pr.04",		0x080000, 0x1026450d, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
-	{ "sf2pr.05",		0x080000, 0x8ca9aea2, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
-	{ "sf2pr.06",		0x080000, 0xd98b2845, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "sf2pr.03",		0x080000, 0x5ee5a492, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "sf2pr.04",		0x080000, 0xd4f8e6b0, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "sf2pr.05",		0x080000, 0x2f989a93, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "sf2pr.06",		0x080000, 0xcd24ac24, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
 #if 0
 	// All filled with 0xFF.
 	{ "sf2pr.07",		0x080000, 0x504bf849, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
@@ -13739,15 +13811,15 @@ static struct BurnRomInfo Sf2primeRomDesc[] = {
 	{ "sf2pr.10",		0x080000, 0x504bf849, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
 #endif
 
-	{ "sf2pr.13m",		0x800000, 0x3d879969, CPS2_GFX | BRF_GRA },
-	{ "sf2pr.15m",		0x800000, 0x7a3e7cb8, CPS2_GFX | BRF_GRA },
-	{ "sf2pr.17m",		0x800000, 0xe70dfa71, CPS2_GFX | BRF_GRA },
-	{ "sf2pr.19m",		0x800000, 0xcd60ab90, CPS2_GFX | BRF_GRA },
+	{ "sf2pr.13m",		0x800000, 0x74d0902d, CPS2_GFX | BRF_GRA },
+	{ "sf2pr.15m",		0x800000, 0xe9373df0, CPS2_GFX | BRF_GRA },
+	{ "sf2pr.17m",		0x800000, 0xc0c2ebdf, CPS2_GFX | BRF_GRA },
+	{ "sf2pr.19m",		0x800000, 0x7c3bda15, CPS2_GFX | BRF_GRA },
 
 	{ "sf2pr.01",		0x020000, 0x6ce233a7, CPS2_PRG_Z80 | BRF_ESS | BRF_PRG },
 	{ "sf2pr.02",		0x020000, 0x2d8794aa, CPS2_PRG_Z80 | BRF_ESS | BRF_PRG },
 
-	{ "sf2pr.11m",		0x800000, 0xcd8b2d9f, CPS2_QSND | BRF_SND },
+	{ "sf2pr.11m",		0x800000, 0xbe977f70, CPS2_QSND | BRF_SND },
 
 	{ "phoenix.key",	0x000014, 0x2cf772b0, CPS2_ENCRYPTION_KEY },
 };
@@ -14283,7 +14355,7 @@ static struct BurnRomInfo Sfz3jr2dRomDesc[] = {
 STD_ROM_PICK(Sfz3jr2d)
 STD_ROM_FN(Sfz3jr2d)
 
-// Street Fighter Zero 3 Mix v0.31 (hacked by Zero800)
+// Street Fighter Zero 3 Mix v0.32 (hacked by Zero800)
 // https://sfz3mix.github.io/
 
 static struct BurnSampleInfo Sfz3mixSampleDesc[] = {
@@ -14422,9 +14494,9 @@ STD_SAMPLE_PICK(Sfz3mix)
 STD_SAMPLE_FN(Sfz3mix)
 
 static struct BurnRomInfo Sfz3mixRomDesc[] = {
-	{ "sz3mx.03",		0x0600000, 0x94c8f969, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "sz3mx.03",		0x0600000, 0x7a968da6, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
 
-	{ "sz3mx.13m",		0x2000000, 0x59025f91, CPS2_GFX | BRF_GRA },
+	{ "sz3mx.13m",		0x2000000, 0x5389b651, CPS2_GFX | BRF_GRA },
 	{ "sz3mx.21m",		0x2000000, 0x914c7031, CPS2_GFX | BRF_GRA },
 
 	{ "sz3mx.01",		0x0080000, 0x52f98a5c, CPS2_PRG_Z80 | BRF_ESS | BRF_PRG },
@@ -15242,7 +15314,7 @@ struct BurnDriver BurnDrvCpsHsf2app = {
 
 struct BurnDriver BurnDrvCpsSf2prime = {
 	"sf2prime", "hsf2", NULL, NULL, "2026",
-	"Street Fighter II': Prime (Ver 0.75, Hack)\0", NULL, "Zero800", "CPS2",
+	"Street Fighter II': Prime (Ver 0.80, Hack)\0", NULL, "Zero800", "CPS2",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK | BDF_HISCORE_SUPPORTED, 2, HARDWARE_CAPCOM_CPS2, GBF_VSFIGHT, FBF_SF,
 	NULL, Sf2primeRomInfo, Sf2primeRomName, NULL, NULL, NULL, NULL, Cps2FightingInputInfo, NULL,
@@ -15462,8 +15534,8 @@ static INT32 Cps2TurboInit()
 }
 
 struct BurnDriver BurnDrvCpsSfz3mix = {
-	"sfz3mix", "sfa3", NULL, "sfz3mix", "2024",
-	"Street Fighter Zero 3 Mix v0.31\0", NULL, "hack (zero800)", "CPS2",
+	"sfz3mix", "sfa3", NULL, "sfz3mix", "2026",
+	"Street Fighter Zero 3 Mix v0.32\0", NULL, "hack (zero800)", "CPS2",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK | BDF_HISCORE_SUPPORTED, 2, HARDWARE_CAPCOM_CPS2, GBF_VSFIGHT, FBF_SF,
 	NULL, Sfz3mixRomInfo, Sfz3mixRomName, NULL, NULL, Sfz3mixSampleInfo, Sfz3mixSampleName, Sfz3mixInputInfo, Sfz3mixDIPInfo,
@@ -16570,6 +16642,94 @@ struct BurnDriver BurnDrvCpsVampjbh = {
 	&CpsRecalcPal, 0x1000, 384, 224, 4, 3
 };
 
+// Night Warriors 2: Darkstalkers Revenge (Hack, English RC1)
+// https://strygo.github.io/arcade-patches/
+// 2026-07-10
+static struct BurnRomInfo Vhunt2teRomDesc[] = {
+	{ "vh2jte.03a",	0x080000, 0x1ce8d926, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vh2jte.04a",	0x080000, 0x6b232eae, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vh2j.05",	0x080000, 0xde34f624, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vh2j.06",	0x080000, 0x6a3b9897, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vh2j.07",	0x080000, 0xb021c029, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vh2jte.08",	0x080000, 0xbe9d8a6c, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vh2j.09",	0x080000, 0xeaefce9c, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vh2j.10",	0x080000, 0x11730952, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+
+	{ "vh2.13m",	0x400000, 0x3b02ddaa, CPS2_GFX | BRF_GRA },
+	{ "vh2.15m",	0x400000, 0x4e40de66, CPS2_GFX | BRF_GRA },
+	{ "vh2.17m",	0x400000, 0xb31d00c9, CPS2_GFX | BRF_GRA },
+	{ "vh2.19m",	0x400000, 0x149be3ab, CPS2_GFX | BRF_GRA },
+	{ "vh2.14m",	0x400000, 0xcd09bd63, CPS2_GFX | BRF_GRA },
+	{ "vh2.16m",	0x400000, 0xe0182c15, CPS2_GFX | BRF_GRA },
+	{ "vh2.18m",	0x400000, 0x778dc4f6, CPS2_GFX | BRF_GRA },
+	{ "vh2.20m",	0x400000, 0x605d9d1d, CPS2_GFX | BRF_GRA },
+
+	{ "vh2.01",		0x020000, 0x67b9f779, CPS2_PRG_Z80 | BRF_ESS | BRF_PRG },
+	{ "vh2.02",		0x020000, 0xaaf15fcb, CPS2_PRG_Z80 | BRF_ESS | BRF_PRG },
+
+	{ "vh2.11m",	0x400000, 0x38922efd, CPS2_QSND | BRF_SND },
+	{ "vh2.12m",	0x400000, 0x6e2430af, CPS2_QSND | BRF_SND },
+	
+	{ "vhunt2.key",	0x000014, 0x61306b20, CPS2_ENCRYPTION_KEY },
+};
+
+STD_ROM_PICK(Vhunt2te)
+STD_ROM_FN(Vhunt2te)
+
+struct BurnDriver BurnDrvCpsVhunt2te = {
+	"vhunt2te", "vhunt2", NULL, NULL, "2026",
+	"Night Warriors 2: Darkstalkers Revenge (Hack, English RC1)\0", NULL, "Strygo", "CPS2",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK | BDF_HISCORE_SUPPORTED, 2, HARDWARE_CAPCOM_CPS2, GBF_VSFIGHT, FBF_DSTLK,
+	NULL, Vhunt2teRomInfo, Vhunt2teRomName, NULL, NULL, NULL, NULL, Cps2FightingInputInfo, NULL,
+	Cps2Init, DrvExit, Cps2Frame, CpsRedraw, CpsAreaScan,
+	&CpsRecalcPal, 0x1000, 384, 224, 4, 3
+};
+
+
+// Vampire Savior 2: The Lord of Vampire (Hack, English RC1)
+// 2026-07-10
+static struct BurnRomInfo Vsav2teRomDesc[] = {
+	{ "vs2jte.03",	0x080000, 0xa211712c, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vs2jte.04",	0x080000, 0x974896f9, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vs2j.05",	0x080000, 0x61979638, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vs2j.06",	0x080000, 0xf37c5bc2, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vs2j.07",	0x080000, 0x8f885809, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vs2jte.08",	0x080000, 0xcb8b85c6, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vs2j.09",	0x080000, 0xfac3c217, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "vs2j.10",	0x080000, 0xeb490213, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+
+	{ "vs2.13m",	0x400000, 0x5c852f52, CPS2_GFX | BRF_GRA },
+	{ "vs2.15m",	0x400000, 0xa20f58af, CPS2_GFX | BRF_GRA },
+	{ "vs2.17m",	0x400000, 0x39db59ad, CPS2_GFX | BRF_GRA },
+	{ "vs2.19m",	0x400000, 0x00c763a7, CPS2_GFX | BRF_GRA },
+	{ "vs2.14m",	0x400000, 0xcd09bd63, CPS2_GFX | BRF_GRA },
+	{ "vs2.16m",	0x400000, 0xe0182c15, CPS2_GFX | BRF_GRA },
+	{ "vs2.18m",	0x400000, 0x778dc4f6, CPS2_GFX | BRF_GRA },
+	{ "vs2.20m",	0x400000, 0x605d9d1d, CPS2_GFX | BRF_GRA },
+
+	{ "vs2.01",		0x020000, 0x35190139, CPS2_PRG_Z80 | BRF_ESS | BRF_PRG },
+	{ "vs2.02",		0x020000, 0xc32dba09, CPS2_PRG_Z80 | BRF_ESS | BRF_PRG },
+
+	{ "vs2.11m",	0x400000, 0xd67e47b7, CPS2_QSND | BRF_SND },
+	{ "vs2.12m",	0x400000, 0x6d020a14, CPS2_QSND | BRF_SND },
+	
+	{ "vsav2.key",	0x000014, 0x289028ce, CPS2_ENCRYPTION_KEY },
+};
+
+STD_ROM_PICK(Vsav2te)
+STD_ROM_FN(Vsav2te)
+
+struct BurnDriver BurnDrvCpsVsav2te = {
+	"vsav2te", "vsav2", NULL, NULL, "2026",
+	"Vampire Savior 2: The Lord of Vampire (Hack, English RC1)\0", NULL, "Strygo", "CPS2",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK | BDF_HISCORE_SUPPORTED, 2, HARDWARE_CAPCOM_CPS2, GBF_VSFIGHT, FBF_DSTLK,
+	NULL, Vsav2teRomInfo, Vsav2teRomName, NULL, NULL, NULL, NULL, Cps2FightingInputInfo, NULL,
+	Cps2Init, DrvExit, Cps2Frame, CpsRedraw, CpsAreaScan,
+	&CpsRecalcPal, 0x1000, 384, 224, 4, 3
+};
+
 // X-Men Vs. Street Fighter (Coop, Hack)
 // Modified by bankbank
 // 202205
@@ -16610,6 +16770,44 @@ struct BurnDriver BurnDrvCpsXmvsfcph = {
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_HISCORE_SUPPORTED | BDF_HACK, 2, HARDWARE_CAPCOM_CPS2, GBF_VSFIGHT, FBF_SF,
 	NULL, XmvsfcphRomInfo, XmvsfcphRomName, NULL, NULL, NULL, NULL, Cps2FightingInputInfo, NULL,
+	Cps2Init, DrvExit, Cps2Frame, CpsRedraw, CpsAreaScan,
+	&CpsRecalcPal, 0x1000, 384, 224, 4, 3
+};
+
+// Mars Matrix: Hyper Solid Shooting (Hack, Improvement v1.0.0)
+// 20251204
+
+static struct BurnRomInfo MmatrixiRomDesc[] = {
+	{ "mmxiu.03",		0x080000, 0xa578097b, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "mmxu.04",		0x080000, 0x0135fc6c, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+	{ "mmxiu.05",		0x080000, 0xa1fbd3d8, CPS2_PRG_68K | BRF_ESS | BRF_PRG },
+
+	{ "mmx.13m",		0x400000, 0x04748718, CPS2_GFX | BRF_GRA },
+	{ "mmx.15m",		0x400000, 0x38074f44, CPS2_GFX | BRF_GRA },
+	{ "mmx.17m",		0x400000, 0xe4635e35, CPS2_GFX | BRF_GRA },
+	{ "mmx.19m",		0x400000, 0x4400a3f2, CPS2_GFX | BRF_GRA },
+	{ "mmx.14m",		0x400000, 0xd52bf491, CPS2_GFX | BRF_GRA },
+	{ "mmx.16m",		0x400000, 0x23f70780, CPS2_GFX | BRF_GRA },
+	{ "mmx.18m",		0x400000, 0x2562c9d5, CPS2_GFX | BRF_GRA },
+	{ "mmx.20m",		0x400000, 0x583a9687, CPS2_GFX | BRF_GRA },
+
+	{ "mmxi.01",		0x020000, 0x45a29ce5, CPS2_PRG_Z80 | BRF_ESS | BRF_PRG },
+
+	{ "mmx.11m",		0x400000, 0x4180b39f, CPS2_QSND | BRF_SND },
+	{ "mmx.12m",		0x400000, 0x95e22a59, CPS2_QSND | BRF_SND },
+	
+	{ "mmatrix.key",	0x000014, 0x8ed66bc4, CPS2_ENCRYPTION_KEY },
+};
+
+STD_ROM_PICK(Mmatrixi)
+STD_ROM_FN(Mmatrixi)
+
+struct BurnDriver BurnDrvCpsMmatrixi = {
+	"mmatrixi", "mmatrix", NULL, NULL, "2025",
+	"Mars Matrix: Hyper Solid Shooting (Hack, Improvement v1.0.0)\0", NULL, "hack", "CPS2",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK | BDF_HISCORE_SUPPORTED, 2, HARDWARE_CAPCOM_CPS2, GBF_VERSHOOT, 0,
+	NULL, MmatrixiRomInfo, MmatrixiRomName, NULL, NULL, NULL, NULL, MmatrixiInputInfo, NULL,
 	Cps2Init, DrvExit, Cps2Frame, CpsRedraw, CpsAreaScan,
 	&CpsRecalcPal, 0x1000, 384, 224, 4, 3
 };

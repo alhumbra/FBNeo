@@ -224,13 +224,13 @@ void tms34010_set_context(void *set)
 ***************************************************************************/
 
 /* Combine indiviual flags into the Status Register */
-INLINE UINT32 GET_ST(void)
+static inline UINT32 GET_ST(void)
 {
 	return state.st;
 }
 
 /* Break up Status Register into indiviual flags */
-INLINE void SET_ST(UINT32 st)
+static inline void SET_ST(UINT32 st)
 {
 	state.st = st;
 	/* interrupts might have been enabled, check it */
@@ -238,46 +238,46 @@ INLINE void SET_ST(UINT32 st)
 }
 
 /* Intialize Status to 0x0010 */
-INLINE void RESET_ST(void)
+static inline void RESET_ST(void)
 {
 	SET_ST(0x00000010);
 }
 
 /* shortcuts for reading opcodes */
-INLINE UINT32 ROPCODE(void)
+static inline UINT32 ROPCODE(void)
 {
 	UINT32 pc = TOBYTE(PC);
 	PC += 2 << 3;
 	return cpu_readop16(pc);
 }
 
-INLINE INT16 PARAM_WORD(void)
+static inline INT16 PARAM_WORD(void)
 {
 	UINT32 pc = TOBYTE(PC);
 	PC += 2 << 3;
 	return cpu_readop_arg16(pc);
 }
 
-INLINE INT32 PARAM_LONG(void)
+static inline INT32 PARAM_LONG(void)
 {
 	UINT32 pc = TOBYTE(PC);
 	PC += 4 << 3;
 	return (UINT16)cpu_readop_arg16(pc) | (cpu_readop_arg16(pc + 2) << 16);
 }
 
-INLINE INT16 PARAM_WORD_NO_INC(void)
+static inline INT16 PARAM_WORD_NO_INC(void)
 {
 	return cpu_readop_arg16(TOBYTE(PC));
 }
 
-INLINE INT32 PARAM_LONG_NO_INC(void)
+static inline INT32 PARAM_LONG_NO_INC(void)
 {
 	UINT32 pc = TOBYTE(PC);
 	return (UINT16)cpu_readop_arg16(pc) | (cpu_readop_arg16(pc + 2) << 16);
 }
 
 /* read memory byte */
-INLINE UINT32 RBYTE(offs_t offset)
+static inline UINT32 RBYTE(offs_t offset)
 {
 	UINT32 ret;
 	RFIELDMAC_8;
@@ -285,31 +285,31 @@ INLINE UINT32 RBYTE(offs_t offset)
 }
 
 /* write memory byte */
-INLINE void WBYTE(offs_t offset, UINT32 data)
+static inline void WBYTE(offs_t offset, UINT32 data)
 {
 	WFIELDMAC_8;
 }
 
 /* read memory long */
-INLINE UINT32 RLONG(offs_t offset)
+static inline UINT32 RLONG(offs_t offset)
 {
 	RFIELDMAC_32;
 }
 
 /* write memory long */
-INLINE void WLONG(offs_t offset, UINT32 data)
+static inline void WLONG(offs_t offset, UINT32 data)
 {
 	WFIELDMAC_32;
 }
 
 /* pushes/pops a value from the stack */
-INLINE void PUSH(UINT32 data)
+static inline void PUSH(UINT32 data)
 {
 	SP -= 0x20;
 	WLONG(SP, data);
 }
 
-INLINE INT32 POP(void)
+static inline INT32 POP(void)
 {
 	INT32 ret = RLONG(SP);
 	SP += 0x20;
@@ -830,8 +830,10 @@ static void internal_interrupt_callback(INT32 type)
 int tms34010_run(int cycles)
 {
 	/* Get out if CPU is halted. Absolutely no interrupts must be taken!!! */
-	if (IOREG(REG_HSTCTLH) & 0x8000)
+	if (IOREG(REG_HSTCTLH) & 0x8000) {
+		state.total_cycles += cycles;
 		return cycles;
+	}
 
 	/* if the CPU's reset was deferred, do it now */
 	if (state.reset_deferred)
@@ -995,6 +997,8 @@ void tms34010_generate_scanline(INT32 line, scanline_render_t render)
 	vtotal = SMART_IOREG(VTOTAL);
 
 #if 0  // for driver debug -dink
+	// how to find the refresh:
+	// 1 / ((1.0/(pixel_clock)) * (htotal * vtotal))
 	if (line == 1) {
 		bprintf(0, _T("vsblnk %x\n"), vsblnk);
 		bprintf(0, _T("veblnk %x\n"), veblnk);
@@ -1279,6 +1283,7 @@ void tms34010_io_register_w(INT32 address, UINT32 data)
 
 		case REG_HSTCTLH:
 			/* if the CPU is halting itself, stop execution right away */
+			//bprintf(0, _T("TMS34.H HOST CONTROL  %x (offs %x)  %x   (was: %x)\n"), address, offset, data, oldreg);
 			if ((data & 0x8000) && !state.external_host_access)
 				tms34010_ICount = 0;
 			//cpunum_set_input_line(state.screen->machine, cpunum, INPUT_LINE_HALT, (data & 0x8000) ? ASSERT_LINE : CLEAR_LINE);
@@ -1307,6 +1312,7 @@ void tms34010_io_register_w(INT32 address, UINT32 data)
 			}
 			IOREG(offset) = newreg;
 
+			//bprintf(0, _T("TMS34.L HOST CONTROL  %x (offs %x)  %x   (was: %x)\n"), address, offset, newreg, oldreg);
 			/* the TMS34010 can set output interrupt? */
 			if (!(oldreg & 0x0080) && (newreg & 0x0080))
 			{
@@ -1695,7 +1701,7 @@ static STATE_POSTLOAD( tms34010_state_postload )
     HOST INTERFACE WRITES
 ***************************************************************************/
 
-void tms34010_host_w(INT32 reg, UINT16 data)
+void tms34010_host_w_mask(INT32 reg, UINT16 data, UINT16 mask)
 {
 	unsigned int addr;
 
@@ -1730,8 +1736,12 @@ void tms34010_host_w(INT32 reg, UINT16 data)
 		/* control register */
 		case TMS34010_HOST_CONTROL:
 			state.external_host_access = 1;
-			tms34010_io_register_w(REG_HSTCTLH << 4, data & 0xff00);
-			tms34010_io_register_w(REG_HSTCTLL << 4, data & 0x00ff);
+			if (mask & 0xff00) {
+				tms34010_io_register_w(REG_HSTCTLH << 4, data & 0xff00);
+			}
+			if (mask & 0x00ff) {
+				tms34010_io_register_w(REG_HSTCTLL << 4, data & 0x00ff);
+			}
 			state.external_host_access = 0;
 			break;
 
@@ -1740,6 +1750,11 @@ void tms34010_host_w(INT32 reg, UINT16 data)
 			//logerror("tms34010_host_control_w called on invalid register %d\n", reg);
 			break;
 	}
+}
+
+void tms34010_host_w(INT32 reg, UINT16 data)
+{
+	tms34010_host_w_mask(reg, data, 0xffff);
 }
 
 

@@ -48,6 +48,9 @@ static void SubDirsListFree()
 
 static char* GetFilenameA(char* szFull)
 {
+	if (!szFull) {
+		bprintf(0, _T("GetFilenameA(): passed NULL parameter.\n"));
+	}
 	INT32 nLen = strlen(szFull);
 
 	if (nLen <= 0) {
@@ -64,6 +67,10 @@ static char* GetFilenameA(char* szFull)
 
 static TCHAR* GetFilenameW(TCHAR* szFull)
 {
+	if (!szFull) {
+		bprintf(0, _T("GetFilenameW(): passed NULL parameter.\n"));
+	}
+
 	INT32 nLen = _tcslen(szFull);
 
 	if (nLen <= 0) {
@@ -293,6 +300,7 @@ static INT32 __cdecl BzipBurnLoadRom(UINT8* Dest, INT32* pnWrote, INT32 i)
 	struct BurnRomInfo ri;
 	INT32 nWantZip = 0;
 	TCHAR szText[128];
+	const size_t nTextSize = sizeof(szText) / sizeof(szText[0]);	// guard against buffer overflow with long rom names
 	char* pszRomName = NULL;
 	INT32 nRet = 0;
 
@@ -319,26 +327,32 @@ static INT32 __cdecl BzipBurnLoadRom(UINT8* Dest, INT32* pnWrote, INT32 i)
 		if (ri.nType & BRF_BIOS) {
 			TCHAR szTempBios[100];
 			_stprintf(szTempBios, _T("%s"), FBALoadStringEx(hAppInst, IDS_ERR_LOAD_DET_BIOS, true));
-			_stprintf(szText + _tcslen(szText), _T(" %s"), szTempBios);
+			_sntprintf(szText + _tcslen(szText), nTextSize - _tcslen(szText) - 1, _T(" %s"), szTempBios);
+			szText[nTextSize - 1] = _T('\0');
 		}
 		if (ri.nType & BRF_PRG) {
 			TCHAR szTempPrg[100];
 			_stprintf(szTempPrg, _T("%s"), FBALoadStringEx(hAppInst, IDS_ERR_LOAD_DET_PRG, true));
-			_stprintf(szText + _tcslen(szText), _T(" %s"), szTempPrg);
+			_sntprintf(szText + _tcslen(szText), nTextSize - _tcslen(szText) - 1, _T(" %s"), szTempPrg);
+			szText[nTextSize - 1] = _T('\0');
 		}
 		if (ri.nType & BRF_GRA) {
 			TCHAR szTempGra[100];
 			_stprintf(szTempGra, _T("%s"), FBALoadStringEx(hAppInst, IDS_ERR_LOAD_DET_GRA, true));
-			_stprintf (szText + _tcslen(szText), _T(" %s"), szTempGra);
+			_sntprintf(szText + _tcslen(szText), nTextSize - _tcslen(szText) - 1, _T(" %s"), szTempGra);
+			szText[nTextSize - 1] = _T('\0');
 		}
 		if (ri.nType & BRF_SND) {
 			TCHAR szTempSnd[100];
 			_stprintf(szTempSnd, _T("%s"), FBALoadStringEx(hAppInst, IDS_ERR_LOAD_DET_SND, true));
-			_stprintf (szText + _tcslen(szText), _T(" %s"), szTempSnd);
+			_sntprintf(szText + _tcslen(szText), nTextSize - _tcslen(szText) - 1, _T(" %s"), szTempSnd);
+			szText[nTextSize - 1] = _T('\0');
 		}
-		_stprintf(szText + _tcslen(szText), _T("(%hs)..."), pszRomName);
+		_sntprintf(szText + _tcslen(szText), nTextSize - _tcslen(szText) - 1, _T("(%hs)..."), pszRomName);
+		szText[nTextSize - 1] = _T('\0');
 	} else {
-		_stprintf(szText + _tcslen(szText), _T(" %hs..."),  pszRomName);
+		_sntprintf(szText + _tcslen(szText), nTextSize - _tcslen(szText) - 1, _T(" %hs..."), pszRomName);
+		szText[nTextSize - 1] = _T('\0');
 	}
 	ProgressUpdateBurner(ri.nLen ? 1.0 / ((double)nTotalSize / ri.nLen) : 0, szText, 0);
 
@@ -352,6 +366,13 @@ static INT32 __cdecl BzipBurnLoadRom(UINT8* Dest, INT32* pnWrote, INT32 i)
 #endif
 
 	if (RomFind[i].nState == 0) {							// Rom not found in zip at all
+		// Error not found in the zip file
+
+		if (nCurrentZip != -1) {
+			FBAPopupAddText(PUF_TEXT_DEFAULT, MAKEINTRESOURCE(IDS_ERR_LOAD_DISK), pszRomName, GetFilenameW(szBzipName[nCurrentZip]));
+			FBAPopupAddText(PUF_TEXT_DEFAULT, _T("\n\n"));
+		}
+
 		return 1;
 	}
 

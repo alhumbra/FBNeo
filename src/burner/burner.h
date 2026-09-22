@@ -20,7 +20,7 @@
 #if defined (BUILD_QT)
  #define DIRS_MAX (4)								// Maximum number of directories to search
 #else
- #define DIRS_MAX (20)								// Maximum number of directories to search
+ #define DIRS_MAX (21)								// Maximum number of directories to search
 #endif
 
 #include "title.h"
@@ -82,11 +82,11 @@ void img_free(IMAGE* img);
 INT32 img_alloc(IMAGE* img);
 
 bool PNGIsImage(FILE* fp);
-bool PNGIsImageBuffer(unsigned char* buffer, int bufferLength);
+bool PNGIsImageBuffer(void* buffer, int bufferLength);
 INT32 PNGLoad(IMAGE* img, FILE* fp, INT32 nPreset);
-INT32 PNGLoadBuffer(IMAGE* img, unsigned char* buffer, int bufferLength, INT32 nPreset);
+INT32 PNGLoadBuffer(IMAGE* img, void* buffer, int bufferLength, INT32 nPreset);
 INT32 PNGGetInfo(IMAGE* img, FILE *fp);
-INT32 PNGGetInfoBuffer(IMAGE* img, unsigned char* buffer, int bufferLength);
+INT32 PNGGetInfoBuffer(IMAGE* img, void* buffer, int bufferLength);
 
 // gami.cpp
 extern struct GameInp* GameInp;
@@ -231,6 +231,8 @@ void ComputeGammaLUT();
 #define DAT_SNES_ONLY			14
 #define DAT_NGP_ONLY			15
 #define DAT_CHANNELF_ONLY		16
+#define DAT_ASTROHOME_ONLY		17
+#define DAT_GBA_ONLY			18
 
 INT32 write_datfile(INT32 bType, FILE* fDat);
 INT32 create_datfile(TCHAR* szFilename, INT32 bType);
@@ -263,10 +265,12 @@ INT32 ZipLoadFile(UINT8* Dest, INT32 nLen, INT32* pnWrote, INT32 nEntry);
 INT32 __cdecl ZipLoadOneFile(char* arcName, const char* fileName, void** Dest, INT32* pnWrote);
 
 // romdata.cpp
+
 extern TCHAR szRomdataName[MAX_PATH];
 TCHAR* AdaptiveEncodingReads(const TCHAR* pszFileName);
 
 // ips_manager.cpp 
+
 void IpsPatchInit();
 void IpsPatchExit();
 

@@ -124,9 +124,11 @@ INT32 write_datfile(INT32 bType, FILE* fDat)
 	if (bType == DAT_NES_ONLY) fprintf(fDat, "\t\t<name>" APP_TITLE " - NES Games</name>\n");
 	if (bType == DAT_FDS_ONLY) fprintf(fDat, "\t\t<name>" APP_TITLE " - FDS Games</name>\n");
 	if (bType == DAT_SNES_ONLY) fprintf(fDat, "\t\t<name>" APP_TITLE " - SNES Games</name>\n");
+	if (bType == DAT_GBA_ONLY) fprintf(fDat, "\t\t<name>" APP_TITLE " - GBA Games</name>\n");
 	if (bType == DAT_NGP_ONLY) fprintf(fDat, "\t\t<name>" APP_TITLE " - Neo Geo Pocket Games</name>\n");
 	if (bType == DAT_CHANNELF_ONLY) fprintf(fDat, "\t\t<name>" APP_TITLE " - Fairchild Channel F Games</name>\n");
-
+	if (bType == DAT_ASTROHOME_ONLY) fprintf(fDat, "\t\t<name>" APP_TITLE " - Astrocade Home Computer Games</name>\n");
+	
 	if (bType == DAT_ARCADE_ONLY) _ftprintf(fDat, _T("\t\t<description>") _T(APP_TITLE) _T(" v%s") _T(" Arcade Games</description>\n"), szAppBurnVer);
 	if (bType == DAT_MEGADRIVE_ONLY) _ftprintf(fDat, _T("\t\t<description>") _T(APP_TITLE) _T(" v%s") _T(" Megadrive Games</description>\n"), szAppBurnVer);
 	if (bType == DAT_PCENGINE_ONLY) _ftprintf(fDat, _T("\t\t<description>") _T(APP_TITLE) _T(" v%s") _T(" PC-Engine Games</description>\n"), szAppBurnVer);
@@ -142,8 +144,10 @@ INT32 write_datfile(INT32 bType, FILE* fDat)
 	if (bType == DAT_NES_ONLY) _ftprintf(fDat, _T("\t\t<description>") _T(APP_TITLE) _T(" v%s") _T(" NES Games</description>\n"), szAppBurnVer);
 	if (bType == DAT_FDS_ONLY) _ftprintf(fDat, _T("\t\t<description>") _T(APP_TITLE) _T(" v%s") _T(" FDS Games</description>\n"), szAppBurnVer);
 	if (bType == DAT_SNES_ONLY) _ftprintf(fDat, _T("\t\t<description>") _T(APP_TITLE) _T(" v%s") _T(" SNES Games</description>\n"), szAppBurnVer);
+	if (bType == DAT_GBA_ONLY) _ftprintf(fDat, _T("\t\t<description>") _T(APP_TITLE) _T(" v%s") _T(" GBA Games</description>\n"), szAppBurnVer);
 	if (bType == DAT_NGP_ONLY) _ftprintf(fDat, _T("\t\t<description>") _T(APP_TITLE) _T(" v%s") _T(" Neo Geo Pocket Games</description>\n"), szAppBurnVer);
 	if (bType == DAT_CHANNELF_ONLY) _ftprintf(fDat, _T("\t\t<description>") _T(APP_TITLE) _T(" v%s") _T(" Fairchild Channel F Games</description>\n"), szAppBurnVer);
+	if (bType == DAT_ASTROHOME_ONLY) _ftprintf(fDat, _T("\t\t<description>") _T(APP_TITLE) _T(" v%s") _T(" Astrocade Home Computer Games</description>\n"), szAppBurnVer);
 	fprintf(fDat, "\t\t<category>Standard DatFile</category>\n");
 	_ftprintf(fDat, _T("\t\t<version>%s</version>\n"), szAppBurnVer);
 	fprintf(fDat, "\t\t<author>" APP_TITLE "</author>\n");
@@ -174,6 +178,7 @@ INT32 write_datfile(INT32 bType, FILE* fDat)
 
 		if ((((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_SEGA_MEGADRIVE)
 			|| ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_PCENGINE_PCENGINE)
+			|| ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_PCENGINE_PCE_CD)
 			|| ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_PCENGINE_TG16)
 			|| ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_PCENGINE_SGX)
 			|| ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_SEGA_SG1000)
@@ -185,8 +190,10 @@ INT32 write_datfile(INT32 bType, FILE* fDat)
 			|| ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_NES)
 			|| ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_FDS)
 			|| ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_SNES)
+			|| ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_GBA)
 			|| ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_SNK_NGP)
 			|| ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_CHANNELF)
+			|| ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_ASTROHOME)
 			) && (bType == DAT_ARCADE_ONLY)) {
 			continue;
 		}
@@ -195,7 +202,7 @@ INT32 write_datfile(INT32 bType, FILE* fDat)
 			continue;
 		}
 
-		if (((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) != HARDWARE_PCENGINE_PCENGINE) && (bType == DAT_PCENGINE_ONLY)) {
+		if (((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) != HARDWARE_PCENGINE_PCENGINE) && ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) != HARDWARE_PCENGINE_PCE_CD) && (bType == DAT_PCENGINE_ONLY)) {
 			continue;
 		}
 
@@ -243,11 +250,19 @@ INT32 write_datfile(INT32 bType, FILE* fDat)
 			continue;
 		}
 
+		if (((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) != HARDWARE_GBA) && (bType == DAT_GBA_ONLY)) {
+			continue;
+		}
+
 		if (((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) != HARDWARE_SNK_NGP) && (bType == DAT_NGP_ONLY)) {
 			continue;
 		}
 
 		if (((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) != HARDWARE_CHANNELF) && (bType == DAT_CHANNELF_ONLY)) {
+			continue;
+		}
+
+		if (((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) != HARDWARE_ASTROHOME) && (bType == DAT_ASTROHOME_ONLY)) {
 			continue;
 		}
 
@@ -334,6 +349,7 @@ INT32 write_datfile(INT32 bType, FILE* fDat)
 		remove_driver_leader(HARDWARE_COLECO, 3, 1)
 		remove_driver_leader(HARDWARE_SEGA_SG1000, 5, 1)
 		remove_driver_leader(HARDWARE_PCENGINE_PCENGINE, 4, 1)
+		remove_driver_leader(HARDWARE_PCENGINE_PCE_CD, 4, 1)
 		remove_driver_leader(HARDWARE_PCENGINE_SGX, 4, 1)
 		remove_driver_leader(HARDWARE_SEGA_MASTER_SYSTEM, 4, 1)
 		remove_driver_leader(HARDWARE_SEGA_GAME_GEAR, 3, 1)
@@ -342,8 +358,10 @@ INT32 write_datfile(INT32 bType, FILE* fDat)
 		remove_driver_leader(HARDWARE_NES, 4, 1)
 		remove_driver_leader(HARDWARE_FDS, 4, 1)
 		remove_driver_leader(HARDWARE_SNES, 5, 1)
+		remove_driver_leader(HARDWARE_GBA, 4, 1)
 		remove_driver_leader(HARDWARE_SNK_NGP, 4, 1)
 		remove_driver_leader(HARDWARE_CHANNELF, 4, 1)
+		remove_driver_leader(HARDWARE_ASTROHOME, 6, 1)
 
 		// Report problems
 		if (nParentSelect==-1U)
@@ -539,6 +557,30 @@ INT32 write_datfile(INT32 bType, FILE* fDat)
 					}
 
 					nBurnDrvActive=nGameSelect;						// Switch back to game
+
+					if (nMerged&2) {
+						nRetTmp=0;
+
+						// Go over each of the files needed for this game (upto 0x0100)
+						for (j=0; nRetTmp==0 && j<0x100; j++)
+						{
+							memset(&riTmp,0,sizeof(riTmp));
+
+							nRetTmp+=BurnDrvGetRomInfo(&riTmp,j);
+							nRetTmp+=BurnDrvGetRomName(&szPossibleNameTmp,j,0);
+
+							if (nRetTmp==0)
+							{
+								if (strcmp(szPossibleName, szPossibleNameTmp) == 0 && riTmp.nCrc != nCrc)
+								{
+									// If a file is from the boardrom, but there is a file with the same name and a different crc
+									// within the romset itself, it seems we don't want the file from the boardrom
+									nMerged|=4;
+									nRetTmp++;
+								}
+							}
+						}
+					}
 				}
 
 				char szPossibleNameBuffer[255];
@@ -562,7 +604,7 @@ INT32 write_datfile(INT32 bType, FILE* fDat)
 						fprintf(fDat, "\t\t<rom name=\"%s\" size=\"%d\" status=\"nodump\"/>\n", szPossibleNameBuffer, ri.nLen);
 					} else {
 						if (nMerged) {
-							fprintf(fDat, "\t\t<rom name=\"%s\" merge=\"%s\" size=\"%d\" crc=\"%08x\"/>\n", szPossibleNameBuffer, szMergeNameBuffer, ri.nLen, ri.nCrc);
+							if (!(nMerged&4)) fprintf(fDat, "\t\t<rom name=\"%s\" merge=\"%s\" size=\"%d\" crc=\"%08x\"/>\n", szPossibleNameBuffer, szMergeNameBuffer, ri.nLen, ri.nCrc);
 						} else {
 							fprintf(fDat, "\t\t<rom name=\"%s\" size=\"%d\" crc=\"%08x\"/>\n", szPossibleNameBuffer, ri.nLen, ri.nCrc);
 						}
@@ -638,6 +680,7 @@ INT32 write_datfile(INT32 bType, FILE* fDat)
 
 		if ((((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_SEGA_MEGADRIVE)
 			|| ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_PCENGINE_PCENGINE)
+			|| ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_PCENGINE_PCE_CD)
 			|| ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_PCENGINE_TG16)
 			|| ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_PCENGINE_SGX)
 			|| ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_SEGA_SG1000)
@@ -649,8 +692,10 @@ INT32 write_datfile(INT32 bType, FILE* fDat)
 			|| ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_NES)
 			|| ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_FDS)
 			|| ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_SNES)
+			|| ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_GBA)
 			|| ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_SNK_NGP)
 			|| ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_CHANNELF)
+			|| ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) == HARDWARE_ASTROHOME)
 			) && (bType == DAT_ARCADE_ONLY)) {
 			continue;
 		}
@@ -659,7 +704,7 @@ INT32 write_datfile(INT32 bType, FILE* fDat)
 			continue;
 		}
 
-		if (((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) != HARDWARE_PCENGINE_PCENGINE) && (bType == DAT_PCENGINE_ONLY)) {
+		if (((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) != HARDWARE_PCENGINE_PCENGINE) && ((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) != HARDWARE_PCENGINE_PCE_CD) && (bType == DAT_PCENGINE_ONLY)) {
 			continue;
 		}
 
@@ -707,11 +752,19 @@ INT32 write_datfile(INT32 bType, FILE* fDat)
 			continue;
 		}
 
+		if (((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) != HARDWARE_GBA) && (bType == DAT_GBA_ONLY)) {
+			continue;
+		}
+
 		if (((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) != HARDWARE_SNK_NGP) && (bType == DAT_NGP_ONLY)) {
 			continue;
 		}
 
 		if (((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) != HARDWARE_CHANNELF) && (bType == DAT_CHANNELF_ONLY)) {
+			continue;
+		}
+
+		if (((BurnDrvGetHardwareCode() & HARDWARE_PUBLIC_MASK) != HARDWARE_ASTROHOME) && (bType == DAT_ASTROHOME_ONLY)) {
 			continue;
 		}
 
@@ -731,6 +784,7 @@ INT32 write_datfile(INT32 bType, FILE* fDat)
 		remove_driver_leader(HARDWARE_COLECO, 3, 0)
 		remove_driver_leader(HARDWARE_SEGA_SG1000, 5, 0)
 		remove_driver_leader(HARDWARE_PCENGINE_PCENGINE, 4, 0)
+		remove_driver_leader(HARDWARE_PCENGINE_PCE_CD, 4, 0)
 		remove_driver_leader(HARDWARE_PCENGINE_SGX, 4, 0)
 		remove_driver_leader(HARDWARE_SEGA_MASTER_SYSTEM, 4, 0)
 		remove_driver_leader(HARDWARE_SEGA_GAME_GEAR, 3, 0)
@@ -739,8 +793,10 @@ INT32 write_datfile(INT32 bType, FILE* fDat)
 		remove_driver_leader(HARDWARE_NES, 4, 0)
 		remove_driver_leader(HARDWARE_FDS, 4, 0)
 		remove_driver_leader(HARDWARE_SNES, 5, 0)
+		remove_driver_leader(HARDWARE_GBA, 4, 0)
 		remove_driver_leader(HARDWARE_SNK_NGP, 4, 0)
 		remove_driver_leader(HARDWARE_CHANNELF, 4, 0)
+		remove_driver_leader(HARDWARE_ASTROHOME, 6, 0)
 
 		fprintf(fDat, "\t<game isbios=\"yes\" name=\"%s\" sourcefile=\"%s\">\n", sgName, sfName);
 		char szGameDecoration[255];

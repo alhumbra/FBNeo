@@ -117,7 +117,7 @@ ARM7_INLINE void arm7_cpu_write32(UINT32 addr, UINT32 data);
 ARM7_INLINE void arm7_cpu_write16(UINT32 addr, UINT16 data);
 ARM7_INLINE void arm7_cpu_write8(UINT32 addr, UINT8 data);
 ARM7_INLINE UINT32 arm7_cpu_read32(UINT32 addr);
-ARM7_INLINE UINT16 arm7_cpu_read16(UINT32 addr);
+ARM7_INLINE UINT32 arm7_cpu_read16(UINT32 addr);
 ARM7_INLINE UINT8 arm7_cpu_read8(UINT32 addr);
 
 /* Static Vars */
@@ -160,7 +160,7 @@ ARM7_INLINE UINT32 arm7_cpu_read32(UINT32 addr)
 
     if (addr & 3)
     {
-	result = Arm7ReadLong(addr & ~3);
+        result = Arm7ReadLong(addr & ~3);
         result = (result >> (8 * (addr & 3))) | (result << (32 - (8 * (addr & 3))));
     }
     else
@@ -171,11 +171,16 @@ ARM7_INLINE UINT32 arm7_cpu_read32(UINT32 addr)
     return result;
 }
 
-ARM7_INLINE UINT16 arm7_cpu_read16(UINT32 addr)
+ARM7_INLINE UINT32 arm7_cpu_read16(UINT32 addr)
 {
-    UINT16 result;
+    UINT32 result;
 
     result = Arm7ReadWord(addr & ~1);
+
+#if ARM9_MODE
+	// igs036 / arm946es makes no rotation to the result for byte-unaligned read16
+	return result;
+#endif
 
     if (addr & 1)
     {
@@ -591,6 +596,7 @@ static void arm7_core_reset(void)
     SET_CPSR(GET_CPSR | I_MASK | F_MASK | 0x10);
     R15 = 0;
 //    change_pc(R15);
+	burn_until_irq = 0;
 }
 
 // Execute used to be here.. moved to separate file (arm7exec.c) to be included by cpu cores separately
@@ -706,6 +712,10 @@ static void arm7_burn_until_irq(int state)
 // CPU - SET IRQ LINE
 static void arm7_core_set_irq_line(int irqline, int state)
 {
+	if (state != 0) {
+		burn_until_irq = 0;
+	}
+
     switch (irqline) {
 
     case ARM7_IRQ_LINE: /* IRQ */
@@ -1119,10 +1129,14 @@ static void HandleHalfWordDT(UINT32 insn)
 
             // Signed Half Word?
             if (insn & 0x20) {
+#if ARM9_MODE
+                newval = (UINT32)(INT32)(INT16)(UINT16)READ16(rnv & ~1);
+#else
                 UINT16 signbyte, databyte;
                 databyte = READ16(rnv) & 0xFFFF;
                 signbyte = (databyte & 0x8000) ? 0xffff : 0;
                 newval = (UINT32)(signbyte << 16)|databyte;
+#endif
             }
             // Signed Byte
             else {

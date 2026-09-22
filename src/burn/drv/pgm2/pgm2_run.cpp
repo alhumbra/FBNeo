@@ -78,18 +78,24 @@ INT32  Pgm2SprROMLen  = 0;
 INT32  Pgm2TileROMLen = 0;
 INT32  Pgm2SndROMLen  = 0;
 
-UINT8  Pgm2Input[8]       = { 0 };
+UINT8  Pgm2Input[10]      = { 0 };					// [0-3]=P1, [4-6]=P2/P3, [7-9]=DipA-DipC
 UINT8  Pgm2InputPort0[32] = { 0 };
 UINT8  Pgm2InputPort1[32] = { 0 };
-UINT8  Pgm2Dip[1]         = { 0xff };
+UINT8  Pgm2Dip[3]         = { 0xff, 0x00, 0x00 };	// [0]=DipA, [1]=DipB(Region), [2]=DipC(Cardless)
 UINT8  Pgm2Reset           = 0;
+
+static ClearOpposite<4, UINT8> Pgm2ClearOpposite;
+
+INT32  Pgm2RomPreDecrypted          = 0;	// 1 = original ROM is pre-decrypted (persists across reset)
+
+// Region hack address - some games need this set before reset
+static UINT32 Pgm2RegionHackAddress = 0;
 
 // Encryption support (runtime decryption via internal boot ROM)
 static UINT8 *Pgm2ArmROMEncrypted = NULL;     // encrypted backup for reset
 static INT32  Pgm2HasDecrypted = 0;            // prevents double decryption
 static INT32  Pgm2HasDecrypted_Cached = 0;     // prevents double decryption
 static UINT8  Pgm2EncryptTable[0x100] = {0};  // captured from writes to 0xFFFFFC00
-static INT32  Pgm2RtcBase = 0;
 static INT32  Pgm2EncWriteCount = 0;
 static INT32  Pgm2VideoRegLogCount = 0;
 static INT32  Pgm2SharedLogCount = 0;
@@ -115,15 +121,13 @@ INT32  Pgm2MaxCardSlots = 0;
 INT32  Pgm2ActiveCardSlot = 0;
 bool   Pgm2CardInserted[4] = {false, false, false, false};
 
-UINT8 CardlessHack = 0;
-
 // Speed hack variables
-static UINT32 Pgm2SpeedHackAddr[2] = { 0, 0 };
+static UINT32 Pgm2SpeedHackAddr[2]  = { 0, 0 };
 static UINT32 Pgm2SpeedHackPC[2][4] = {0};
 
 // RAM/ROM board (ddpdojt) — 2MB of writable RAM at 0x10000000, ROM at 0x10200000
-static UINT8 *Pgm2RomBoardRAM = NULL;
-static INT32  Pgm2RomBoardRAMSize = 0;
+UINT8 *Pgm2RomBoardRAM     = NULL;
+INT32  Pgm2RomBoardRAMSize = 0;
 static INT32  Pgm2DecryptWordOffset = 0;
 
 // Sprite layout offsets (set by ROM loader, used by pgm2_draw.cpp)
@@ -148,6 +152,7 @@ static UINT8  Pgm2ModuleSendBuf[10] = {0};
 static INT32  Pgm2ModuleSumRead = 0;
 static UINT32 Pgm2PioOutData = 0;
 
+static INT32 nCyclesExtra;
 
 // Per-game refresh rate (default 59.08 Hz; kof98umh uses 59.19 Hz per MAME pgm2_lores)
 static double Pgm2RefreshRate = 59.08;
@@ -202,6 +207,11 @@ void pgm2SetSpeedhack(UINT32 id, UINT32 addr, UINT32 pc1, UINT32 pc2, UINT32 pc3
     Pgm2SpeedHackPC[id][3] = pc4;
 }
 
+void pgm2SetRegionHack(UINT32 address)
+{
+    Pgm2RegionHackAddress = address;
+}
+
 void pgm2EnableKov3Module(const UINT8 *key, const UINT8 *sum, UINT32 addrXor, UINT16 dataXor)
 {
     Pgm2HasKov3Module = 1;
@@ -231,6 +241,12 @@ void pgm2SetRamRomBoard(INT32 ramSize)
 void pgm2SetRefreshRate(double hz)
 {
     Pgm2RefreshRate = hz;
+}
+
+static UINT32 pgm2RtcRead()
+{
+    // MAME exposes the IGS036 RTTC as elapsed machine time in seconds.
+    return (UINT32)(Pgm2RtcFrameCounter / Pgm2RefreshRate);
 }
 
 // ---------------------------------------------------------------------------
@@ -501,6 +517,138 @@ static void pgm2DoDecrypt(const char* source)
 }
 
 // ---------------------------------------------------------------------------
+// Decrypted ROM detection heuristic
+// ---------------------------------------------------------------------------
+static INT32 pgm2IsArmBranch(UINT32 opcode)
+{
+	if (((opcode >> 28) & 0xf) != 0xe) return 0;
+	if (((opcode >> 25) & 0x7) != 0x5) return 0;
+	return 1;
+}
+
+static INT32 pgm2ArmBranchTarget(UINT32 opcode, INT32 pcOffset)
+{
+	INT32 offset = (INT32)(opcode & 0x00ffffff);
+	if (offset & 0x00800000) offset |= ~0x00ffffff;
+	return (offset + 2 + pcOffset) * 4;
+}
+
+// Check if a 32-bit ARM opcode is permitted by PGM2 crypto hardware
+static INT32 pgm2IsArmInstructionValid(UINT32 opcode)
+{
+	// Extract 4-bit condition code (bits 28–31)
+	UINT32 cond = (opcode >> 28) & 0xf;
+	if (cond == 0xf) {
+		// Special unconditional instruction group (cond=0xF)
+		// Only allowed if top nibble of bits 24–27 equals 0xF
+		if (((opcode >> 24) & 0xf) == 0xf)
+			return 1;
+		return 0;
+	}
+
+	// Get ARM instruction group identifier (bits 25–27)
+	UINT32 opcode27_25 = (opcode >> 25) & 0x7;
+    if (opcode27_25 == 0x0) {
+		// Data processing / immediate instruction class
+		UINT32 opcode24_21 = (opcode >> 21) & 0xf;
+		// Block undefined/reserved opcodes 0x6 and 0x7 in this group
+		if (opcode24_21 == 0x6 || opcode24_21 == 0x7)
+			return 0;
+		return 1;
+    }
+
+	// All other ARM instruction groups (0x1 ~ 0x6) are fully permitted
+	if (opcode27_25 == 0x1) return 1;
+	if (opcode27_25 == 0x2) return 1;
+	if (opcode27_25 == 0x3) return 1;
+	if (opcode27_25 == 0x4) return 1;
+	if (opcode27_25 == 0x5) return 1;
+	if (opcode27_25 == 0x6) return 1;
+
+	// Fallback: any remaining opcode group is allowed
+	return 1;
+}
+
+static INT32 pgm2IsRomDecrypted()
+{
+	UINT8 *checkRom      = NULL;
+	INT32 checkRomLen    = 0;
+	const TCHAR *romName = _T("ARM ROM");
+
+	if (Pgm2RomBoardRAM && Pgm2RomBoardRAMSize > 0x100) {
+		checkRom    = Pgm2RomBoardRAM;
+		checkRomLen = Pgm2RomBoardRAMSize;
+		romName     = _T("Board ROM");
+	} else if (Pgm2ArmROM && Pgm2ArmROMLen > 0x100) {
+		checkRom    = Pgm2ArmROM;
+		checkRomLen = (Pgm2ArmROMFileLen > 0 && Pgm2ArmROMFileLen < Pgm2ArmROMLen) ? Pgm2ArmROMFileLen : Pgm2ArmROMLen;
+		romName     = _T("ARM ROM");
+	} else {
+		return 0;
+	}
+
+	if (checkRomLen > 0x1000) checkRomLen = 0x1000;
+
+	UINT32 firstInstr = BURN_ENDIAN_SWAP_INT32(*(UINT32*)(checkRom + 0));
+    
+	if ((firstInstr & 0xffff0000) == 0xe92d0000) {
+		return 1;
+	}
+    
+	if ((firstInstr & 0xfffffff0) == 0xe59ff010 || (firstInstr & 0xfffffff0) == 0xe51ff010) {
+		return 1;
+    }
+
+	return 0;
+}
+
+// ---------------------------------------------------------------------------
+// Boot ROM patching for decrypted ROMs
+//
+// Finds the "BL<verify>, BL<init>, B<continue>" sequence in the internal
+// boot ROM and NOPs out the verify BL. The verify function checks ROM
+// integrity and would hang/fail on pre-decrypted ROMs. The init BL (AIC
+// setup) and continue B (jump to external ROM) are preserved.
+//
+// This is the same pattern scanner already present in pgm2DoDecrypt()
+// (currently under if(0)), enabled here only for decrypted ROM detection.
+// ---------------------------------------------------------------------------
+static void pgm2PatchBootRomForDecrypted()
+{
+	if (!Pgm2IntROM || Pgm2IntROMLen < 0x100) {
+ //		bprintf(0, _T("PGM2: boot ROM patch: fail - no IntROM or too small\n"));
+		return;
+    }
+
+	// Scan and patch all BL,BL,B verify patterns in boot ROM
+	INT32 patchedCount = 0;
+	for (INT32 off = 0x20; off < Pgm2IntROMLen - 12; off += 4) {
+		UINT32 w0 = *(UINT32*)(Pgm2IntROM + off + 0);
+		UINT32 w1 = *(UINT32*)(Pgm2IntROM + off + 4);
+		UINT32 w2 = *(UINT32*)(Pgm2IntROM + off + 8);
+		if ((w0 & 0xff000000) == 0xeb000000 &&
+			(w1 & 0xff000000) == 0xeb000000 &&
+			(w2 & 0xff000000) == 0xea000000) {
+			bprintf(0, _T("PGM2: boot ROM verify pattern #%d at 0x%04X: %08X %08X %08X\n"),
+				patchedCount + 1, off, w0, w1, w2);
+			UINT32 original = w0;
+			*(UINT32*)(Pgm2IntROM + off) = 0xe1a00000;		// MOV R0, R0 (NOP)
+			bprintf(0, _T("PGM2: boot ROM patch: patched verify BL at 0x%04X (was %08X) -> NOP\n"),
+				off, original);
+			patchedCount++;
+		}
+	}
+
+	if (patchedCount > 0) {
+		bprintf(0, _T("PGM2: boot ROM patch: SUCCESS - patched %d verify BL(s)\n"),
+				patchedCount);
+		Pgm2IntRomNeedRestore = 1;
+	} else {
+		bprintf(0, _T("PGM2: boot ROM patch: FAILED - no BL,BL,B verify pattern found in boot ROM\n"));
+	}
+}
+
+// ---------------------------------------------------------------------------
 // Video RAM layout (sub-regions within Pgm2VidRAM 0x130000 bytes total)
 // Offsets are relative to Pgm2VidRAM base pointer.
 // ---------------------------------------------------------------------------
@@ -556,6 +704,11 @@ static INT32  Pgm2AicStatus    = 0;     // AIC_ISR: source number of current IRQ
 static UINT32 Pgm2AicCoreStatus = 0;    // AIC_CISR: bit1=nIRQ, bit0=nFIQ
 static INT32  Pgm2AicLevelStack[9] = {-1,0,0,0,0,0,0,0,0}; // Priority nesting stack (sentinel=-1, matches MAME)
 static INT32  Pgm2AicLvlIdx    = 0;     // Current stack index
+
+static inline void pgm2AicSetLines()
+{
+    Arm9SetIRQLine(ARM7_IRQ_LINE, (Pgm2AicCoreStatus & ~Pgm2AicDebug & 2) ? CPU_IRQSTATUS_ACK : CPU_IRQSTATUS_NONE);
+}
 
 // Get current interrupt priority level from stack
 static inline INT32 pgm2AicGetLevel()
@@ -618,12 +771,7 @@ static void pgm2AicCheckIrqs()
     if (Pgm2AicPending & Pgm2AicEnabled & Pgm2AicFastIrqs)
         Pgm2AicCoreStatus |= 1;
 
-    // Assert/deassert the CPU IRQ line based on core status
-    if (Pgm2AicCoreStatus & 2) {
-        Arm9SetIRQLine(ARM7_IRQ_LINE, CPU_IRQSTATUS_ACK);
-    } else {
-        Arm9SetIRQLine(ARM7_IRQ_LINE, CPU_IRQSTATUS_NONE);
-    }
+    pgm2AicSetLines();
 }
 
 static void pgm2AicSetIrq(int source, int state)
@@ -676,7 +824,7 @@ static UINT32 pgm2AicRead(UINT32 offset)
                     }
                     tmp ^= (1u << idx);
                 }
-                if (midx >= 0) {
+                if (midx > 0) {
                     Pgm2AicStatus = midx;
                     result = Pgm2AicSvr[midx];
                     // Push current priority level (nesting)
@@ -703,7 +851,7 @@ static UINT32 pgm2AicRead(UINT32 offset)
             }
             Pgm2AicCoreStatus &= ~2;
             // Match MAME: only update IRQ line here, do NOT re-evaluate (set_lines, not check_irqs)
-            Arm9SetIRQLine(ARM7_IRQ_LINE, (Pgm2AicCoreStatus & 2) ? CPU_IRQSTATUS_ACK : CPU_IRQSTATUS_NONE);
+            pgm2AicSetLines();
             return result;
         }
         case 0x104: // AIC_FVR
@@ -775,6 +923,7 @@ static void pgm2AicWrite(UINT32 offset, UINT32 data)
                     pc, pgm2AicGetLevel(), Pgm2AicLvlIdx > 0 ? Pgm2AicLevelStack[Pgm2AicLvlIdx - 1] : -1, Pgm2RtcFrameCounter);
                 eoicrLogCount++;
             }
+            Pgm2AicStatus = 0;
             pgm2AicPopLevel();
             break;
         }
@@ -792,8 +941,9 @@ static inline UINT8 pgm2SharedReadByte(UINT32 addr)
     UINT32 lo = addr - 0x30100000;
     if (lo > 0xff) return 0xff;
 
-    // umask32(0x00ff00ff): only byte lanes 0/2 are connected => even addresses.
-    if (lo & 1) return 0xff;
+    // MAME maps this through umask32(0x00ff00ff): only byte lanes 0/2
+    // reach the 8-bit shared RAM handler.  Masked lanes read as zero.
+    if (lo & 1) return 0x00;
 
     UINT32 offs = (lo >> 1) & 0x7f;
     return Pgm2SharedRAM2[offs + ((Pgm2ShareBank & 1) * 0x80)];
@@ -850,11 +1000,12 @@ static void pgm2McuCommand(bool isCommand)
                     memset(Pgm2SharedRAM2 + ((~Pgm2ShareBank & 1) * 0x80), arg3, 0x80);
                 }
                 Pgm2McuResult0 = cmd;
+                Pgm2McuResult1 = 0;
                 break;
 
             case 0xc0: // insert card / check card presence
             case 0xc1: // check ready/busy
-                if ((CardlessHack & 1) && (0xc0 == cmd)) {  // Cardless mode
+                if ((Pgm2Dip[2] & 1) && (0xc0 == cmd)) {  // Cardless mode
                     if (!pgm2CardPresent(arg1 & 3)) {
                         status = 0x00f70000;
                     }
@@ -985,7 +1136,6 @@ static void pgm2McuCommand(bool isCommand)
             default:
                 // Match MAME: unknown commands report error status (0xF4).
                 status = 0x00f40000;
-                Pgm2McuResult0 = cmd;
                 break;
         }
 
@@ -997,7 +1147,7 @@ static void pgm2McuCommand(bool isCommand)
         // asserted only when the countdown expires (in pgm2Frame), NOT
         // immediately — the game must have time to finish setting up AIC
         // SVR vectors before the first MCU interrupt fires.
-        Pgm2McuDoneCountdown = 8;
+        Pgm2McuDoneCountdown = 16;
     } else {
         // ACK: MAME sets status F2 and starts another short timer (100μs),
         // then clears IRQ3 immediately on the ACK write.
@@ -1084,7 +1234,7 @@ static void checkSpeedhack(UINT32 addr, UINT32 v)
 			}
 
 			if ((v == 0 || shId == 1) && next == 0) {
-				Arm9RunEndEatCycles();
+				Arm9BurnUntilInterrupt();
 			}
 		}
 	}
@@ -1104,6 +1254,7 @@ static inline UINT32 pgm2ReadLongDirect(UINT32 addr)
         UINT32 b1 = (off + 1 < (UINT32)Pgm2ArmROMLen) ? Pgm2ArmROM[off + 1] : 0;
         UINT32 b2 = (off + 2 < (UINT32)Pgm2ArmROMLen) ? Pgm2ArmROM[off + 2] : 0;
         UINT32 b3 = (off + 3 < (UINT32)Pgm2ArmROMLen) ? Pgm2ArmROM[off + 3] : 0;
+        
         return b0 | (b1 << 8) | (b2 << 16) | (b3 << 24);
     }
 
@@ -1211,8 +1362,9 @@ static inline UINT32 pgm2ReadLongDirect(UINT32 addr)
     }
 
     // SRAM (battery) 0x02000000-0x0200FFFF
-    if (addr >= 0x02000000 && addr <= 0x0200FFFF)
+    if (addr >= 0x02000000 && addr <= 0x0200FFFF) {
         return BURN_ENDIAN_SWAP_INT32(*(UINT32*)(Pgm2ExtRAM + (addr - 0x02000000)));
+    }
 
     // MPU MCU registers: 128KB per register, reg = byte_offset >> 17
     // MAME: (word_offset >> 15) & 7, equivalent to (byte_offset >> 17) & 7
@@ -1225,7 +1377,7 @@ static inline UINT32 pgm2ReadLongDirect(UINT32 addr)
     // Advance this from emulated frame time so timeout loops can progress.
     if (addr == 0x7FFFFD28)
     {
-        return (UINT32)(Pgm2RtcBase + (Pgm2RtcFrameCounter / 60));
+        return pgm2RtcRead();
     }
 
     // IGS036 internal peripherals (high addresses, bit 31 masked by ARM9 to 0x7Fxxxxxx)
@@ -1675,10 +1827,9 @@ static INT32 pgm2CpuCycles()
 // ---------------------------------------------------------------------------
 INT32 pgm2Init()
 {
+//	bprintf(0, _T("PGM2: pgm2Init() start, Pgm2RomPreDecrypted=%d\n"), Pgm2RomPreDecrypted);
     BurnSetRefreshRate(Pgm2RefreshRate);
     PGM2_LOG(PGM2_LOG_SYS, "==== PGM2 init ====");
-    Pgm2RtcBase = (INT32)time(NULL);
-
     // Main RAM 0x20000000 - 512 KB
     Pgm2ArmRAM    = (UINT8*)BurnMalloc(0x80000);
     if (Pgm2ArmRAM) memset(Pgm2ArmRAM, 0, 0x80000);
@@ -1751,8 +1902,10 @@ INT32 pgm2Init()
     Pgm2AicCoreStatus = 0;
 
     // Game-specific ROM load + decrypt callback
+//	bprintf(0, _T("PGM2: before pPgm2InitCallback, Pgm2RomPreDecrypted=%d\n"), Pgm2RomPreDecrypted);
     if (pPgm2InitCallback)
         pPgm2InitCallback();
+//	bprintf(0, _T("PGM2: after pPgm2InitCallback, Pgm2RomPreDecrypted=%d\n"), Pgm2RomPreDecrypted);
 
     // Detect actual ROM file size for correct decrypt length and MAP_ROM range
     Pgm2ArmROMFileLen = Pgm2ArmROMLen;  // default to buffer size
@@ -1840,6 +1993,19 @@ INT32 pgm2Init()
 
     Pgm2HasDecrypted = 0;
 	Pgm2HasDecrypted_Cached = 0;
+
+	if (Pgm2RomPreDecrypted || pgm2IsRomDecrypted()) {
+		Pgm2RomPreDecrypted     = 1;
+		Pgm2HasDecrypted        = 1;
+		Pgm2HasDecrypted_Cached = 1;
+		if (Pgm2HasKov3Module) {
+			Pgm2HasDecryptedKov3Module        = 1;
+			Pgm2HasDecryptedKov3Module_Cached = 1;
+		}
+		pgm2PatchBootRomForDecrypted();
+	} else {
+		Pgm2RomPreDecrypted = 0;
+	}
 
     // Initialize KOV3 module clock counter to 151 (matches MAME machine_reset).
     // This skips the false clock pulse that occurs during GPIO initialization.
@@ -1961,10 +2127,40 @@ INT32 pgm2Init()
     // Init video
     pgm2InitDraw();
 
+    pgm2DoReset();
+
     return 0;
 }
+
+// ---------------------------------------------------------------------------
+// Pack per-bit input arrays into byte registers for hardware read
+static void pgm2MakeInputs()
+{
+    memset(Pgm2Input, 0, sizeof(Pgm2Input));
+    for (INT32 i = 0; i < 32; i++) {
+        Pgm2Input[i / 8] |= (Pgm2InputPort0[i] & 1) << (i & 7);
+    }
+    for (INT32 i = 0; i < 24; i++) {
+        Pgm2Input[4 + i / 8] |= (Pgm2InputPort1[i] & 1) << (i & 7);
+    }
+
+	Pgm2ClearOpposite.check(0, Pgm2Input[0], 0x01, 0x02, 0x04, 0x08, nSocd[0]);
+	Pgm2ClearOpposite.check(1, Pgm2Input[1], 0x04, 0x08, 0x10, 0x20, nSocd[1]);
+	Pgm2ClearOpposite.check(2, Pgm2Input[2], 0x10, 0x20, 0x40, 0x80, nSocd[2]);
+	Pgm2ClearOpposite.check(3, Pgm2Input[4], 0x01, 0x02, 0x04, 0x08, nSocd[3]);
+
+    // DIP switches: pre-invert because the read handler applies ~ to the
+    // whole 32-bit value.  ~(~Pgm2Dip[0]) restores the correct polarity.
+    Pgm2Input[7] = ~Pgm2Dip[0];
+    // Dip B (Region switch) and Dip C (Cardless mode)
+    Pgm2Input[8] = Pgm2Dip[1];
+    Pgm2Input[9] = Pgm2Dip[2];
+}
+
 INT32 pgm2DoReset()
 {
+	pgm2MakeInputs();
+
 	if (Pgm2ArmROMEncrypted && Pgm2ArmROM)
 		memcpy(Pgm2ArmROM, Pgm2ArmROMEncrypted, Pgm2ArmROMLen);
 
@@ -1972,6 +2168,20 @@ INT32 pgm2DoReset()
 	Pgm2HasDecryptedKov3Module_Cached = 0;
 	Pgm2HasDecrypted = 0;
 	Pgm2HasDecrypted_Cached = 0;
+
+	if (Pgm2RomPreDecrypted) {
+		Pgm2HasDecrypted        = 1;
+		Pgm2HasDecrypted_Cached = 1;
+		if (Pgm2HasKov3Module) {
+			Pgm2HasDecryptedKov3Module        = 1;
+			Pgm2HasDecryptedKov3Module_Cached = 1;
+			// Re-apply IntROM patches for KOV3 module on each reset
+			if (Pgm2IntROM && Pgm2IntROMLen > 0x2a94) {
+				*(UINT32*)(Pgm2IntROM + 0x2a8c) = BURN_ENDIAN_SWAP_INT32(0x00000000);
+				*(UINT32*)(Pgm2IntROM + 0x2a90) = BURN_ENDIAN_SWAP_INT32(0x00000000);
+			}
+		}
+	}
 	Pgm2ModuleClkCnt = 151; // MAME: prevents false clock pulse during GPIO init
 	Pgm2ModulePrevState = 0;
 	Pgm2ModuleInLatch = 0;
@@ -1980,19 +2190,27 @@ INT32 pgm2DoReset()
 	Pgm2PioOutData = 0;
 	memset(Pgm2ModuleRcvBuf, 0, sizeof(Pgm2ModuleRcvBuf));
 	memset(Pgm2ModuleSendBuf, 0, sizeof(Pgm2ModuleSendBuf));
+	// Apply region hack before reset (to internal boot ROM)
+	if (Pgm2RegionHackAddress && Pgm2IntROM && Pgm2RegionHackAddress < (UINT32)Pgm2IntROMLen) {
+		Pgm2IntROM[Pgm2RegionHackAddress] = Pgm2Input[8];
+//		bprintf(0, _T("PGM2: region hack applied at 0x%08X (IntROM) = 0x%02X\n"), Pgm2RegionHackAddress, Pgm2Input[8]);
+	}
 	Arm9Open(0);
 	Arm9Reset();
 	Arm9Close();
 	ymz770_reset();
 	Pgm2Reset = 0;
 	Pgm2RtcFrameCounter = 0;
-	HiscoreReset();
+	nCyclesExtra = 0;
 	if(pPgm2ResetCallback)
 		pPgm2ResetCallback();
+	Pgm2ClearOpposite.reset();
+	HiscoreReset();
 	return 0;
 }
 INT32 pgm2Exit()
 {
+//	bprintf(0, _T("PGM2: pgm2Exit() start, Pgm2RomPreDecrypted=%d\n"), Pgm2RomPreDecrypted);
     Arm9Open(0);
     Arm9Exit();
 
@@ -2051,6 +2269,9 @@ INT32 pgm2Exit()
     Pgm2HasKov3Module = 0;
 	Pgm2HasDecryptedKov3Module = 0;
 	Pgm2HasDecryptedKov3Module_Cached = 0;
+	Pgm2HasDecrypted        = 0;
+	Pgm2HasDecrypted_Cached = 0;
+	Pgm2RomPreDecrypted     = 0;
     Pgm2ModuleKey = NULL;
     Pgm2ModuleSum = NULL;
     Pgm2ModuleAddrXor = 0;
@@ -2065,22 +2286,6 @@ INT32 pgm2Exit()
     memset(Pgm2ModuleSendBuf, 0, sizeof(Pgm2ModuleSendBuf));
 
     return 0;
-}
-
-// ---------------------------------------------------------------------------
-// Pack per-bit input arrays into byte registers for hardware read
-static void pgm2MakeInputs()
-{
-    memset(Pgm2Input, 0, sizeof(Pgm2Input));
-    for (INT32 i = 0; i < 32; i++) {
-        Pgm2Input[i / 8] |= (Pgm2InputPort0[i] & 1) << (i & 7);
-    }
-    for (INT32 i = 0; i < 24; i++) {
-        Pgm2Input[4 + i / 8] |= (Pgm2InputPort1[i] & 1) << (i & 7);
-    }
-    // DIP switches: pre-invert because the read handler applies ~ to the
-    // whole 32-bit value.  ~(~Pgm2Dip[0]) restores the correct polarity.
-    Pgm2Input[7] = ~Pgm2Dip[0];
 }
 
 // pgm2Frame
@@ -2127,14 +2332,15 @@ INT32 pgm2Frame()
     // 100 MHz ARM9 / Pgm2RefreshRate fps / 264 total lines (224 active + 40 vblank)
     static const INT32 PGM2_TOTAL_LINES  = 264;
     static const INT32 PGM2_VBLANK_START = 224;
-    static const INT32 PGM2_CPU_HZ       = 100000000;
-    INT32 nCyclesPerLine = (INT32)((double)PGM2_CPU_HZ / ((double)PGM2_TOTAL_LINES * Pgm2RefreshRate));
-
+	static const INT32 PGM2_CPU_HZ       = 100000000;
+	INT32 nInterleave = PGM2_TOTAL_LINES;
+	INT32 nCyclesTotal[1] = { (INT32)((double)PGM2_CPU_HZ / (double)Pgm2RefreshRate) };
+	INT32 nCyclesDone[1] = { nCyclesExtra };
     Arm9Open(0);
     Arm9NewFrame();
 
     for (INT32 i = 0; i < PGM2_TOTAL_LINES; i++) {
-        Arm9Run(nCyclesPerLine);
+		CPU_RUN(0, Arm9);
         // We approximate with scanline countdowns.  When the countdown expires
         // we assert IRQ3 — matching MAME's mcu_interrupt() callback.
         if (Pgm2McuDoneCountdown > 0) {
@@ -2225,6 +2431,8 @@ INT32 pgm2Frame()
     }
 
     Arm9Close();
+
+	nCyclesExtra = nCyclesDone[0] - nCyclesTotal[0];
 
     // Render after all scanlines (using snapshotted OAM from vblank start)
     if (pBurnDraw) {
@@ -2346,6 +2554,8 @@ INT32 pgm2Scan(INT32 nAction, INT32 *pnMin)
 
         ymz770_scan(nAction, pnMin);
 
+        SCAN_VAR(Pgm2RtcFrameCounter);
+
         SCAN_VAR(Pgm2McuRegs);
         SCAN_VAR(Pgm2McuResult0);
         SCAN_VAR(Pgm2McuResult1);
@@ -2382,10 +2592,14 @@ INT32 pgm2Scan(INT32 nAction, INT32 *pnMin)
             SCAN_VAR(Pgm2ModuleSendBuf);
             SCAN_VAR(Pgm2ModuleSumRead);
             SCAN_VAR(Pgm2PioOutData);
-        }
+		}
+
+		Pgm2ClearOpposite.scan();
+
+		SCAN_VAR(nCyclesExtra);
     }
 
-    // After loading a savestate, restore encrypted ROM and re-decrypt if
+	// After loading a savestate, restore encrypted ROM and re-decrypt if
 	// Decryption values in state do not match internal cached value
 	if (nAction & ACB_WRITE) {
 		const bool pgm2_decr_check = Pgm2HasDecrypted != Pgm2HasDecrypted_Cached;

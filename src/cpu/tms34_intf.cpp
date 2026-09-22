@@ -94,9 +94,9 @@ INT32 TMS34010GetActive()
 void TMS34010WriteCheat(UINT32 address, UINT8 value);
 UINT8 TMS34010ReadByte(UINT32 address);
 
-INT32 TMS34010TotalCyclesi32()
+INT32 TMS34010TotalCycles()
 {
-	return TMS34010TotalCycles();
+	return tms34010_total_cycles();
 }
 
 void TMS34010SetIRQLine(INT32 cpu, INT32 vector, INT32 status)
@@ -112,7 +112,7 @@ cpu_core_config TMS34010Config =
 	TMS34010ReadByte,
 	TMS34010WriteCheat,
 	TMS34010GetActive,
-	TMS34010TotalCyclesi32,
+	TMS34010TotalCycles,
 	TMS34010NewFrame,
 	TMS34010Idle,
 	TMS34010SetIRQLine,
@@ -234,11 +234,6 @@ void TMS34010TimerSet(INT32 cycles)
 	tms34010_timer_arm(cycles);
 }
 
-INT64 TMS34010TotalCycles()
-{
-	return tms34010_total_cycles();
-}
-
 void TMS34010NewFrame()
 {
 	for (INT32 i = 0; i < total_cpus; i++) {
@@ -318,6 +313,11 @@ INT32 TMS34010GenerateScanline(INT32 line)
 void TMS34010HostWrite(INT32 reg, UINT16 data)
 {
 	tms34010_host_w(reg, data);
+}
+
+void TMS34010HostWriteMask(INT32 reg, UINT16 data, UINT16 mask)
+{
+	tms34010_host_w_mask(reg, data, mask);
 }
 
 UINT16 TMS34010HostRead(INT32 reg)
