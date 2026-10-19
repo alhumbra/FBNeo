@@ -4275,6 +4275,24 @@ struct BurnDriver BurnDrvfds_zeldanoden = {
 	SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT
 };
 
+// Dreamful FDS Diskmag, First Issue - 40th Anniversary of FDS (2026)
+// https://github.com/TakuikaNinja/FDS-diskmag
+static struct BurnRomInfo fds_dreamful001RomDesc[] = {
+	{ "Dreamful - FDS Diskmag, 40th Anniversary of FDS (2026)(TakuikaNinja).fds",          65500, 0x55314060, BRF_ESS | BRF_PRG },
+};
+
+STDROMPICKEXT(fds_dreamful001, fds_dreamful001, fds_fdsbios)
+STD_ROM_FN(fds_dreamful001)
+
+struct BurnDriver BurnDrvfds_dreamful001 = {
+	"fds_dreamful001", NULL, "fds_fdsbios", NULL, "2026",
+	"Dreamful - FDS Diskmag, 40th Anniversary of FDS (HB)\0", NULL, "TakuikaNinja", "Famicom Disk System",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_HOMEBREW, 2, HARDWARE_FDS, GBF_MISC, 0,
+	NESGetZipName, fds_dreamful001RomInfo, fds_dreamful001RomName, NULL, NULL, NULL, NULL, NESInputInfo, NESDIPInfo,
+	NESInit, NESExit, NESFrame, NESDraw, NESScan, &NESRecalc, 0x40,
+	SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT
+};
 
 // FDS END ---------------------------------------------------------------
 
@@ -14972,14 +14990,14 @@ struct BurnDriver BurnDrvnes_mojontwiapuche = {
 
 // Argon Dream (HB)
 static struct BurnRomInfo nes_argondreamRomDesc[] = {
-	{ "Argon Dream (2025)(Johnybot).nes",          24592, 0xd4ab5d9c, BRF_ESS | BRF_PRG },
+	{ "Argon Dream (2025-26)(Johnybot).nes",          40976, 0x192d41c1, BRF_ESS | BRF_PRG },
 };
 
 STD_ROM_PICK(nes_argondream)
 STD_ROM_FN(nes_argondream)
 
 struct BurnDriver BurnDrvnes_argondream = {
-	"nes_argondream", NULL, NULL, NULL, "2025",
+	"nes_argondream", NULL, NULL, NULL, "2025-26",
 	"Argon Dream (HB)\0", "No Sound", "Johnybot", "NES / Famicom",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_HOMEBREW, 1, HARDWARE_NES, GBF_BREAKOUT, 0,
@@ -17759,6 +17777,25 @@ struct BurnDriver BurnDrvnes_dethcomplex2 = {
 	SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT
 };
 
+// Dice Royal (HB, Alpha)
+// https://simgraveline.itch.io/dice-royal-retro
+static struct BurnRomInfo nes_diceroyalRomDesc[] = {
+	{ "Dice Royal Alpha (2026)(Grave Games).nes",          73744, 0xa5c17ade, BRF_ESS | BRF_PRG },
+};
+
+STD_ROM_PICK(nes_diceroyal)
+STD_ROM_FN(nes_diceroyal)
+
+struct BurnDriver BurnDrvnes_diceroyal = {
+	"nes_diceroyal", NULL, NULL, NULL, "2026",
+	"Dice Royal (HB, Alpha)\0", NULL, "Grave Games", "NES / Famicom",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_HOMEBREW, 1, HARDWARE_NES, GBF_PUZZLE, 0,
+	NESGetZipName, nes_diceroyalRomInfo, nes_diceroyalRomName, NULL, NULL, NULL, NULL, NESInputInfo, NESDIPInfo,
+	NESInit, NESExit, NESFrame, NESDraw, NESScan, &NESRecalc, 0x40,
+	SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT
+};
+
 // Diggy Diggy Mole (HB)
 static struct BurnRomInfo nes_diggymoleRomDesc[] = {
 	{ "Diggy Diggy Mole (2026)(Novasplore Games).nes",          98320, 0xaa4951b1, BRF_ESS | BRF_PRG },
@@ -19900,6 +19937,24 @@ struct BurnDriver BurnDrvnes_hoboalboha = {
 	SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT
 };
 
+// Hobo Albo's Halloween Adventure (HB, v1.5, Alt)
+static struct BurnRomInfo nes_hoboalbohaaRomDesc[] = {
+	{ "Hobo Albo's Halloween Adventure v1.5 (Alt)(2025)(RBG Entertainment).nes",          524304, 0xe3f081c6, BRF_ESS | BRF_PRG },
+};
+
+STD_ROM_PICK(nes_hoboalbohaa)
+STD_ROM_FN(nes_hoboalbohaa)
+
+struct BurnDriver BurnDrvnes_hoboalbohaa = {
+	"nes_hoboalbohaa", "nes_hoboalboha", NULL, NULL, "2025",
+	"Hobo Albo's Halloween Adventure (HB, v1.5, Alt)\0", NULL, "RBG Entertainment", "NES / Famicom",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_CLONE | BDF_HOMEBREW, 1, HARDWARE_NES, GBF_PLATFORM, 0,
+	NESGetZipName, nes_hoboalbohaaRomInfo, nes_hoboalbohaaRomName, NULL, NULL, NULL, NULL, NESInputInfo, NESDIPInfo,
+	NESInit, NESExit, NESFrame, NESDraw, NESScan, &NESRecalc, 0x40,
+	SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT
+};
+
 // Hokuto no Ken - OVERHAUL Patch (Hack)
 static struct BurnRomInfo nes_hokutonokenopRomDesc[] = {
 	{ "Hokuto no Ken OVERHAUL Patch (2022)(Rani Baker).nes",          65552, 0xb02b18fa, BRF_ESS | BRF_PRG },
@@ -21466,6 +21521,25 @@ struct BurnDriver BurnDrvnes_machinecave = {
 	SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT
 };
 
+// Mad Mix Game R (HB)
+// https://enriqueggalvez.itch.io/mad-mix-game-r
+static struct BurnRomInfo nes_madmixgrRomDesc[] = {
+	{ "Mad Mix Game R (2026)(Magic Games).nes",          2097168, 0x58702f7d, BRF_ESS | BRF_PRG },
+};
+
+STD_ROM_PICK(nes_madmixgr)
+STD_ROM_FN(nes_madmixgr)
+
+struct BurnDriver BurnDrvnes_madmixgr = {
+	"nes_madmixgr", NULL, NULL, NULL, "2026",
+	"Mad Mix Game R (HB)\0", NULL, "Magic Games", "NES / Famicom",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_HOMEBREW, 1, HARDWARE_NES, GBF_ACTION | GBF_MAZE, 0,
+	NESGetZipName, nes_madmixgrRomInfo, nes_madmixgrRomName, NULL, NULL, NULL, NULL, NESInputInfo, NESDIPInfo,
+	NESInit, NESExit, NESFrame, NESDraw, NESScan, &NESRecalc, 0x40,
+	SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT
+};
+
 // Mad Wizard, The: A Candelabra Chronicle (HB) (Sly Dog Studios)
 static struct BurnRomInfo nes_madwizsdsRomDesc[] = {
 	{ "Mad Wizard, The - A Candelabra Chronicle (2014)(Sly Dog Studios).nes",          131088, 0x5481d022, BRF_ESS | BRF_PRG },
@@ -22849,6 +22923,25 @@ struct BurnDriver BurnDrvnes_nebsanddebs = {
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_HOMEBREW, 2, HARDWARE_NES, GBF_PLATFORM, 0,
 	NESGetZipName, nes_nebsanddebsRomInfo, nes_nebsanddebsRomName, NULL, NULL, NULL, NULL, NESInputInfo, NESDIPInfo,
+	NESInit, NESExit, NESFrame, NESDraw, NESScan, &NESRecalc, 0x40,
+	SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT
+};
+
+// Nemeshit (HB)
+// https://keefbaker.itch.io/nemeshit
+static struct BurnRomInfo nes_nemeshitRomDesc[] = {
+	{ "Nemeshit (2026)(Clankerbast Software).nes",          786448, 0x9fb4b6a3, BRF_ESS | BRF_PRG },
+};
+
+STD_ROM_PICK(nes_nemeshit)
+STD_ROM_FN(nes_nemeshit)
+
+struct BurnDriver BurnDrvnes_nemeshit = {
+	"nes_nemeshit", NULL, NULL, NULL, "2026",
+	"Nemeshit (HB)\0", NULL, "Clankerbast Software", "NES / Famicom",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_HOMEBREW, 1, HARDWARE_NES, GBF_HORSHOOT, 0,
+	NESGetZipName, nes_nemeshitRomInfo, nes_nemeshitRomName, NULL, NULL, NULL, NULL, NESInputInfo, NESDIPInfo,
 	NESInit, NESExit, NESFrame, NESDraw, NESScan, &NESRecalc, 0x40,
 	SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT
 };
@@ -26733,6 +26826,25 @@ struct BurnDriver BurnDrvnes_tankh1990bm = {
 	SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT
 };
 
+// Tanker: Battle City Reimagined (HB)
+// https://slonenok.itch.io/tanker
+static struct BurnRomInfo nes_tankerRomDesc[] = {
+	{ "Tanker - Battle City Reimagined (2026)(Slonenok Studio).nes",          40976, 0x1f7b7d28, BRF_ESS | BRF_PRG },
+};
+
+STD_ROM_PICK(nes_tanker)
+STD_ROM_FN(nes_tanker)
+
+struct BurnDriver BurnDrvnes_tanker = {
+	"nes_tanker", NULL, NULL, NULL, "2026",
+	"Tanker: Battle City Reimagined (HB)\0", NULL, "Slonenok Studio", "NES / Famicom",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_HOMEBREW, 2, HARDWARE_NES, GBF_MAZE | GBF_SHOOT, 0,
+	NESGetZipName, nes_tankerRomInfo, nes_tankerRomName, NULL, NULL, NULL, NULL, NESInputInfo, NESDIPInfo,
+	NESInit, NESExit, NESFrame, NESDraw, NESScan, &NESRecalc, 0x40,
+	SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT
+};
+
 // Tapeworm Disco Puzzle (HB, v05)
 static struct BurnRomInfo nes_tapewormRomDesc[] = {
 	{ "Tapeworm Disco Puzzle v05 (2022)(Lowtek Games).nes",          524304, 0x3cf42935, BRF_ESS | BRF_PRG },
@@ -27129,6 +27241,25 @@ struct BurnDriver BurnDrvnes_tinasadvisliii = {
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK, 1, HARDWARE_NES, GBF_PLATFORM, 0,
 	NESGetZipName, nes_tinasadvisliiiRomInfo, nes_tinasadvisliiiRomName, NULL, NULL, NULL, NULL, NESInputInfo, NESDIPInfo,
+	NESInit, NESExit, NESFrame, NESDraw, NESScan, &NESRecalc, 0x40,
+	SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT
+};
+
+// Togyzqumalaq (HB, v2.0.9)
+// https://aspirinechou.itch.io/togyzqumalaq-nes
+static struct BurnRomInfo nes_togyzqumalaqRomDesc[] = {
+	{ "Togyzqumalaq v2.0.9 (2026)(Jiucai Baobao).nes",          40976, 0xe09a3dda, BRF_ESS | BRF_PRG },
+};
+
+STD_ROM_PICK(nes_togyzqumalaq)
+STD_ROM_FN(nes_togyzqumalaq)
+
+struct BurnDriver BurnDrvnes_togyzqumalaq = {
+	"nes_togyzqumalaq", NULL, NULL, NULL, "2026",
+	"Togyzqumalaq (HB, v2.0.9)\0", NULL, "Jiucai Baobao", "NES / Famicom",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_HOMEBREW, 2, HARDWARE_NES, GBF_BOARD, 0,
+	NESGetZipName, nes_togyzqumalaqRomInfo, nes_togyzqumalaqRomName, NULL, NULL, NULL, NULL, NESInputInfo, NESDIPInfo,
 	NESInit, NESExit, NESFrame, NESDraw, NESScan, &NESRecalc, 0x40,
 	SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_HEIGHT
 };
@@ -54467,7 +54598,7 @@ struct BurnDriver BurnDrvnes_superarabian = {
 
 // Super C (USA)
 static struct BurnRomInfo nes_supercRomDesc[] = {
-	{ "Super C (USA)(1990)(Konami).nes",          262160, 0xed53852d, BRF_ESS | BRF_PRG },
+	{ "Super C (USA)(1990)(Konami).nes",          262160, 0x1ac846f0, BRF_ESS | BRF_PRG },
 };
 
 STD_ROM_PICK(nes_superc)

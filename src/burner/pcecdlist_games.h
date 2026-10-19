@@ -8,19 +8,6 @@ struct pce_cd_dink {
 	TCHAR *company;
 };
 
-#if 0
-/*
-Adventure Quiz Capcom - stuck playing track 7(?)
-Baby Jo the Super Hero - stuck playing track 5
-Alnam no Kiba - unknown writes to 1ee9xx/8xx
-Aoki Ookami - unknown write to 1efffx
-Bakuden Unbalanced Zone - black screen after start game
-Beyond Shadowgate - stuck reading track 36, but if you ffwd through it, it'll get to the title screen, but hang @ black screen when game starts
-Bishojyo Jyanshi Idol Pai - load error (GECD card required)
-SydMead - when changing screen mode, crap left on bottom of screen
-*/
-#endif
-
 static pce_cd_dink pcengine_cd_games[] = {
 	{ _T("fe893dc89a64c3066a4bcc6862dae9deb187adba"), _T("1552 Tenka Tairan"), _T("1552tenk"), _T("1993"), _T("ASK Kodansha") },
 	{ _T("09a51d8e84e493f674add3744263bf1861c78ad4"), _T("3x3 Eyes Sanjiyan Hensei"), _T("3x3eyes"), _T("1994"), _T("NEC Home Electronics") },
