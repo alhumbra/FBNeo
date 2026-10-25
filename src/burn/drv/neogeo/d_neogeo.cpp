@@ -22004,14 +22004,14 @@ struct BurnDriver BurnDrvSamsh2jq = {
 };
 
 
-// Samurai Shodown II / Shin Samurai Spirits - Haohmaru Jigokuhen (Perfect V. 2.9, Hack)
+// Samurai Shodown II / Shin Samurai Spirits - Haohmaru Jigokuhen (Perfect V. 3.0, Hack)
 // Modified by Bear
-// 20260629
+// 20260924
 
 static struct BurnRomInfo samsho2peRomDesc[] = {
-	{ "063-p1pe.p1",	0x100000, 0xc47446f7, 1 | BRF_ESS | BRF_PRG }, //  0 68K code
-	{ "063-p2pe.sp2",	0x100000, 0x269e9be3, 1 | BRF_ESS | BRF_PRG }, //  1
-	{ "063-p3pe.p3",	0x020000, 0x7e9083e9, 1 | BRF_ESS | BRF_PRG }, //  2 Extra ROM
+	{ "063-p1pe.p1",	0x100000, 0xb3b0c7df, 1 | BRF_ESS | BRF_PRG }, //  0 68K code
+	{ "063-p2pe.sp2",	0x100000, 0x0efb4875, 1 | BRF_ESS | BRF_PRG }, //  1
+	{ "063-p3pe.p3",	0x020000, 0x5e912569, 1 | BRF_ESS | BRF_PRG }, //  2 Extra ROM
 
 	SAMSHO2_COMPONENTS
 };
@@ -22021,8 +22021,8 @@ STD_ROM_FN(samsho2pe)
 
 struct BurnDriver BurnDrvSamsho2pe = {
 	"samsho2pe", "samsho2", "neogeo", NULL, "2023-26",
-	"Samurai Shodown II / Shin Samurai Spirits - Haohmaru Jigokuhen (Perfect V. 2.9, Hack)\0", NULL, "Bear", "Neo Geo MVS",
-	L"Samurai Shodown II\0\u771F Samurai Spirits - \u8987\u738B\u4E38\u5730\u7344\u5909 (Perfect V. 2.9, Hack)\0", NULL, NULL, NULL,
+	"Samurai Shodown II / Shin Samurai Spirits - Haohmaru Jigokuhen (Perfect V. 3.0, Hack)\0", NULL, "Bear", "Neo Geo MVS",
+	L"Samurai Shodown II\0\u771F Samurai Spirits - \u8987\u738B\u4E38\u5730\u7344\u5909 (Perfect V. 3.0, Hack)\0", NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_CLONE | BDF_HACK, 2, HARDWARE_PREFIX_CARTRIDGE | HARDWARE_SNK_NEOGEO, GBF_VSFIGHT, FBF_SAMSHO,
 	NULL, samsho2peRomInfo, samsho2peRomName, NULL, NULL, NULL, NULL, neogeoInputInfo, neoForceMVSDIPInfo,
 	samsh2spInit, NeoExit, NeoFrame, NeoRender, NeoScan, &NeoRecalcPalette,
@@ -30635,6 +30635,35 @@ struct BurnDriver BurnDrvHangonng = {
 };
 
 
+// Shadow League Fighting (HB, v3)
+
+static struct BurnRomInfo shadowlfRomDesc[] = {
+	{ "shadowlf_p1.p1",    0x300000, 0x127535e0, 1 | BRF_ESS | BRF_PRG }, //  0 68K code
+
+	{ "shadowlf_s1.s1",    0x020000, 0x636d9736, 2 | BRF_GRA },           //  1 Text layer tiles
+
+	{ "shadowlf_c1.c1",    0x800000, 0xac935b79, 3 | BRF_GRA },           //  2 Sprite data
+	{ "shadowlf_c2.c2",    0x800000, 0xd65c95ab, 3 | BRF_GRA },           //  3
+
+	{ "shadowlf_m1.m1",    0x020000, 0xceabdb57, 4 | BRF_ESS | BRF_PRG }, //  4 Z80 code
+
+	{ "shadowlf_v1.v1",    0x79c100, 0x63c1b4e6, 5 | BRF_SND },           //  5 Sound data
+};
+
+STDROMPICKEXT(shadowlf, shadowlf, neogeo)
+STD_ROM_FN(shadowlf)
+
+struct BurnDriver BurnDrvShadowlf = {
+	"shadowlf", NULL, "neogeo", NULL, "2026",
+	"Shadow League Fighting (HB, v3)\0", NULL, "Eagle Software", "Neo Geo MVS",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_HOMEBREW, 2, HARDWARE_PREFIX_CARTRIDGE | HARDWARE_SNK_NEOGEO, GBF_VSFIGHT, 0,
+	NULL, shadowlfRomInfo, shadowlfRomName, NULL, NULL, NULL, NULL, neogeoInputInfo, neogeoDIPInfo,
+	NeoInit, NeoExit, NeoFrame, NeoRender, NeoScan, &NeoRecalcPalette,
+	0x1000,	320, 224, 4, 3
+};
+
+
 // Shinobi Neo Geo (HB, v1.1)
 // https://h0ffman.itch.io/shinobi-neogeo
 
@@ -30666,10 +30695,10 @@ struct BurnDriver BurnDrvShinobing = {
 };
 
 
-// Sky Lance (HB, RC1)
+// Sky Lance (HB, v2)
 
 static struct BurnRomInfo skylanceRomDesc[] = {
-	{ "skylance-p1.p1",    0x080000, 0x29e1968d, 1 | BRF_ESS | BRF_PRG }, //  0 68K code
+	{ "skylance-p1.p1",    0x080000, 0xae68c9a1, 1 | BRF_ESS | BRF_PRG }, //  0 68K code
 
 	{ "skylance-s1.s1",    0x020000, 0xbd69c9ff, 2 | BRF_GRA },           //  1 Text layer tiles
 
@@ -30686,7 +30715,7 @@ STD_ROM_FN(skylance)
 
 struct BurnDriver BurnDrvSkylance = {
 	"skylance", NULL, "neogeo", NULL, "2026",
-	"Sky Lance (HB, RC1)\0", NULL, "Eagle Software", "Neo Geo MVS",
+	"Sky Lance (HB, v2)\0", NULL, "Eagle Software", "Neo Geo MVS",
 	NULL, NULL, NULL, NULL,
 	BDF_GAME_WORKING | BDF_HOMEBREW, 1, HARDWARE_PREFIX_CARTRIDGE | HARDWARE_SNK_NEOGEO, GBF_VERSHOOT, 0,
 	NULL, skylanceRomInfo, skylanceRomName, NULL, NULL, NULL, NULL, neogeoInputInfo, neogeoDIPInfo,
@@ -30729,16 +30758,16 @@ struct BurnDriver BurnDrvSwsodan = {
 // https://nicoklem.itch.io/warrior-man
 
 static struct BurnRomInfo warriormanRomDesc[] = {
-	{ "warman-p1.p1",	0x080000,  0x7a91cc78, 1 | BRF_ESS | BRF_PRG }, 	//  0 68K code
+	{ "warman-p1.p1",	0x08cdb0,  0xfcf4dc87, 1 | BRF_ESS | BRF_PRG }, 	//  0 68K code
 
-	{ "warman-s1.s1",	0x020000,  0x4c175fa4, 2 | BRF_GRA },           	//  1 Text layer tiles
+	{ "warman-s1.s1",	0x020000,  0xcf448b94, 2 | BRF_GRA },           	//  1 Text layer tiles
 
-	{ "warman-c1.c1",	0x400000,  0x7864d85f, 3 | BRF_GRA },           	//  2 Sprite data
-	{ "warman-c2.c2",	0x400000,  0xb7f686ec, 3 | BRF_GRA },           	//  3
+	{ "warman-c1.c1",	0x800000,  0x4fadbb5d, 3 | BRF_GRA },           	//  2 Sprite data
+	{ "warman-c2.c2",	0x800000,  0x4c50ca6b, 3 | BRF_GRA },           	//  3
 
-	{ "warman-m1.m1",	0x020000,  0xa3e65a9c, 4 | BRF_ESS | BRF_PRG }, 	//  4 Z80 code
+	{ "warman-m1.m1",	0x020000,  0xb0cf3a68, 4 | BRF_ESS | BRF_PRG }, 	//  4 Z80 code
 
-	{ "warman-v1.v1",	0x1000000, 0x3dccb4ad, 5 | BRF_SND },           	//  5 Sound data
+	{ "warman-v1.v1",	0x1000000, 0x8175e920, 5 | BRF_SND },           	//  5 Sound data
 };
 
 STDROMPICKEXT(warriorman, warriorman, neogeo)
@@ -30751,7 +30780,37 @@ struct BurnDriver BurnDrvWarriorman = {
 	BDF_GAME_WORKING | BDF_HOMEBREW, 2, HARDWARE_PREFIX_CARTRIDGE | HARDWARE_SNK_NEOGEO, GBF_ACTION | GBF_MISC, 0,
 	NULL, warriormanRomInfo, warriormanRomName, NULL, NULL, NULL, NULL, neogeoInputInfo, neogeoDIPInfo,
 	NeoInit, NeoExit, NeoFrame, NeoRender, NeoScan, &NeoRecalcPalette,
-	0x1000, 304, 224, 4, 3
+	0x1000, 320, 224, 4, 3
+};
+
+
+// World Rally Championship - Neo Geo Conversion (HB)
+// https://www.patreon.com/Arkretro/posts/generador-de-172753153
+
+static struct BurnRomInfo wrallyngRomDesc[] = {
+	{ "wrallyng-p1.p1",	0x200000,  0x66ae3de4, 1 | BRF_ESS | BRF_PRG }, 	//  0 68K code
+
+	{ "wrallyng-s1.s1",	0x020000,  0x39913a0a, 2 | BRF_GRA },           	//  1 Text layer tiles
+
+	{ "wrallyng-c1.c1",	0x400000,  0xb11347c2, 3 | BRF_GRA },           	//  2 Sprite data
+	{ "wrallyng-c2.c2",	0x400000,  0x2bfcd5fc, 3 | BRF_GRA },           	//  3
+
+	{ "wrallyng-m1.m1",	0x010000,  0x8a3b1946, 4 | BRF_ESS | BRF_PRG }, 	//  4 Z80 code
+
+	{ "wrallyng-v1.v1",	0x400000, 0xedc105d0, 5 | BRF_SND },           	//  5 Sound data
+};
+
+STDROMPICKEXT(wrallyng, wrallyng, neogeo)
+STD_ROM_FN(wrallyng)
+
+struct BurnDriver BurnDrvWrallyng = {
+	"wrallyng", NULL, "neogeo", NULL, "2026",
+	"World Rally Championship - Neo Geo Conversion (HB)\0", NULL, "Arkretro", "Neo Geo MVS",
+	NULL, NULL, NULL, NULL,
+	BDF_GAME_WORKING | BDF_HOMEBREW, 2, HARDWARE_PREFIX_CARTRIDGE | HARDWARE_SNK_NEOGEO, GBF_RACING, 0,
+	NULL, wrallyngRomInfo, wrallyngRomName, NULL, NULL, NULL, NULL, neogeoInputInfo, neogeoDIPInfo,
+	NeoInit, NeoExit, NeoFrame, NeoRender, NeoScan, &NeoRecalcPalette,
+	0x1000, 320, 224, 4, 3
 };
 
 
